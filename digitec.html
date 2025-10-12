@@ -6,6 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Fereshteh, Anna, Sen, Collin (please write your whole name)">
 
 <title>Digitec Analysis</title>
 <style>
@@ -19,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -34,6 +69,35 @@ ul.task-list li input[type="checkbox"] {
 <link href="digitec_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="digitec_files/libs/bootstrap/bootstrap-1bc8a17f135ab3d594c857e9f48e611b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -45,7 +109,15 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#first-section" id="toc-first-section" class="nav-link active" data-scroll-target="#first-section">First Section</a></li>
+  <li><a href="#business-plan-analysis" id="toc-business-plan-analysis" class="nav-link active" data-scroll-target="#business-plan-analysis">1. Business Plan analysis:</a>
+  <ul class="collapse">
+  <li><a href="#business-problem" id="toc-business-problem" class="nav-link" data-scroll-target="#business-problem">1.1. Business Problem</a></li>
+  <li><a href="#data-overview" id="toc-data-overview" class="nav-link" data-scroll-target="#data-overview">1.2. Data Overview</a></li>
+  <li><a href="#unit-of-analysis" id="toc-unit-of-analysis" class="nav-link" data-scroll-target="#unit-of-analysis">1.3. Unit of Analysis</a></li>
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology">1.4. Methodology</a></li>
+  </ul></li>
+  <li><a href="#strategic-impact" id="toc-strategic-impact" class="nav-link" data-scroll-target="#strategic-impact">1.5. Strategic Impact</a></li>
+  <li><a href="#loading-data.." id="toc-loading-data.." class="nav-link" data-scroll-target="#loading-data..">2.Loading data..</a></li>
   </ul>
 </nav>
 </div>
@@ -53,13 +125,19 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Digitec Analysis</h1>
+<div class="quarto-title-block"><div><h1 class="title">Digitec Analysis</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Fereshteh, Anna, Sen, Collin (please write your whole name) </p>
+          </div>
+  </div>
     
   
     
@@ -70,8 +148,547 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="first-section" class="level2">
-<h2 class="anchored" data-anchor-id="first-section">First Section</h2>
+<section id="business-plan-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="business-plan-analysis">1. Business Plan analysis:</h2>
+<p>Digitec Galaxus is Switzerland’s largest online retailer for consumer electronics, operating exclusively via e-commerce.<br>
+Despite nationwide reach, customer behavior likely differs across cantons due to income, urbanization, age, citizenship, and household structures.</p>
+<p>This project explores how these demographic and regional factors influence online purchases using: - ~163’000 Digitec transaction records, and<br>
+- Canton-level demographic data from the Swiss Federal Statistical Office (BFS).</p>
+<p>The findings will guide a data-driven marketing strategy to personalize digital campaigns and increase online sales efficiency.</p>
+<hr>
+<section id="business-problem" class="level3">
+<h3 class="anchored" data-anchor-id="business-problem">1.1. Business Problem</h3>
+<blockquote class="blockquote">
+<p><strong>How can regional demographics be used to improve Digitec’s online marketing strategy and boost conversions across Switzerland?</strong></p>
+</blockquote>
+<p>Digitec currently uses uniform national marketing, but demographic diversity suggests that: - Urban cantons might favor high-end tech, - Rural areas could prefer affordable products, - Younger, single populations may show distinct category interests.</p>
+<p>By linking demographic patterns with online purchasing data, Digitec can <strong>target audiences more intelligently</strong> and tailor its digital campaigns for maximum impact.</p>
+<hr>
+</section>
+<section id="data-overview" class="level3">
+<h3 class="anchored" data-anchor-id="data-overview">1.2. Data Overview</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 36%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Source</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Key Variables</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Digitec Transactions (<code>DigitecLive_Final.csv</code>)</strong></td>
+<td style="text-align: left;">~163k web-scraped online transactions</td>
+<td style="text-align: left;"><code>brandName</code>, <code>infos.Category</code>, <code>salesPrice.amountIncl</code>, <code>dateTime</code>, <code>mun_canton</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>BFS Population Data (<code>population_2023.xlsx</code>)</strong></td>
+<td style="text-align: left;">Canton-level demographics (2023)</td>
+<td style="text-align: left;"><code>Total</code>, <code>Male</code>, <code>Female</code>, <code>Swiss</code>, <code>Foreigner</code>, <code>Urban</code>, <code>Intermediate</code>, <code>Rural</code>, <code>Age_0_19</code>, <code>Age_20_64</code>, <code>Age_65plus</code>, <code>Single</code>, <code>Married</code>, <code>Widowed</code>, <code>Divorced</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="unit-of-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="unit-of-analysis">1.3. Unit of Analysis</h3>
+<p>The analysis is performed at the canton level (<span class="math inline">\(n = 26\)</span>), allowing integration of both datasets and ensuring consistent comparisons.</p>
+<p>Each canton will serve as one observation with the following computed indicators: - <span class="math inline">\(sales\_per\_capita = \frac{total\_sales}{population}\)</span> - Average order value (CHF) - Shares of gender, citizenship, age, urbanization, and marital status</p>
+<p>This approach balances detail with interpretability and enables clear visual communication.</p>
+<hr>
+</section>
+<section id="methodology" class="level3">
+<h3 class="anchored" data-anchor-id="methodology">1.4. Methodology</h3>
+<section id="analytical-steps" class="level4">
+<h4 class="anchored" data-anchor-id="analytical-steps">1.4.1. Analytical Steps</h4>
+<ol type="1">
+<li><strong>Aggregate</strong> Digitec transactions by canton (<code>mun_canton</code>).<br>
+</li>
+<li><strong>Merge</strong> with BFS data using canton names as keys.<br>
+</li>
+<li><strong>Compute</strong> derived indicators:
+<ul>
+<li>Demographic ratios: gender, foreign population, age, urbanization, marital status</li>
+<li>Economic indicators: total sales, sales per capita, average order value<br>
+</li>
+</ul></li>
+<li><strong>Analyze</strong> correlations and visualize relationships using scatterplots, heatmaps, and choropleths.<br>
+</li>
+<li><strong>Identify</strong> four key findings that can inform marketing decisions.</li>
+</ol>
+</section>
+<section id="research-questions" class="level4">
+<h4 class="anchored" data-anchor-id="research-questions">1.4.2. Research Questions</h4>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Demographic Dimension</th>
+<th style="text-align: left;">Research Question</th>
+<th style="text-align: left;">Usage Example (What Digitec Could Do)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Population Size</strong></td>
+<td style="text-align: left;">Do larger cantons generate proportionally more online sales?</td>
+<td style="text-align: left;">Allocate higher Google Ads and social-media budgets to densely populated cantons to maximize reach.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Gender Composition</strong></td>
+<td style="text-align: left;">Does male/female ratio affect product mix (e.g., gaming vs.&nbsp;home appliances)?</td>
+<td style="text-align: left;">Adapt homepage banners or email content to match regional gender patterns in purchases.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Citizenship</strong></td>
+<td style="text-align: left;">Are foreign residents associated with higher online spending?</td>
+<td style="text-align: left;">Run multilingual (DE/FR/EN) ads and feature global brands (Apple, Samsung) in foreigner-dense cantons.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Urbanization</strong></td>
+<td style="text-align: left;">Do urban cantons buy more premium electronics than rural ones?</td>
+<td style="text-align: left;">Promote high-end products in cities; highlight budget or refurbished offers in rural regions.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Age Structure</strong></td>
+<td style="text-align: left;">Which age profile correlates with online activity?</td>
+<td style="text-align: left;">Target younger regions with gaming and mobile ads; older regions with home-office and wellness tech.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Marital Status</strong></td>
+<td style="text-align: left;">Do single vs.&nbsp;married populations differ in purchase categories?</td>
+<td style="text-align: left;">Offer “family bundles” or smart-home packages for married cantons; focus on personal devices for single-dominant areas.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<hr>
+</section>
+</section>
+</section>
+<section id="strategic-impact" class="level2">
+<h2 class="anchored" data-anchor-id="strategic-impact">1.5. Strategic Impact</h2>
+<p>By merging <strong>online sales data</strong> with <strong>BFS demographic indicators</strong>, Digitec can: - Move from national-level campaigns to <strong>regionally adaptive marketing</strong>.<br>
+- Align ad language, pricing, and products with <strong>local audience characteristics</strong>.<br>
+- Strengthen relevance and <strong>optimize ad spend efficiency</strong>.</p>
+<hr>
+</section>
+<section id="loading-data.." class="level2">
+<h2 class="anchored" data-anchor-id="loading-data..">2.Loading data..</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>data<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">"DigitecLive_Final.csv"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>population<span class="ot">&lt;-</span><span class="fu">read_excel</span>(<span class="st">"population_2023.xlsx"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 4%">
+<col style="width: 22%">
+<col style="width: 1%">
+<col style="width: 3%">
+<col style="width: 4%">
+<col style="width: 16%">
+<col style="width: 2%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 7%">
+<col style="width: 2%">
+<col style="width: 1%">
+<col style="width: 2%">
+<col style="width: 2%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+<col style="width: 1%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">id</th>
+<th style="text-align: left;">userName</th>
+<th style="text-align: left;">cityName</th>
+<th style="text-align: left;">dateTime</th>
+<th style="text-align: left;">imageUrl</th>
+<th style="text-align: left;">brandName</th>
+<th style="text-align: left;">fullProductName</th>
+<th style="text-align: right;">socialShoppingTransactionTypeId</th>
+<th style="text-align: left;">url</th>
+<th style="text-align: left;">X__typename</th>
+<th style="text-align: right;">salesPrice.amountIncl</th>
+<th style="text-align: right;">salesPrice.amountExcl</th>
+<th style="text-align: left;">salesPrice.currency</th>
+<th style="text-align: left;">salesPrice.__typename</th>
+<th style="text-align: left;">infos.Category</th>
+<th style="text-align: left;">infos.Sales_Rank</th>
+<th style="text-align: right;">infos.Price</th>
+<th style="text-align: left;">infos.Currency</th>
+<th style="text-align: right;">infos.Article_ID</th>
+<th style="text-align: left;">salesPrice</th>
+<th style="text-align: left;">vill_name</th>
+<th style="text-align: left;">mun_canton</th>
+<th style="text-align: right;">mun_bfsnr</th>
+<th style="text-align: right;">mun_nhits</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">322198833</td>
+<td style="text-align: left;">A.</td>
+<td style="text-align: left;">Niederhasli</td>
+<td style="text-align: left;">2023-10-27T09:23:52.7742000Z</td>
+<td style="text-align: left;">//static.digitecgalaxus.ch/productimages/8/2/3/2/1/9/5/3/2/2/2/1/0/1/9/8/1/8/3/297b7e34-9121-4bd6-822c-447926b39396.jpg?fit=inside%7C160:128</td>
+<td style="text-align: left;">4smarts</td>
+<td style="text-align: left;">Grabber 2.0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">/de/s1/product/4smarts-grabber-20-smartphone-halterung-13747545</td>
+<td style="text-align: left;">SocialShoppingItem</td>
+<td style="text-align: right;">12.6</td>
+<td style="text-align: right;">11.70</td>
+<td style="text-align: left;">CHF</td>
+<td style="text-align: left;">DeprecatedVatMoney</td>
+<td style="text-align: left;">/de/s1/producttype/smartphone-halterung-2279</td>
+<td style="text-align: left;">1 von 7952</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">CHF</td>
+<td style="text-align: right;">13747545</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">Niederhasli</td>
+<td style="text-align: left;">ZH</td>
+<td style="text-align: right;">90</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2028570429</td>
+<td style="text-align: left;">D.</td>
+<td style="text-align: left;">Niederhasli</td>
+<td style="text-align: left;">2023-10-24T21:22:17.5540000Z</td>
+<td style="text-align: left;">//static.digitecgalaxus.ch/productimages/3/4/8/6/3/5/2/1/1/5/2/2/4/6/9/7/8/4/0/ae7495cd-2b2b-4e34-a288-56d724db9d4a.jpg?fit=inside%7C160:128</td>
+<td style="text-align: left;">UHU</td>
+<td style="text-align: left;">Promatic Holt Melt</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">/de/s1/product/uhu-promatic-holt-melt-heissklebepistole-5850389</td>
+<td style="text-align: left;">SocialShoppingItem</td>
+<td style="text-align: right;">25.0</td>
+<td style="text-align: right;">23.21</td>
+<td style="text-align: left;">CHF</td>
+<td style="text-align: left;">DeprecatedVatMoney</td>
+<td style="text-align: left;">/de/s1/producttype/heissklebepistole-604</td>
+<td style="text-align: left;">15 von 228</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">CHF</td>
+<td style="text-align: right;">5850389</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">Niederhasli</td>
+<td style="text-align: left;">ZH</td>
+<td style="text-align: right;">90</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2064908594</td>
+<td style="text-align: left;">A.</td>
+<td style="text-align: left;">Niederhasli</td>
+<td style="text-align: left;">2023-10-20T17:00:35.6978000Z</td>
+<td style="text-align: left;">//static.digitecgalaxus.ch/productimages/8/5/8/6/5/0/6/5/3/0/4/5/6/1/8/2/6/9/2/7c59df7b-9a43-4077-aa4e-ca61a0158516_cropped.jpg?fit=inside%7C160:128</td>
+<td style="text-align: left;">Fenton</td>
+<td style="text-align: left;">LIVE280 Karaoke Station</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">/de/s1/product/fenton-live280-karaoke-station-aktiv-1x-900-w-pa-lautsprecher-16728686</td>
+<td style="text-align: left;">SocialShoppingItem</td>
+<td style="text-align: right;">150.0</td>
+<td style="text-align: right;">139.28</td>
+<td style="text-align: left;">CHF</td>
+<td style="text-align: left;">DeprecatedVatMoney</td>
+<td style="text-align: left;">/de/s1/producttype/pa-lautsprecher-3270</td>
+<td style="text-align: left;">2 von 1385</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">CHF</td>
+<td style="text-align: right;">16728686</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">Niederhasli</td>
+<td style="text-align: left;">ZH</td>
+<td style="text-align: right;">90</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">85469152</td>
+<td style="text-align: left;">M.</td>
+<td style="text-align: left;">Niederhasli</td>
+<td style="text-align: left;">2023-10-19T07:01:21.9620000Z</td>
+<td style="text-align: left;">//static.digitecgalaxus.ch/productimages/7/7/7/4/8/1/4/9/5/2/8/8/4/8/2/0/6/8/9/215e236c-1f1c-4289-9da5-01f59c9f3758.jpg?fit=inside%7C160:128</td>
+<td style="text-align: left;">Siemens</td>
+<td style="text-align: left;">KI72LADE0H</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">/de/s1/product/siemens-ki72lade0h-einbaukuehlschrank-14616451</td>
+<td style="text-align: left;">SocialShoppingItem</td>
+<td style="text-align: right;">1010.0</td>
+<td style="text-align: right;">937.79</td>
+<td style="text-align: left;">CHF</td>
+<td style="text-align: left;">DeprecatedVatMoney</td>
+<td style="text-align: left;">/de/s1/producttype/einbaukuehlschrank-2408</td>
+<td style="text-align: left;">13 von 895</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">CHF</td>
+<td style="text-align: right;">14616451</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">Niederhasli</td>
+<td style="text-align: left;">ZH</td>
+<td style="text-align: right;">90</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1521895416</td>
+<td style="text-align: left;">A.</td>
+<td style="text-align: left;">Niederhasli</td>
+<td style="text-align: left;">2023-10-06T12:50:12.6841000Z</td>
+<td style="text-align: left;">//static.digitecgalaxus.ch/productimages/8/7/2/6/9/1/7/2/6/9/2/8/5/6/5/0/3/4/3/2de71afb-bf3f-4bbe-b7ea-ad2e75406337_cropped.jpg?fit=inside%7C160:128</td>
+<td style="text-align: left;">BROTECT</td>
+<td style="text-align: left;">AirGlass Panzerglasfolie</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">/de/s1/product/brotect-airglass-panzerglasfolie-1-stueck-xiaomi-redmi-note-12-smartphone-schutzfolie-24140174</td>
+<td style="text-align: left;">SocialShoppingItem</td>
+<td style="text-align: right;">12.9</td>
+<td style="text-align: right;">11.98</td>
+<td style="text-align: left;">CHF</td>
+<td style="text-align: left;">DeprecatedVatMoney</td>
+<td style="text-align: left;">/de/s1/producttype/smartphone-schutzfolie-465</td>
+<td style="text-align: left;">227 von 70855</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">CHF</td>
+<td style="text-align: right;">24140174</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">Niederhasli</td>
+<td style="text-align: left;">ZH</td>
+<td style="text-align: right;">90</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1535188787</td>
+<td style="text-align: left;">P.</td>
+<td style="text-align: left;">Niederhasli</td>
+<td style="text-align: left;">2023-09-26T11:36:17.0288000Z</td>
+<td style="text-align: left;">//static.digitecgalaxus.ch/Files/3/8/8/3/1/4/3/4/Unbenannt.JPG?fit=inside%7C160:128</td>
+<td style="text-align: left;">Apple</td>
+<td style="text-align: left;">Pencil (2. Generation)</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">/de/s1/product/apple-pencil-2-generation-stylus-10036392</td>
+<td style="text-align: left;">SocialShoppingItem</td>
+<td style="text-align: right;">125.0</td>
+<td style="text-align: right;">116.06</td>
+<td style="text-align: left;">CHF</td>
+<td style="text-align: left;">DeprecatedVatMoney</td>
+<td style="text-align: left;">/de/s1/producttype/stylus-1921</td>
+<td style="text-align: left;">1 von 1133</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">CHF</td>
+<td style="text-align: right;">10036392</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">Niederhasli</td>
+<td style="text-align: left;">ZH</td>
+<td style="text-align: right;">90</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(population)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="kable-table">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 2%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 6%">
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 10%">
+<col style="width: 6%">
+<col style="width: 4%">
+<col style="width: 6%">
+<col style="width: 4%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Canton</th>
+<th style="text-align: right;">Total</th>
+<th style="text-align: right;">Age from 0-19</th>
+<th style="text-align: right;">Age from 20-64</th>
+<th style="text-align: right;">Age from 65 and over</th>
+<th style="text-align: right;">Male population</th>
+<th style="text-align: right;">Female population</th>
+<th style="text-align: right;">Swiss citizenship</th>
+<th style="text-align: right;">Foreigner citizenship</th>
+<th style="text-align: right;">Single status</th>
+<th style="text-align: right;">married status</th>
+<th style="text-align: right;">widowed status</th>
+<th style="text-align: right;">divorced status</th>
+<th style="text-align: right;">unmarried status</th>
+<th style="text-align: right;">In a registered partnership status</th>
+<th style="text-align: right;">Partnership dissolved</th>
+<th style="text-align: right;">Urban commune</th>
+<th style="text-align: right;">Intermediate commune</th>
+<th style="text-align: right;">Rural commune</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Switzerland</td>
+<td style="text-align: right;">8962258</td>
+<td style="text-align: right;">1788440</td>
+<td style="text-align: right;">5443532</td>
+<td style="text-align: right;">1730286</td>
+<td style="text-align: right;">4451532</td>
+<td style="text-align: right;">4510726</td>
+<td style="text-align: right;">6544970</td>
+<td style="text-align: right;">2417288</td>
+<td style="text-align: right;">4127991</td>
+<td style="text-align: right;">3615921</td>
+<td style="text-align: right;">403261</td>
+<td style="text-align: right;">797858</td>
+<td style="text-align: right;">733</td>
+<td style="text-align: right;">11722</td>
+<td style="text-align: right;">4018</td>
+<td style="text-align: right;">5825068</td>
+<td style="text-align: right;">1904191</td>
+<td style="text-align: right;">1232999</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Lake Geneva region</td>
+<td style="text-align: right;">1736124</td>
+<td style="text-align: right;">365836</td>
+<td style="text-align: right;">1066594</td>
+<td style="text-align: right;">303694</td>
+<td style="text-align: right;">851611</td>
+<td style="text-align: right;">884513</td>
+<td style="text-align: right;">1140993</td>
+<td style="text-align: right;">595131</td>
+<td style="text-align: right;">842801</td>
+<td style="text-align: right;">654392</td>
+<td style="text-align: right;">72185</td>
+<td style="text-align: right;">162605</td>
+<td style="text-align: right;">235</td>
+<td style="text-align: right;">2750</td>
+<td style="text-align: right;">926</td>
+<td style="text-align: right;">1233324</td>
+<td style="text-align: right;">306180</td>
+<td style="text-align: right;">196620</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Vaud</td>
+<td style="text-align: right;">845870</td>
+<td style="text-align: right;">184231</td>
+<td style="text-align: right;">519663</td>
+<td style="text-align: right;">141976</td>
+<td style="text-align: right;">415697</td>
+<td style="text-align: right;">430173</td>
+<td style="text-align: right;">561410</td>
+<td style="text-align: right;">284460</td>
+<td style="text-align: right;">418325</td>
+<td style="text-align: right;">315182</td>
+<td style="text-align: right;">33595</td>
+<td style="text-align: right;">76804</td>
+<td style="text-align: right;">90</td>
+<td style="text-align: right;">1292</td>
+<td style="text-align: right;">444</td>
+<td style="text-align: right;">532960</td>
+<td style="text-align: right;">189896</td>
+<td style="text-align: right;">123014</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Valais</td>
+<td style="text-align: right;">365844</td>
+<td style="text-align: right;">70577</td>
+<td style="text-align: right;">219937</td>
+<td style="text-align: right;">75330</td>
+<td style="text-align: right;">182413</td>
+<td style="text-align: right;">183431</td>
+<td style="text-align: right;">273857</td>
+<td style="text-align: right;">91987</td>
+<td style="text-align: right;">163137</td>
+<td style="text-align: right;">149547</td>
+<td style="text-align: right;">18664</td>
+<td style="text-align: right;">33968</td>
+<td style="text-align: right;">44</td>
+<td style="text-align: right;">310</td>
+<td style="text-align: right;">114</td>
+<td style="text-align: right;">201600</td>
+<td style="text-align: right;">100756</td>
+<td style="text-align: right;">63488</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Geneva</td>
+<td style="text-align: right;">524410</td>
+<td style="text-align: right;">111028</td>
+<td style="text-align: right;">326994</td>
+<td style="text-align: right;">86388</td>
+<td style="text-align: right;">253501</td>
+<td style="text-align: right;">270909</td>
+<td style="text-align: right;">305726</td>
+<td style="text-align: right;">218684</td>
+<td style="text-align: right;">261339</td>
+<td style="text-align: right;">189663</td>
+<td style="text-align: right;">19926</td>
+<td style="text-align: right;">51833</td>
+<td style="text-align: right;">101</td>
+<td style="text-align: right;">1148</td>
+<td style="text-align: right;">368</td>
+<td style="text-align: right;">498764</td>
+<td style="text-align: right;">15528</td>
+<td style="text-align: right;">10118</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Espace Mittelland</td>
+<td style="text-align: right;">1944753</td>
+<td style="text-align: right;">385379</td>
+<td style="text-align: right;">1154922</td>
+<td style="text-align: right;">404452</td>
+<td style="text-align: right;">961157</td>
+<td style="text-align: right;">983596</td>
+<td style="text-align: right;">1538772</td>
+<td style="text-align: right;">405981</td>
+<td style="text-align: right;">881538</td>
+<td style="text-align: right;">784279</td>
+<td style="text-align: right;">95409</td>
+<td style="text-align: right;">180496</td>
+<td style="text-align: right;">145</td>
+<td style="text-align: right;">2007</td>
+<td style="text-align: right;">737</td>
+<td style="text-align: right;">989824</td>
+<td style="text-align: right;">532754</td>
+<td style="text-align: right;">422175</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- -->
+
 </section>
 
 </main>
@@ -163,6 +780,57 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       container: window.document.getElementById('quarto-embedded-source-code-modal')
     });
     clipboardModal.on('success', onCopySuccess);
+  }
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
@@ -492,7 +1160,107 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script>
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Digitec Analysis"</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: kable</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> visual</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> Fereshteh, Anna, Sen, Collin (please write your whole name)</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1. Business Plan analysis:</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>Digitec Galaxus is Switzerland’s largest online retailer for consumer electronics, operating exclusively via e-commerce.\</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>Despite nationwide reach, customer behavior likely differs across cantons due to income, urbanization, age, citizenship, and household structures.</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>This project explores how these demographic and regional factors influence online purchases using: - \~163’000 Digitec transaction records, and\</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Canton-level demographic data from the Swiss Federal Statistical Office (BFS).</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>The findings will guide a data-driven marketing strategy to personalize digital campaigns and increase online sales efficiency.</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.1. Business Problem</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **How can regional demographics be used to improve Digitec’s online marketing strategy and boost conversions across Switzerland?**</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>Digitec currently uses uniform national marketing, but demographic diversity suggests that: - Urban cantons might favor high-end tech, - Rural areas could prefer affordable products, - Younger, single populations may show distinct category interests.</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>By linking demographic patterns with online purchasing data, Digitec can **target audiences more intelligently** and tailor its digital campaigns for maximum impact.</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.2. Data Overview</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>| Source | Description | Key Variables |</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>|:-----------------|:-------------------------|:---------------------------|</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>| **Digitec Transactions (`DigitecLive_Final.csv`)** | \~163k web-scraped online transactions | <span class="in">`brandName`</span>, <span class="in">`infos.Category`</span>, <span class="in">`salesPrice.amountIncl`</span>, <span class="in">`dateTime`</span>, <span class="in">`mun_canton`</span> |</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>| **BFS Population Data (`population_2023.xlsx`)** | Canton-level demographics (2023) | <span class="in">`Total`</span>, <span class="in">`Male`</span>, <span class="in">`Female`</span>, <span class="in">`Swiss`</span>, <span class="in">`Foreigner`</span>, <span class="in">`Urban`</span>, <span class="in">`Intermediate`</span>, <span class="in">`Rural`</span>, <span class="in">`Age_0_19`</span>, <span class="in">`Age_20_64`</span>, <span class="in">`Age_65plus`</span>, <span class="in">`Single`</span>, <span class="in">`Married`</span>, <span class="in">`Widowed`</span>, <span class="in">`Divorced`</span> |</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.3. Unit of Analysis</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>The analysis is performed at the canton level ($n = 26$), allowing integration of both datasets and ensuring consistent comparisons.</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>Each canton will serve as one observation with the following computed indicators: - $sales<span class="sc">\_</span>per<span class="sc">\_</span>capita = \frac{total<span class="sc">\_</span>sales}{population}$ - Average order value (CHF) - Shares of gender, citizenship, age, urbanization, and marital status</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>This approach balances detail with interpretability and enables clear visual communication.</span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.4. Methodology</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="fu">#### 1.4.1. Analytical Steps</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Aggregate** Digitec transactions by canton (<span class="in">`mun_canton`</span>).\</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Merge** with BFS data using canton names as keys.\</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Compute** derived indicators:</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Demographic ratios: gender, foreign population, age, urbanization, marital status</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Economic indicators: total sales, sales per capita, average order value\</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**Analyze** correlations and visualize relationships using scatterplots, heatmaps, and choropleths.\</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>**Identify** four key findings that can inform marketing decisions.</span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="fu">#### 1.4.2. Research Questions</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>| Demographic Dimension | Research Question | Usage Example (What Digitec Could Do) |</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>|:-----------------------|:-----------------------|:-----------------------|</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>| **Population Size** | Do larger cantons generate proportionally more online sales? | Allocate higher Google Ads and social-media budgets to densely populated cantons to maximize reach. |</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>| **Gender Composition** | Does male/female ratio affect product mix (e.g., gaming vs. home appliances)? | Adapt homepage banners or email content to match regional gender patterns in purchases. |</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>| **Citizenship** | Are foreign residents associated with higher online spending? | Run multilingual (DE/FR/EN) ads and feature global brands (Apple, Samsung) in foreigner-dense cantons. |</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>| **Urbanization** | Do urban cantons buy more premium electronics than rural ones? | Promote high-end products in cities; highlight budget or refurbished offers in rural regions. |</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>| **Age Structure** | Which age profile correlates with online activity? | Target younger regions with gaming and mobile ads; older regions with home-office and wellness tech. |</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>| **Marital Status** | Do single vs. married populations differ in purchase categories? | Offer “family bundles” or smart-home packages for married cantons; focus on personal devices for single-dominant areas. |</span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1.5. Strategic Impact</span></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>By merging **online sales data** with **BFS demographic indicators**, Digitec can: - Move from national-level campaigns to **regionally adaptive marketing**.\</span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Align ad language, pricing, and products with **local audience characteristics**.\</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Strengthen relevance and **optimize ad spend efficiency**.</span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2.Loading data..</span></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>data<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">"DigitecLive_Final.csv"</span>)</span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>population<span class="ot">&lt;-</span><span class="fu">read_excel</span>(<span class="st">"population_2023.xlsx"</span>)</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(population)</span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+</code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
 </div> <!-- /content -->
 
 

@@ -1,13 +1,98 @@
 ---
 title: "Digitec Analysis"
-format: html
+format:
+  html:
+    df-print: kable
+    toc: true
+    code-tools: true
+
 editor: visual
-toc: true
+author: Fereshteh, Anna, Sen, Collin (please write your whole name)
+
 ---
 
-## First Sectino: Loading data..
+## 1. Business Plan analysis:
+
+Digitec Galaxus is Switzerland’s largest online retailer for consumer electronics, operating exclusively via e-commerce.\
+Despite nationwide reach, customer behavior likely differs across cantons due to income, urbanization, age, citizenship, and household structures.
+
+This project explores how these demographic and regional factors influence online purchases using: - \~163’000 Digitec transaction records, and\
+- Canton-level demographic data from the Swiss Federal Statistical Office (BFS).
+
+The findings will guide a data-driven marketing strategy to personalize digital campaigns and increase online sales efficiency.
+
+------------------------------------------------------------------------
+
+### 1.1. Business Problem
+
+> **How can regional demographics be used to improve Digitec’s online marketing strategy and boost conversions across Switzerland?**
+
+Digitec currently uses uniform national marketing, but demographic diversity suggests that: - Urban cantons might favor high-end tech, - Rural areas could prefer affordable products, - Younger, single populations may show distinct category interests.
+
+By linking demographic patterns with online purchasing data, Digitec can **target audiences more intelligently** and tailor its digital campaigns for maximum impact.
+
+------------------------------------------------------------------------
+
+### 1.2. Data Overview
+
+| Source | Description | Key Variables |
+|:-----------------|:-------------------------|:---------------------------|
+| **Digitec Transactions (`DigitecLive_Final.csv`)** | \~163k web-scraped online transactions | `brandName`, `infos.Category`, `salesPrice.amountIncl`, `dateTime`, `mun_canton` |
+| **BFS Population Data (`population_2023.xlsx`)** | Canton-level demographics (2023) | `Total`, `Male`, `Female`, `Swiss`, `Foreigner`, `Urban`, `Intermediate`, `Rural`, `Age_0_19`, `Age_20_64`, `Age_65plus`, `Single`, `Married`, `Widowed`, `Divorced` |
+
+------------------------------------------------------------------------
+
+### 1.3. Unit of Analysis
+
+The analysis is performed at the canton level ($n = 26$), allowing integration of both datasets and ensuring consistent comparisons.
+
+Each canton will serve as one observation with the following computed indicators: - $sales\_per\_capita = \frac{total\_sales}{population}$ - Average order value (CHF) - Shares of gender, citizenship, age, urbanization, and marital status
+
+This approach balances detail with interpretability and enables clear visual communication.
+
+------------------------------------------------------------------------
+
+### 1.4. Methodology
+
+#### 1.4.1. Analytical Steps
+
+1.  **Aggregate** Digitec transactions by canton (`mun_canton`).\
+2.  **Merge** with BFS data using canton names as keys.\
+3.  **Compute** derived indicators:
+    -   Demographic ratios: gender, foreign population, age, urbanization, marital status
+    -   Economic indicators: total sales, sales per capita, average order value\
+4.  **Analyze** correlations and visualize relationships using scatterplots, heatmaps, and choropleths.\
+5.  **Identify** four key findings that can inform marketing decisions.
+
+#### 1.4.2. Research Questions
+
+| Demographic Dimension | Research Question | Usage Example (What Digitec Could Do) |
+|:-----------------------|:-----------------------|:-----------------------|
+| **Population Size** | Do larger cantons generate proportionally more online sales? | Allocate higher Google Ads and social-media budgets to densely populated cantons to maximize reach. |
+| **Gender Composition** | Does male/female ratio affect product mix (e.g., gaming vs. home appliances)? | Adapt homepage banners or email content to match regional gender patterns in purchases. |
+| **Citizenship** | Are foreign residents associated with higher online spending? | Run multilingual (DE/FR/EN) ads and feature global brands (Apple, Samsung) in foreigner-dense cantons. |
+| **Urbanization** | Do urban cantons buy more premium electronics than rural ones? | Promote high-end products in cities; highlight budget or refurbished offers in rural regions. |
+| **Age Structure** | Which age profile correlates with online activity? | Target younger regions with gaming and mobile ads; older regions with home-office and wellness tech. |
+| **Marital Status** | Do single vs. married populations differ in purchase categories? | Offer “family bundles” or smart-home packages for married cantons; focus on personal devices for single-dominant areas. |
+
+------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+## 1.5. Strategic Impact
+
+By merging **online sales data** with **BFS demographic indicators**, Digitec can: - Move from national-level campaigns to **regionally adaptive marketing**.\
+- Align ad language, pricing, and products with **local audience characteristics**.\
+- Strengthen relevance and **optimize ad spend efficiency**.
+
+------------------------------------------------------------------------
+
+## 2.Loading data..
 
 ```{r}
-a<-5
+library(readxl)
+data<-read.csv("DigitecLive_Final.csv")
+population<-read_excel("population_2023.xlsx")
+head(data)
+head(population)
 ```
-
