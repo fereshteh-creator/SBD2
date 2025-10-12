@@ -90,9 +90,11 @@ By merging **online sales data** with **BFS demographic indicators**, Digitec ca
 ## 2.Loading data..
 
 ```{r}
+
 library(readxl)
 data<-read.csv("DigitecLive_Final.csv")
 population<-read_excel("population_2023.xlsx")
 head(data)
 head(population)
+
 ```
