@@ -8,7 +8,6 @@ format:
 
 editor: visual
 author: Fereshteh, Anna, Sen, Collin (please write your whole name)
-
 ---
 
 ## 1. Business Plan analysis:
@@ -36,7 +35,7 @@ By linking demographic patterns with online purchasing data, Digitec can **targe
 ### 1.2. Data Overview
 
 | Source | Description | Key Variables |
-|:-----------------|:-------------------------|:---------------------------|
+|:---|:---|:---|
 | **Digitec Transactions (`DigitecLive_Final.csv`)** | \~163k web-scraped online transactions | `brandName`, `infos.Category`, `salesPrice.amountIncl`, `dateTime`, `mun_canton` |
 | **BFS Population Data (`population_2023.xlsx`)** | Canton-level demographics (2023) | `Total`, `Male`, `Female`, `Swiss`, `Foreigner`, `Urban`, `Intermediate`, `Rural`, `Age_0_19`, `Age_20_64`, `Age_65plus`, `Single`, `Married`, `Widowed`, `Divorced` |
 
@@ -67,7 +66,7 @@ This approach balances detail with interpretability and enables clear visual com
 #### 1.4.2. Research Questions
 
 | Demographic Dimension | Research Question | Usage Example (What Digitec Could Do) |
-|:-----------------------|:-----------------------|:-----------------------|
+|:---|:---|:---|
 | **Population Size** | Do larger cantons generate proportionally more online sales? | Allocate higher Google Ads and social-media budgets to densely populated cantons to maximize reach. |
 | **Gender Composition** | Does male/female ratio affect product mix (e.g., gaming vs. home appliances)? | Adapt homepage banners or email content to match regional gender patterns in purchases. |
 | **Citizenship** | Are foreign residents associated with higher online spending? | Run multilingual (DE/FR/EN) ads and feature global brands (Apple, Samsung) in foreigner-dense cantons. |
