@@ -109,7 +109,6 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-<<<<<<< HEAD
   <li><a href="#business-plan-analysis" id="toc-business-plan-analysis" class="nav-link active" data-scroll-target="#business-plan-analysis">1. Business Plan analysis:</a>
   <ul class="collapse">
   <li><a href="#business-problem" id="toc-business-problem" class="nav-link" data-scroll-target="#business-problem">1.1. Business Problem</a></li>
@@ -119,9 +118,6 @@ window.Quarto = {
   </ul></li>
   <li><a href="#strategic-impact" id="toc-strategic-impact" class="nav-link" data-scroll-target="#strategic-impact">1.5. Strategic Impact</a></li>
   <li><a href="#loading-data.." id="toc-loading-data.." class="nav-link" data-scroll-target="#loading-data..">2.Loading data..</a></li>
-=======
-  <li><a href="#first-sectino-loading-data.." id="toc-first-sectino-loading-data.." class="nav-link active" data-scroll-target="#first-sectino-loading-data..">First Sectino: Loading data..</a></li>
->>>>>>> 2f2ec406c9158ef0080adcd34c99a0262c90f64c
   </ul>
 </nav>
 </div>
@@ -152,7 +148,6 @@ window.Quarto = {
 </header>
 
 
-<<<<<<< HEAD
 <section id="business-plan-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="business-plan-analysis">1. Business Plan analysis:</h2>
 <p>Digitec Galaxus is Switzerland’s largest online retailer for consumer electronics, operating exclusively via e-commerce.<br>
@@ -275,8 +270,6 @@ Despite nationwide reach, customer behavior likely differs across cantons due to
 </tr>
 </tbody>
 </table>
-<hr>
-<hr>
 </section>
 </section>
 </section>
@@ -291,9 +284,13 @@ Despite nationwide reach, customer behavior likely differs across cantons due to
 <h2 class="anchored" data-anchor-id="loading-data..">2.Loading data..</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>data<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">"DigitecLive_Final.csv"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>population<span class="ot">&lt;-</span><span class="fu">read_excel</span>(<span class="st">"population_2023.xlsx"</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># data&lt;-read.csv("DigitecLive_Final.csv")</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># save(data, file = "digitec.RData", compress = "xz")</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"digitec.RData"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>population<span class="ot">&lt;-</span><span class="fu">read_excel</span>(<span class="st">"population_2023.xlsx"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div class="kable-table">
 <table class="caption-top table table-sm table-striped small">
@@ -694,13 +691,6 @@ Despite nationwide reach, customer behavior likely differs across cantons due to
 </div>
 <!-- -->
 
-=======
-<section id="first-sectino-loading-data.." class="level2">
-<h2 class="anchored" data-anchor-id="first-sectino-loading-data..">First Sectino: Loading data..</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>a<span class="ot">&lt;-</span><span class="dv">6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
->>>>>>> 2f2ec406c9158ef0080adcd34c99a0262c90f64c
 </section>
 
 </main>
@@ -1183,94 +1173,96 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> visual</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> Fereshteh, Anna, Sen, Collin (please write your whole name)</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1. Business Plan analysis:</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>Digitec Galaxus is Switzerland’s largest online retailer for consumer electronics, operating exclusively via e-commerce.\</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>Despite nationwide reach, customer behavior likely differs across cantons due to income, urbanization, age, citizenship, and household structures.</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>This project explores how these demographic and regional factors influence online purchases using: - \~163’000 Digitec transaction records, and\</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Canton-level demographic data from the Swiss Federal Statistical Office (BFS).</span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>The findings will guide a data-driven marketing strategy to personalize digital campaigns and increase online sales efficiency.</span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.1. Business Problem</span></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **How can regional demographics be used to improve Digitec’s online marketing strategy and boost conversions across Switzerland?**</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>Digitec currently uses uniform national marketing, but demographic diversity suggests that: - Urban cantons might favor high-end tech, - Rural areas could prefer affordable products, - Younger, single populations may show distinct category interests.</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>By linking demographic patterns with online purchasing data, Digitec can **target audiences more intelligently** and tailor its digital campaigns for maximum impact.</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.2. Data Overview</span></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>| Source | Description | Key Variables |</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>|:-----------------|:-------------------------|:---------------------------|</span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>| **Digitec Transactions (`DigitecLive_Final.csv`)** | \~163k web-scraped online transactions | <span class="in">`brandName`</span>, <span class="in">`infos.Category`</span>, <span class="in">`salesPrice.amountIncl`</span>, <span class="in">`dateTime`</span>, <span class="in">`mun_canton`</span> |</span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>| **BFS Population Data (`population_2023.xlsx`)** | Canton-level demographics (2023) | <span class="in">`Total`</span>, <span class="in">`Male`</span>, <span class="in">`Female`</span>, <span class="in">`Swiss`</span>, <span class="in">`Foreigner`</span>, <span class="in">`Urban`</span>, <span class="in">`Intermediate`</span>, <span class="in">`Rural`</span>, <span class="in">`Age_0_19`</span>, <span class="in">`Age_20_64`</span>, <span class="in">`Age_65plus`</span>, <span class="in">`Single`</span>, <span class="in">`Married`</span>, <span class="in">`Widowed`</span>, <span class="in">`Divorced`</span> |</span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.3. Unit of Analysis</span></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>The analysis is performed at the canton level ($n = 26$), allowing integration of both datasets and ensuring consistent comparisons.</span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>Each canton will serve as one observation with the following computed indicators: - $sales<span class="sc">\_</span>per<span class="sc">\_</span>capita = \frac{total<span class="sc">\_</span>sales}{population}$ - Average order value (CHF) - Shares of gender, citizenship, age, urbanization, and marital status</span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>This approach balances detail with interpretability and enables clear visual communication.</span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.4. Methodology</span></span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="fu">#### 1.4.1. Analytical Steps</span></span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Aggregate** Digitec transactions by canton (<span class="in">`mun_canton`</span>).\</span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Merge** with BFS data using canton names as keys.\</span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Compute** derived indicators:</span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Demographic ratios: gender, foreign population, age, urbanization, marital status</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Economic indicators: total sales, sales per capita, average order value\</span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**Analyze** correlations and visualize relationships using scatterplots, heatmaps, and choropleths.\</span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>**Identify** four key findings that can inform marketing decisions.</span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="fu">#### 1.4.2. Research Questions</span></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>| Demographic Dimension | Research Question | Usage Example (What Digitec Could Do) |</span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>|:-----------------------|:-----------------------|:-----------------------|</span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>| **Population Size** | Do larger cantons generate proportionally more online sales? | Allocate higher Google Ads and social-media budgets to densely populated cantons to maximize reach. |</span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>| **Gender Composition** | Does male/female ratio affect product mix (e.g., gaming vs. home appliances)? | Adapt homepage banners or email content to match regional gender patterns in purchases. |</span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>| **Citizenship** | Are foreign residents associated with higher online spending? | Run multilingual (DE/FR/EN) ads and feature global brands (Apple, Samsung) in foreigner-dense cantons. |</span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>| **Urbanization** | Do urban cantons buy more premium electronics than rural ones? | Promote high-end products in cities; highlight budget or refurbished offers in rural regions. |</span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>| **Age Structure** | Which age profile correlates with online activity? | Target younger regions with gaming and mobile ads; older regions with home-office and wellness tech. |</span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a>| **Marital Status** | Do single vs. married populations differ in purchase categories? | Offer “family bundles” or smart-home packages for married cantons; focus on personal devices for single-dominant areas. |</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1. Business Plan analysis:</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>Digitec Galaxus is Switzerland’s largest online retailer for consumer electronics, operating exclusively via e-commerce.\</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>Despite nationwide reach, customer behavior likely differs across cantons due to income, urbanization, age, citizenship, and household structures.</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>This project explores how these demographic and regional factors influence online purchases using: - \~163’000 Digitec transaction records, and\</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Canton-level demographic data from the Swiss Federal Statistical Office (BFS).</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>The findings will guide a data-driven marketing strategy to personalize digital campaigns and increase online sales efficiency.</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.1. Business Problem</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **How can regional demographics be used to improve Digitec’s online marketing strategy and boost conversions across Switzerland?**</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>Digitec currently uses uniform national marketing, but demographic diversity suggests that: - Urban cantons might favor high-end tech, - Rural areas could prefer affordable products, - Younger, single populations may show distinct category interests.</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>By linking demographic patterns with online purchasing data, Digitec can **target audiences more intelligently** and tailor its digital campaigns for maximum impact.</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.2. Data Overview</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>| Source | Description | Key Variables |</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>|:-----------------|:-------------------------|:---------------------------|</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>| **Digitec Transactions (`DigitecLive_Final.csv`)** | \~163k web-scraped online transactions | <span class="in">`brandName`</span>, <span class="in">`infos.Category`</span>, <span class="in">`salesPrice.amountIncl`</span>, <span class="in">`dateTime`</span>, <span class="in">`mun_canton`</span> |</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>| **BFS Population Data (`population_2023.xlsx`)** | Canton-level demographics (2023) | <span class="in">`Total`</span>, <span class="in">`Male`</span>, <span class="in">`Female`</span>, <span class="in">`Swiss`</span>, <span class="in">`Foreigner`</span>, <span class="in">`Urban`</span>, <span class="in">`Intermediate`</span>, <span class="in">`Rural`</span>, <span class="in">`Age_0_19`</span>, <span class="in">`Age_20_64`</span>, <span class="in">`Age_65plus`</span>, <span class="in">`Single`</span>, <span class="in">`Married`</span>, <span class="in">`Widowed`</span>, <span class="in">`Divorced`</span> |</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.3. Unit of Analysis</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>The analysis is performed at the canton level ($n = 26$), allowing integration of both datasets and ensuring consistent comparisons.</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>Each canton will serve as one observation with the following computed indicators: - $sales<span class="sc">\_</span>per<span class="sc">\_</span>capita = \frac{total<span class="sc">\_</span>sales}{population}$ - Average order value (CHF) - Shares of gender, citizenship, age, urbanization, and marital status</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>This approach balances detail with interpretability and enables clear visual communication.</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.4. Methodology</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="fu">#### 1.4.1. Analytical Steps</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Aggregate** Digitec transactions by canton (<span class="in">`mun_canton`</span>).\</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Merge** with BFS data using canton names as keys.\</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Compute** derived indicators:</span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Demographic ratios: gender, foreign population, age, urbanization, marital status</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Economic indicators: total sales, sales per capita, average order value\</span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**Analyze** correlations and visualize relationships using scatterplots, heatmaps, and choropleths.\</span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>**Identify** four key findings that can inform marketing decisions.</span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="fu">#### 1.4.2. Research Questions</span></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>| Demographic Dimension | Research Question | Usage Example (What Digitec Could Do) |</span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>|:-----------------------|:-----------------------|:-----------------------|</span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>| **Population Size** | Do larger cantons generate proportionally more online sales? | Allocate higher Google Ads and social-media budgets to densely populated cantons to maximize reach. |</span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>| **Gender Composition** | Does male/female ratio affect product mix (e.g., gaming vs. home appliances)? | Adapt homepage banners or email content to match regional gender patterns in purchases. |</span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>| **Citizenship** | Are foreign residents associated with higher online spending? | Run multilingual (DE/FR/EN) ads and feature global brands (Apple, Samsung) in foreigner-dense cantons. |</span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>| **Urbanization** | Do urban cantons buy more premium electronics than rural ones? | Promote high-end products in cities; highlight budget or refurbished offers in rural regions. |</span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>| **Age Structure** | Which age profile correlates with online activity? | Target younger regions with gaming and mobile ads; older regions with home-office and wellness tech. |</span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>| **Marital Status** | Do single vs. married populations differ in purchase categories? | Offer “family bundles” or smart-home packages for married cantons; focus on personal devices for single-dominant areas. |</span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1.5. Strategic Impact</span></span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a>By merging **online sales data** with **BFS demographic indicators**, Digitec can: - Move from national-level campaigns to **regionally adaptive marketing**.\</span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Align ad language, pricing, and products with **local audience characteristics**.\</span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Strengthen relevance and **optimize ad spend efficiency**.</span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2.Loading data..</span></span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a>data<span class="ot">&lt;-</span><span class="fu">read.csv</span>(<span class="st">"DigitecLive_Final.csv"</span>)</span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a>population<span class="ot">&lt;-</span><span class="fu">read_excel</span>(<span class="st">"population_2023.xlsx"</span>)</span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span>
-<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(population)</span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1.5. Strategic Impact</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>By merging **online sales data** with **BFS demographic indicators**, Digitec can: - Move from national-level campaigns to **regionally adaptive marketing**.\</span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Align ad language, pricing, and products with **local audience characteristics**.\</span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Strengthen relevance and **optimize ad spend efficiency**.</span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2.Loading data..</span></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="co"># data&lt;-read.csv("DigitecLive_Final.csv")</span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="co"># save(data, file = "digitec.RData", compress = "xz")</span></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"digitec.RData"</span>)</span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>population<span class="ot">&lt;-</span><span class="fu">read_excel</span>(<span class="st">"population_2023.xlsx"</span>)</span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(population)</span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

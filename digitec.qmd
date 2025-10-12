@@ -74,9 +74,7 @@ This approach balances detail with interpretability and enables clear visual com
 | **Age Structure** | Which age profile correlates with online activity? | Target younger regions with gaming and mobile ads; older regions with home-office and wellness tech. |
 | **Marital Status** | Do single vs. married populations differ in purchase categories? | Offer “family bundles” or smart-home packages for married cantons; focus on personal devices for single-dominant areas. |
 
-------------------------------------------------------------------------
 
-------------------------------------------------------------------------
 
 ## 1.5. Strategic Impact
 
@@ -91,7 +89,11 @@ By merging **online sales data** with **BFS demographic indicators**, Digitec ca
 ```{r}
 
 library(readxl)
+
 # data<-read.csv("DigitecLive_Final.csv")
+# save(data, file = "digitec.RData", compress = "xz")
+
+load("digitec.RData")
 population<-read_excel("population_2023.xlsx")
 head(data)
 head(population)
