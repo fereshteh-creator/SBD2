@@ -2,11 +2,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.42">
+<meta name="generator" content="quarto-1.7.32">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Fereshteh, Anna, Sen, Collin (please write your whole name)">
+<meta name="author" content="Fereshteh, Anna, Sen, Colin Marti (pls add your full name)">
 
 <title>Digitec Analysis</title>
 <style>
@@ -22,8 +22,9 @@ ul.task-list li input[type="checkbox"] {
   vertical-align: middle;
 }
 /* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -34,7 +35,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -59,15 +60,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <script src="digitec_files/libs/clipboard/clipboard.min.js"></script>
-<script src="digitec_files/libs/quarto-html/quarto.js"></script>
+<script src="digitec_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="digitec_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="digitec_files/libs/quarto-html/popper.min.js"></script>
 <script src="digitec_files/libs/quarto-html/tippy.umd.min.js"></script>
 <script src="digitec_files/libs/quarto-html/anchor.min.js"></script>
 <link href="digitec_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="digitec_files/libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="digitec_files/libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="digitec_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="digitec_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="digitec_files/libs/bootstrap/bootstrap-1bc8a17f135ab3d594c857e9f48e611b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="digitec_files/libs/bootstrap/bootstrap-bb462d781dde1847d9e3ccf7736099dd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -101,7 +103,7 @@ window.Quarto = {
 
 </head>
 
-<body>
+<body class="quarto-light">
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
 <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
@@ -109,7 +111,7 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#business-plan-analysis" id="toc-business-plan-analysis" class="nav-link active" data-scroll-target="#business-plan-analysis">1. Business Plan analysis:</a>
+  <li><a href="#business-plan-analysis" id="toc-business-plan-analysis" class="nav-link active" data-scroll-target="#business-plan-analysis">1. Business Plan Analysis</a>
   <ul class="collapse">
   <li><a href="#business-problem" id="toc-business-problem" class="nav-link" data-scroll-target="#business-problem">1.1. Business Problem</a></li>
   <li><a href="#data-overview" id="toc-data-overview" class="nav-link" data-scroll-target="#data-overview">1.2. Data Overview</a></li>
@@ -117,7 +119,22 @@ window.Quarto = {
   <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology">1.4. Methodology</a></li>
   </ul></li>
   <li><a href="#strategic-impact" id="toc-strategic-impact" class="nav-link" data-scroll-target="#strategic-impact">1.5. Strategic Impact</a></li>
-  <li><a href="#loading-data.." id="toc-loading-data.." class="nav-link" data-scroll-target="#loading-data..">2.Loading data..</a></li>
+  <li><a href="#setup-and-data-loading" id="toc-setup-and-data-loading" class="nav-link" data-scroll-target="#setup-and-data-loading">2. Setup and Data Loading</a></li>
+  <li><a href="#data-cleaning-and-preprocessing" id="toc-data-cleaning-and-preprocessing" class="nav-link" data-scroll-target="#data-cleaning-and-preprocessing">3. Data Cleaning and Preprocessing</a>
+  <ul class="collapse">
+  <li><a href="#cleaning-strategy" id="toc-cleaning-strategy" class="nav-link" data-scroll-target="#cleaning-strategy">3.1. Cleaning Strategy</a></li>
+  <li><a href="#implementation-of-cleaning-pipeline" id="toc-implementation-of-cleaning-pipeline" class="nav-link" data-scroll-target="#implementation-of-cleaning-pipeline">3.2. Implementation of Cleaning Pipeline</a></li>
+  <li><a href="#exploratory-data-analysis-eda" id="toc-exploratory-data-analysis-eda" class="nav-link" data-scroll-target="#exploratory-data-analysis-eda">3.3. Exploratory Data Analysis (EDA)</a></li>
+  <li><a href="#validation-and-final-aggregation" id="toc-validation-and-final-aggregation" class="nav-link" data-scroll-target="#validation-and-final-aggregation">3.4. Validation and Final Aggregation</a></li>
+  <li><a href="#final-aggregated-dataset" id="toc-final-aggregated-dataset" class="nav-link" data-scroll-target="#final-aggregated-dataset">3.5. Final Aggregated Dataset</a></li>
+  <li><a href="#preprocessing-bfs-population-data" id="toc-preprocessing-bfs-population-data" class="nav-link" data-scroll-target="#preprocessing-bfs-population-data">3.6. Preprocessing BFS Population data</a></li>
+  <li><a href="#merging-transaction-and-demographic-data" id="toc-merging-transaction-and-demographic-data" class="nav-link" data-scroll-target="#merging-transaction-and-demographic-data">3.7. Merging Transaction and Demographic Data</a></li>
+  </ul></li>
+  <li><a href="#computing-and-adding-derived-indicators" id="toc-computing-and-adding-derived-indicators" class="nav-link" data-scroll-target="#computing-and-adding-derived-indicators">4. Computing and Adding Derived Indicators</a>
+  <ul class="collapse">
+  <li><a href="#implementation-in-r" id="toc-implementation-in-r" class="nav-link" data-scroll-target="#implementation-in-r">4.1 Implementation in R</a></li>
+  </ul></li>
+  <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis">5. Analysis</a></li>
   </ul>
 </nav>
 </div>
@@ -135,7 +152,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Fereshteh, Anna, Sen, Collin (please write your whole name) </p>
+             <p>Fereshteh, Anna, Sen, Colin Marti (pls add your full name) </p>
           </div>
   </div>
     
@@ -149,13 +166,10 @@ window.Quarto = {
 
 
 <section id="business-plan-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="business-plan-analysis">1. Business Plan analysis:</h2>
-<p>Digitec Galaxus is Switzerland’s largest online retailer for consumer electronics, operating exclusively via e-commerce.<br>
-Despite nationwide reach, customer behavior likely differs across cantons due to income, urbanization, age, citizenship, and household structures.</p>
-<p>This project explores how these demographic and regional factors influence online purchases using: - ~163’000 Digitec transaction records, and<br>
-- Canton-level demographic data from the Swiss Federal Statistical Office (BFS).</p>
+<h2 class="anchored" data-anchor-id="business-plan-analysis">1. Business Plan Analysis</h2>
+<p>Digitec Galaxus is Switzerland’s largest online retailer for consumer electronics, operating exclusively via e-commerce. Despite nationwide reach, customer behavior likely differs across cantons due to income, urbanization, age, citizenship, and household structures.</p>
+<p>This project explores how these demographic and regional factors influence online purchases using: - ~163,000 Digitec transaction records, and - Canton-level demographic data from the Swiss Federal Statistical Office (BFS).</p>
 <p>The findings will guide a data-driven marketing strategy to personalize digital campaigns and increase online sales efficiency.</p>
-<hr>
 <section id="business-problem" class="level3">
 <h3 class="anchored" data-anchor-id="business-problem">1.1. Business Problem</h3>
 <blockquote class="blockquote">
@@ -163,15 +177,14 @@ Despite nationwide reach, customer behavior likely differs across cantons due to
 </blockquote>
 <p>Digitec currently uses uniform national marketing, but demographic diversity suggests that: - Urban cantons might favor high-end tech, - Rural areas could prefer affordable products, - Younger, single populations may show distinct category interests.</p>
 <p>By linking demographic patterns with online purchasing data, Digitec can <strong>target audiences more intelligently</strong> and tailor its digital campaigns for maximum impact.</p>
-<hr>
 </section>
 <section id="data-overview" class="level3">
 <h3 class="anchored" data-anchor-id="data-overview">1.2. Data Overview</h3>
 <table class="caption-top table">
 <colgroup>
+<col style="width: 30%">
 <col style="width: 25%">
-<col style="width: 36%">
-<col style="width: 38%">
+<col style="width: 44%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -193,14 +206,12 @@ Despite nationwide reach, customer behavior likely differs across cantons due to
 </tr>
 </tbody>
 </table>
-<hr>
 </section>
 <section id="unit-of-analysis" class="level3">
 <h3 class="anchored" data-anchor-id="unit-of-analysis">1.3. Unit of Analysis</h3>
 <p>The analysis is performed at the canton level (<span class="math inline">\(n = 26\)</span>), allowing integration of both datasets and ensuring consistent comparisons.</p>
 <p>Each canton will serve as one observation with the following computed indicators: - <span class="math inline">\(sales\_per\_capita = \frac{total\_sales}{population}\)</span> - Average order value (CHF) - Shares of gender, citizenship, age, urbanization, and marital status</p>
 <p>This approach balances detail with interpretability and enables clear visual communication.</p>
-<hr>
 </section>
 <section id="methodology" class="level3">
 <h3 class="anchored" data-anchor-id="methodology">1.4. Methodology</h3>
@@ -255,12 +266,12 @@ Despite nationwide reach, customer behavior likely differs across cantons due to
 </tr>
 <tr class="even">
 <td style="text-align: left;"><strong>Urbanization</strong></td>
-<td style="text-align: left;">Do urban cantons buy more premium electronics than rural ones?</td>
+<td style="text-align: left;">Do urban cantons buy more premium electronics than rural ones? -&gt; How do we define premium, expensive things are not always premium for example.* (Sen)</td>
 <td style="text-align: left;">Promote high-end products in cities; highlight budget or refurbished offers in rural regions.</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;"><strong>Age Structure</strong></td>
-<td style="text-align: left;">Which age profile correlates with online activity?</td>
+<td style="text-align: left;">Which age profile correlates with online activity? -&gt; maybe change to something like: How do different age groups’ online purchasing differ? let’s find a nice way to phrase this questions (Sen)*</td>
 <td style="text-align: left;">Target younger regions with gaming and mobile ads; older regions with home-office and wellness tech.</td>
 </tr>
 <tr class="even">
@@ -278,417 +289,420 @@ Despite nationwide reach, customer behavior likely differs across cantons due to
 <p>By merging <strong>online sales data</strong> with <strong>BFS demographic indicators</strong>, Digitec can: - Move from national-level campaigns to <strong>regionally adaptive marketing</strong>.<br>
 - Align ad language, pricing, and products with <strong>local audience characteristics</strong>.<br>
 - Strengthen relevance and <strong>optimize ad spend efficiency</strong>.</p>
-<hr>
 </section>
-<section id="loading-data.." class="level2">
-<h2 class="anchored" data-anchor-id="loading-data..">2.Loading data..</h2>
+<section id="setup-and-data-loading" class="level2">
+<h2 class="anchored" data-anchor-id="setup-and-data-loading">2. Setup and Data Loading</h2>
+<p>This first code chunk sets up the R environment by loading all necessary libraries for the analysis and loading the two primary datasets. The chunk is configured with <code>include: false</code> to hide it from the final rendered report for a cleaner presentation.</p>
+</section>
+<section id="data-cleaning-and-preprocessing" class="level2">
+<h2 class="anchored" data-anchor-id="data-cleaning-and-preprocessing">3. Data Cleaning and Preprocessing</h2>
+<p>This section details the systematic process of cleaning and preparing the raw transaction data. The goal is to produce a reliable, aggregated dataset at the cantonal level, which will serve as the foundation for the subsequent merge with the BFS demographic data.</p>
+<section id="cleaning-strategy" class="level3">
+<h3 class="anchored" data-anchor-id="cleaning-strategy">3.1. Cleaning Strategy</h3>
+<p>An initial inspection of the raw data revealed several necessary cleaning steps:</p>
+<ul>
+<li><strong>Correcting Data Types:</strong> The <code>dateTime</code> column was stored as a character string and needed to be converted into a proper date-time format for time-based analysis.</li>
+<li><strong>Removing Irrelevant Columns:</strong> Many columns were redundant (e.g., price with and without VAT), contained technical metadata, or were not relevant to the analysis (e.g., image URLs).</li>
+<li><strong>Ensuring Data Quality:</strong> Transactions without a price or a clear, unique geographic match (<code>mun_nhits != 1</code>) were removed to ensure the reliability of the analysis.</li>
+<li><strong>Feature Engineering:</strong> More useful features were extracted from the raw data, such as the day of the week from the <code>dateTime</code> column or the clean product category name from a URL string.</li>
+</ul>
+</section>
+<section id="implementation-of-cleaning-pipeline" class="level3">
+<h3 class="anchored" data-anchor-id="implementation-of-cleaning-pipeline">3.2. Implementation of Cleaning Pipeline</h3>
+<p>The following steps were implemented in a single, coherent <code>dplyr</code> pipeline for efficiency and reproducibility. The result is a cleaned DataFrame named <code>data_clean</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Comprehensive cleaning and transformation of the raw data</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># data&lt;-read.csv("DigitecLive_Final.csv")</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># save(data, file = "digitec.RData", compress = "xz")</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"digitec.RData"</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>population<span class="ot">&lt;-</span><span class="fu">read_excel</span>(<span class="st">"population_2023.xlsx"</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>data_clean <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Select and rename relevant columns for better readability</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">price =</span> salesPrice.amountIncl,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">category_url =</span> infos.Category,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">sales_rank_raw =</span> infos.Sales_Rank,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">canton =</span> mun_canton</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    price, dateTime, brandName, category_url, sales_rank_raw, canton, mun_nhits</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filter rows to ensure data quality</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(price),           <span class="co"># Keep only transactions with a price</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(canton),          <span class="co"># Keep only transactions with canton information</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    mun_nhits <span class="sc">==</span> <span class="dv">1</span>           <span class="co"># Keep only unique geographic matches</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create new, useful columns (Feature Engineering)</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convert timestamp to a proper date-time format</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">dateTime =</span> <span class="fu">ymd_hms</span>(dateTime),</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract useful time-based components</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">hour =</span> <span class="fu">hour</span>(dateTime),</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">weekday =</span> <span class="fu">wday</span>(dateTime, <span class="at">label =</span> <span class="cn">TRUE</span>, <span class="at">week_start =</span> <span class="dv">1</span>),</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract the product category from the URL</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">category =</span> <span class="fu">basename</span>(category_url)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="exploratory-data-analysis-eda" class="level3">
+<h3 class="anchored" data-anchor-id="exploratory-data-analysis-eda">3.3. Exploratory Data Analysis (EDA)</h3>
+<p>After cleaning the data, an exploratory analysis was performed on the <code>data_clean</code> set to understand fundamental patterns before aggregation.</p>
+<section id="price-distribution" class="level4">
+<h4 class="anchored" data-anchor-id="price-distribution">Price Distribution</h4>
+<p>An analysis of product prices reveals a heavily right-skewed distribution. A large majority of transactions are for lower-priced items, while a long tail of high-value purchases contributes significantly to total revenue. The boxplot identifies these high-priced items as statistical outliers. For a marketing analysis, however, these are valid and highly valuable data points that must be retained.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram to visualize the price distribution</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data_clean, <span class="fu">aes</span>(<span class="at">x =</span> price)) <span class="sc">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">100</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribution of Product Prices"</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Strong right-skewed distribution with most items in the lower price range"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Price (CHF)"</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Number of Transactions"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top table table-sm table-striped small">
-<colgroup>
-<col style="width: 1%">
-<col style="width: 1%">
-<col style="width: 1%">
-<col style="width: 4%">
-<col style="width: 22%">
-<col style="width: 1%">
-<col style="width: 3%">
-<col style="width: 4%">
-<col style="width: 16%">
-<col style="width: 2%">
-<col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 3%">
-<col style="width: 7%">
-<col style="width: 2%">
-<col style="width: 1%">
-<col style="width: 2%">
-<col style="width: 2%">
-<col style="width: 1%">
-<col style="width: 1%">
-<col style="width: 1%">
-<col style="width: 1%">
-<col style="width: 1%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: right;">id</th>
-<th style="text-align: left;">userName</th>
-<th style="text-align: left;">cityName</th>
-<th style="text-align: left;">dateTime</th>
-<th style="text-align: left;">imageUrl</th>
-<th style="text-align: left;">brandName</th>
-<th style="text-align: left;">fullProductName</th>
-<th style="text-align: right;">socialShoppingTransactionTypeId</th>
-<th style="text-align: left;">url</th>
-<th style="text-align: left;">X__typename</th>
-<th style="text-align: right;">salesPrice.amountIncl</th>
-<th style="text-align: right;">salesPrice.amountExcl</th>
-<th style="text-align: left;">salesPrice.currency</th>
-<th style="text-align: left;">salesPrice.__typename</th>
-<th style="text-align: left;">infos.Category</th>
-<th style="text-align: left;">infos.Sales_Rank</th>
-<th style="text-align: right;">infos.Price</th>
-<th style="text-align: left;">infos.Currency</th>
-<th style="text-align: right;">infos.Article_ID</th>
-<th style="text-align: left;">salesPrice</th>
-<th style="text-align: left;">vill_name</th>
-<th style="text-align: left;">mun_canton</th>
-<th style="text-align: right;">mun_bfsnr</th>
-<th style="text-align: right;">mun_nhits</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">322198833</td>
-<td style="text-align: left;">A.</td>
-<td style="text-align: left;">Niederhasli</td>
-<td style="text-align: left;">2023-10-27T09:23:52.7742000Z</td>
-<td style="text-align: left;">//static.digitecgalaxus.ch/productimages/8/2/3/2/1/9/5/3/2/2/2/1/0/1/9/8/1/8/3/297b7e34-9121-4bd6-822c-447926b39396.jpg?fit=inside%7C160:128</td>
-<td style="text-align: left;">4smarts</td>
-<td style="text-align: left;">Grabber 2.0</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: left;">/de/s1/product/4smarts-grabber-20-smartphone-halterung-13747545</td>
-<td style="text-align: left;">SocialShoppingItem</td>
-<td style="text-align: right;">12.6</td>
-<td style="text-align: right;">11.70</td>
-<td style="text-align: left;">CHF</td>
-<td style="text-align: left;">DeprecatedVatMoney</td>
-<td style="text-align: left;">/de/s1/producttype/smartphone-halterung-2279</td>
-<td style="text-align: left;">1 von 7952</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">CHF</td>
-<td style="text-align: right;">13747545</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">Niederhasli</td>
-<td style="text-align: left;">ZH</td>
-<td style="text-align: right;">90</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">2028570429</td>
-<td style="text-align: left;">D.</td>
-<td style="text-align: left;">Niederhasli</td>
-<td style="text-align: left;">2023-10-24T21:22:17.5540000Z</td>
-<td style="text-align: left;">//static.digitecgalaxus.ch/productimages/3/4/8/6/3/5/2/1/1/5/2/2/4/6/9/7/8/4/0/ae7495cd-2b2b-4e34-a288-56d724db9d4a.jpg?fit=inside%7C160:128</td>
-<td style="text-align: left;">UHU</td>
-<td style="text-align: left;">Promatic Holt Melt</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: left;">/de/s1/product/uhu-promatic-holt-melt-heissklebepistole-5850389</td>
-<td style="text-align: left;">SocialShoppingItem</td>
-<td style="text-align: right;">25.0</td>
-<td style="text-align: right;">23.21</td>
-<td style="text-align: left;">CHF</td>
-<td style="text-align: left;">DeprecatedVatMoney</td>
-<td style="text-align: left;">/de/s1/producttype/heissklebepistole-604</td>
-<td style="text-align: left;">15 von 228</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">CHF</td>
-<td style="text-align: right;">5850389</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">Niederhasli</td>
-<td style="text-align: left;">ZH</td>
-<td style="text-align: right;">90</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">2064908594</td>
-<td style="text-align: left;">A.</td>
-<td style="text-align: left;">Niederhasli</td>
-<td style="text-align: left;">2023-10-20T17:00:35.6978000Z</td>
-<td style="text-align: left;">//static.digitecgalaxus.ch/productimages/8/5/8/6/5/0/6/5/3/0/4/5/6/1/8/2/6/9/2/7c59df7b-9a43-4077-aa4e-ca61a0158516_cropped.jpg?fit=inside%7C160:128</td>
-<td style="text-align: left;">Fenton</td>
-<td style="text-align: left;">LIVE280 Karaoke Station</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: left;">/de/s1/product/fenton-live280-karaoke-station-aktiv-1x-900-w-pa-lautsprecher-16728686</td>
-<td style="text-align: left;">SocialShoppingItem</td>
-<td style="text-align: right;">150.0</td>
-<td style="text-align: right;">139.28</td>
-<td style="text-align: left;">CHF</td>
-<td style="text-align: left;">DeprecatedVatMoney</td>
-<td style="text-align: left;">/de/s1/producttype/pa-lautsprecher-3270</td>
-<td style="text-align: left;">2 von 1385</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">CHF</td>
-<td style="text-align: right;">16728686</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">Niederhasli</td>
-<td style="text-align: left;">ZH</td>
-<td style="text-align: right;">90</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">85469152</td>
-<td style="text-align: left;">M.</td>
-<td style="text-align: left;">Niederhasli</td>
-<td style="text-align: left;">2023-10-19T07:01:21.9620000Z</td>
-<td style="text-align: left;">//static.digitecgalaxus.ch/productimages/7/7/7/4/8/1/4/9/5/2/8/8/4/8/2/0/6/8/9/215e236c-1f1c-4289-9da5-01f59c9f3758.jpg?fit=inside%7C160:128</td>
-<td style="text-align: left;">Siemens</td>
-<td style="text-align: left;">KI72LADE0H</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: left;">/de/s1/product/siemens-ki72lade0h-einbaukuehlschrank-14616451</td>
-<td style="text-align: left;">SocialShoppingItem</td>
-<td style="text-align: right;">1010.0</td>
-<td style="text-align: right;">937.79</td>
-<td style="text-align: left;">CHF</td>
-<td style="text-align: left;">DeprecatedVatMoney</td>
-<td style="text-align: left;">/de/s1/producttype/einbaukuehlschrank-2408</td>
-<td style="text-align: left;">13 von 895</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">CHF</td>
-<td style="text-align: right;">14616451</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">Niederhasli</td>
-<td style="text-align: left;">ZH</td>
-<td style="text-align: right;">90</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">1521895416</td>
-<td style="text-align: left;">A.</td>
-<td style="text-align: left;">Niederhasli</td>
-<td style="text-align: left;">2023-10-06T12:50:12.6841000Z</td>
-<td style="text-align: left;">//static.digitecgalaxus.ch/productimages/8/7/2/6/9/1/7/2/6/9/2/8/5/6/5/0/3/4/3/2de71afb-bf3f-4bbe-b7ea-ad2e75406337_cropped.jpg?fit=inside%7C160:128</td>
-<td style="text-align: left;">BROTECT</td>
-<td style="text-align: left;">AirGlass Panzerglasfolie</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: left;">/de/s1/product/brotect-airglass-panzerglasfolie-1-stueck-xiaomi-redmi-note-12-smartphone-schutzfolie-24140174</td>
-<td style="text-align: left;">SocialShoppingItem</td>
-<td style="text-align: right;">12.9</td>
-<td style="text-align: right;">11.98</td>
-<td style="text-align: left;">CHF</td>
-<td style="text-align: left;">DeprecatedVatMoney</td>
-<td style="text-align: left;">/de/s1/producttype/smartphone-schutzfolie-465</td>
-<td style="text-align: left;">227 von 70855</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">CHF</td>
-<td style="text-align: right;">24140174</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">Niederhasli</td>
-<td style="text-align: left;">ZH</td>
-<td style="text-align: right;">90</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">1535188787</td>
-<td style="text-align: left;">P.</td>
-<td style="text-align: left;">Niederhasli</td>
-<td style="text-align: left;">2023-09-26T11:36:17.0288000Z</td>
-<td style="text-align: left;">//static.digitecgalaxus.ch/Files/3/8/8/3/1/4/3/4/Unbenannt.JPG?fit=inside%7C160:128</td>
-<td style="text-align: left;">Apple</td>
-<td style="text-align: left;">Pencil (2. Generation)</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: left;">/de/s1/product/apple-pencil-2-generation-stylus-10036392</td>
-<td style="text-align: left;">SocialShoppingItem</td>
-<td style="text-align: right;">125.0</td>
-<td style="text-align: right;">116.06</td>
-<td style="text-align: left;">CHF</td>
-<td style="text-align: left;">DeprecatedVatMoney</td>
-<td style="text-align: left;">/de/s1/producttype/stylus-1921</td>
-<td style="text-align: left;">1 von 1133</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: left;">CHF</td>
-<td style="text-align: right;">10036392</td>
-<td style="text-align: left;">NA</td>
-<td style="text-align: left;">Niederhasli</td>
-<td style="text-align: left;">ZH</td>
-<td style="text-align: right;">90</td>
-<td style="text-align: right;">1</td>
-</tr>
-</tbody>
-</table>
+<div>
+<figure class="figure">
+<p><img src="digitec_files/figure-html/eda-price-plots-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(population)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Boxplot to identify outliers</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data_clean, <span class="fu">aes</span>(<span class="at">y =</span> price)) <span class="sc">+</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Boxplot of Product Prices"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Shows a high number of high-priced products (outliers)"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Price (CHF)"</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<div class="kable-table">
-<table class="caption-top table table-sm table-striped small">
-<colgroup>
-<col style="width: 5%">
-<col style="width: 2%">
-<col style="width: 4%">
-<col style="width: 4%">
-<col style="width: 6%">
-<col style="width: 4%">
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 6%">
-<col style="width: 4%">
-<col style="width: 4%">
-<col style="width: 4%">
-<col style="width: 4%">
-<col style="width: 5%">
-<col style="width: 10%">
-<col style="width: 6%">
-<col style="width: 4%">
-<col style="width: 6%">
-<col style="width: 4%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: left;">Canton</th>
-<th style="text-align: right;">Total</th>
-<th style="text-align: right;">Age from 0-19</th>
-<th style="text-align: right;">Age from 20-64</th>
-<th style="text-align: right;">Age from 65 and over</th>
-<th style="text-align: right;">Male population</th>
-<th style="text-align: right;">Female population</th>
-<th style="text-align: right;">Swiss citizenship</th>
-<th style="text-align: right;">Foreigner citizenship</th>
-<th style="text-align: right;">Single status</th>
-<th style="text-align: right;">married status</th>
-<th style="text-align: right;">widowed status</th>
-<th style="text-align: right;">divorced status</th>
-<th style="text-align: right;">unmarried status</th>
-<th style="text-align: right;">In a registered partnership status</th>
-<th style="text-align: right;">Partnership dissolved</th>
-<th style="text-align: right;">Urban commune</th>
-<th style="text-align: right;">Intermediate commune</th>
-<th style="text-align: right;">Rural commune</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Switzerland</td>
-<td style="text-align: right;">8962258</td>
-<td style="text-align: right;">1788440</td>
-<td style="text-align: right;">5443532</td>
-<td style="text-align: right;">1730286</td>
-<td style="text-align: right;">4451532</td>
-<td style="text-align: right;">4510726</td>
-<td style="text-align: right;">6544970</td>
-<td style="text-align: right;">2417288</td>
-<td style="text-align: right;">4127991</td>
-<td style="text-align: right;">3615921</td>
-<td style="text-align: right;">403261</td>
-<td style="text-align: right;">797858</td>
-<td style="text-align: right;">733</td>
-<td style="text-align: right;">11722</td>
-<td style="text-align: right;">4018</td>
-<td style="text-align: right;">5825068</td>
-<td style="text-align: right;">1904191</td>
-<td style="text-align: right;">1232999</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Lake Geneva region</td>
-<td style="text-align: right;">1736124</td>
-<td style="text-align: right;">365836</td>
-<td style="text-align: right;">1066594</td>
-<td style="text-align: right;">303694</td>
-<td style="text-align: right;">851611</td>
-<td style="text-align: right;">884513</td>
-<td style="text-align: right;">1140993</td>
-<td style="text-align: right;">595131</td>
-<td style="text-align: right;">842801</td>
-<td style="text-align: right;">654392</td>
-<td style="text-align: right;">72185</td>
-<td style="text-align: right;">162605</td>
-<td style="text-align: right;">235</td>
-<td style="text-align: right;">2750</td>
-<td style="text-align: right;">926</td>
-<td style="text-align: right;">1233324</td>
-<td style="text-align: right;">306180</td>
-<td style="text-align: right;">196620</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Vaud</td>
-<td style="text-align: right;">845870</td>
-<td style="text-align: right;">184231</td>
-<td style="text-align: right;">519663</td>
-<td style="text-align: right;">141976</td>
-<td style="text-align: right;">415697</td>
-<td style="text-align: right;">430173</td>
-<td style="text-align: right;">561410</td>
-<td style="text-align: right;">284460</td>
-<td style="text-align: right;">418325</td>
-<td style="text-align: right;">315182</td>
-<td style="text-align: right;">33595</td>
-<td style="text-align: right;">76804</td>
-<td style="text-align: right;">90</td>
-<td style="text-align: right;">1292</td>
-<td style="text-align: right;">444</td>
-<td style="text-align: right;">532960</td>
-<td style="text-align: right;">189896</td>
-<td style="text-align: right;">123014</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Valais</td>
-<td style="text-align: right;">365844</td>
-<td style="text-align: right;">70577</td>
-<td style="text-align: right;">219937</td>
-<td style="text-align: right;">75330</td>
-<td style="text-align: right;">182413</td>
-<td style="text-align: right;">183431</td>
-<td style="text-align: right;">273857</td>
-<td style="text-align: right;">91987</td>
-<td style="text-align: right;">163137</td>
-<td style="text-align: right;">149547</td>
-<td style="text-align: right;">18664</td>
-<td style="text-align: right;">33968</td>
-<td style="text-align: right;">44</td>
-<td style="text-align: right;">310</td>
-<td style="text-align: right;">114</td>
-<td style="text-align: right;">201600</td>
-<td style="text-align: right;">100756</td>
-<td style="text-align: right;">63488</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Geneva</td>
-<td style="text-align: right;">524410</td>
-<td style="text-align: right;">111028</td>
-<td style="text-align: right;">326994</td>
-<td style="text-align: right;">86388</td>
-<td style="text-align: right;">253501</td>
-<td style="text-align: right;">270909</td>
-<td style="text-align: right;">305726</td>
-<td style="text-align: right;">218684</td>
-<td style="text-align: right;">261339</td>
-<td style="text-align: right;">189663</td>
-<td style="text-align: right;">19926</td>
-<td style="text-align: right;">51833</td>
-<td style="text-align: right;">101</td>
-<td style="text-align: right;">1148</td>
-<td style="text-align: right;">368</td>
-<td style="text-align: right;">498764</td>
-<td style="text-align: right;">15528</td>
-<td style="text-align: right;">10118</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Espace Mittelland</td>
-<td style="text-align: right;">1944753</td>
-<td style="text-align: right;">385379</td>
-<td style="text-align: right;">1154922</td>
-<td style="text-align: right;">404452</td>
-<td style="text-align: right;">961157</td>
-<td style="text-align: right;">983596</td>
-<td style="text-align: right;">1538772</td>
-<td style="text-align: right;">405981</td>
-<td style="text-align: right;">881538</td>
-<td style="text-align: right;">784279</td>
-<td style="text-align: right;">95409</td>
-<td style="text-align: right;">180496</td>
-<td style="text-align: right;">145</td>
-<td style="text-align: right;">2007</td>
-<td style="text-align: right;">737</td>
-<td style="text-align: right;">989824</td>
-<td style="text-align: right;">532754</td>
-<td style="text-align: right;">422175</td>
-</tr>
-</tbody>
-</table>
+<div>
+<figure class="figure">
+<p><img src="digitec_files/figure-html/eda-price-plots-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
 </div>
+</section>
+<section id="top-categories-and-brands" class="level4">
+<h4 class="anchored" data-anchor-id="top-categories-and-brands">Top Categories and Brands</h4>
+<p>Analyzing the most frequent categories and brands provides initial insights into customer preferences. Product categories such as headphones, smartphones, and printer toner dominate sales volumes. Among brands, Apple and Samsung are clear leaders, highlighting the importance of these ecosystems to customers.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Top 15 product categories by transaction count</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>data_clean <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(category, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">15</span>, n) <span class="sc">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(category, n), <span class="at">y =</span> n)) <span class="sc">+</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Top 15 Product Categories"</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Product Category"</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Number of Transactions"</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="digitec_files/figure-html/eda-category-brand-plots-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Top 15 brands by transaction count</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>data_clean <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(brandName <span class="sc">!=</span> <span class="st">""</span>) <span class="sc">%&gt;%</span> <span class="co"># Exclude blank brand names</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(brandName, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">15</span>, n) <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(brandName, n), <span class="at">y =</span> n)) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Top 15 Brands"</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Brand"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Number of Transactions"</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="digitec_files/figure-html/eda-category-brand-plots-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="validation-and-final-aggregation" class="level3">
+<h3 class="anchored" data-anchor-id="validation-and-final-aggregation">3.4. Validation and Final Aggregation</h3>
+<p>An initial aggregation of the cleaned data surprisingly resulted in 29 groups instead of the 26 expected Swiss cantons. An investigation of the <code>canton</code> column revealed that the dataset also contained transactions from neighboring countries, which needed to be excluded for this analysis.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A list of valid Swiss canton abbreviations</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>valid_swiss_cantons <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"AG"</span>, <span class="st">"AI"</span>, <span class="st">"AR"</span>, <span class="st">"BE"</span>, <span class="st">"BL"</span>, <span class="st">"BS"</span>, <span class="st">"FR"</span>, <span class="st">"GE"</span>, <span class="st">"GL"</span>, <span class="st">"GR"</span>, </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"JU"</span>, <span class="st">"LU"</span>, <span class="st">"NE"</span>, <span class="st">"NW"</span>, <span class="st">"OW"</span>, <span class="st">"SG"</span>, <span class="st">"SH"</span>, <span class="st">"SO"</span>, <span class="st">"SZ"</span>, <span class="st">"TG"</span>, </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TI"</span>, <span class="st">"UR"</span>, <span class="st">"VD"</span>, <span class="st">"VS"</span>, <span class="st">"ZG"</span>, <span class="st">"ZH"</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify which unique codes in our data are NOT in the valid list</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>non_swiss_codes <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="fu">unique</span>(data_clean<span class="sc">$</span>canton), valid_swiss_cantons)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Found the following non-Swiss location codes:"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Found the following non-Swiss location codes:"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(non_swiss_codes)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "FL" "DE" "IT"</code></pre>
+</div>
+</div>
+<p>Based on this finding, the dataset was filtered to include only transactions from the 26 Swiss cantons. Afterward, the final aggregation was performed to create the analysis-ready dataset.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter the dataset to retain only transactions from Swiss cantons</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>data_final_swiss <span class="ot">&lt;-</span> data_clean <span class="sc">%&gt;%</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(canton <span class="sc">%in%</span> valid_swiss_cantons)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform the final aggregation at the cantonal level</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>canton_data_final <span class="ot">&lt;-</span> data_final_swiss <span class="sc">%&gt;%</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(canton) <span class="sc">%&gt;%</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_sales =</span> <span class="fu">sum</span>(price, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">num_transactions =</span> <span class="fu">n</span>(),</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_order_value =</span> <span class="fu">mean</span>(price, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">top_brand =</span> <span class="fu">names</span>(<span class="fu">which.max</span>(<span class="fu">table</span>(brandName))),</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">top_category =</span> <span class="fu">names</span>(<span class="fu">which.max</span>(<span class="fu">table</span>(category)))</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(total_sales))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="final-aggregated-dataset" class="level3">
+<h3 class="anchored" data-anchor-id="final-aggregated-dataset">3.5. Final Aggregated Dataset</h3>
+<p>The result of this cleaning and preprocessing workflow is the <code>canton_data_final</code> DataFrame. It contains 26 rows, one for each Swiss canton, with the key performance indicators required for further analysis. This dataset is now ready to be merged with the BFS population data.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 26 × 6
+   canton total_sales num_transactions avg_order_value top_brand top_category 
+   &lt;chr&gt;        &lt;dbl&gt;            &lt;int&gt;           &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;        
+ 1 ZH        6527271.            38785            168. Apple     kopfhoerer-48
+ 2 BE        2944611.            18198            162. Apple     kopfhoerer-48
+ 3 AG        2238346.            13593            165. Apple     smartphone-24
+ 4 VD        1989040.            12568            158. Apple     kopfhoerer-48
+ 5 SG        1507276.             8819            171. Apple     smartphone-24
+ 6 LU        1192010.             7415            161. Samsung   smartphone-24
+ 7 GE        1185472.             6804            174. Samsung   kopfhoerer-48
+ 8 TG         920509.             5299            174. Apple     smartphone-24
+ 9 BL         815194.             5021            162. Apple     smartphone-24
+10 SO         756160.             4645            163. Apple     smartphone-24
+11 BS         744111.             4136            180. Apple     smartphone-24
+12 FR         646647.             3996            162. Samsung   kopfhoerer-48
+13 TI         594091.             3606            165. Apple     smartphone-24
+14 VS         579625.             3548            163. Samsung   smartphone-24
+15 ZG         567835.             3193            178. Apple     kopfhoerer-48
+16 GR         549952.             3069            179. Apple     smartphone-24
+17 SZ         500582.             2700            185. Apple     smartphone-24
+18 NE         287130.             1861            154. Samsung   smartphone-24
+19 SH         223756.             1401            160. Apple     smartphone-24
+20 AR         169535.              916            185. Apple     smartphone-24
+21 JU         128282.              785            163. Samsung   smartphone-24
+22 OW         120166.              676            178. Samsung   smartphone-24
+23 GL         101436.              571            178. Samsung   smartphone-24
+24 NW         101106.              639            158. Samsung   smartphone-24
+25 UR          79311.              479            166. Apple     smartphone-24
+26 AI          45597.              237            192. Samsung   toner-95     </code></pre>
+</div>
+</div>
+</section>
+<section id="preprocessing-bfs-population-data" class="level3">
+<h3 class="anchored" data-anchor-id="preprocessing-bfs-population-data">3.6. Preprocessing BFS Population data</h3>
+<p>To ensure a seamless merge between Digitec transaction data and BFS population data, column names in the population dataset converted to snake_case, additionally, canton names found in the Excel file were mapped to their official abbreviations used in the transaction dataset.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#function which converts input to snake_case</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>clean_names <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  x <span class="sc">%&gt;%</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">str_to_lower</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Replace spaces with underscores</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">str_replace_all</span>(<span class="st">" "</span>, <span class="st">"_"</span>)             </span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(population) <span class="ot">&lt;-</span> <span class="fu">clean_names</span>(<span class="fu">colnames</span>(population))</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Define canton name-to-code mapping</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>canton_codes <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Zurich"</span> <span class="ot">=</span> <span class="st">"ZH"</span>,</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Bern"</span> <span class="ot">=</span> <span class="st">"BE"</span>,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Lucerne"</span> <span class="ot">=</span> <span class="st">"LU"</span>,</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Uri"</span> <span class="ot">=</span> <span class="st">"UR"</span>,</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Schwyz"</span> <span class="ot">=</span> <span class="st">"SZ"</span>,</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Obwalden"</span> <span class="ot">=</span> <span class="st">"OW"</span>,</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Nidwalden"</span> <span class="ot">=</span> <span class="st">"NW"</span>,</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Glarus"</span> <span class="ot">=</span> <span class="st">"GL"</span>,</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Zug"</span> <span class="ot">=</span> <span class="st">"ZG"</span>,</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Fribourg"</span> <span class="ot">=</span> <span class="st">"FR"</span>,</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Solothurn"</span> <span class="ot">=</span> <span class="st">"SO"</span>,</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Basel-Stadt"</span> <span class="ot">=</span> <span class="st">"BS"</span>,</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Basel-Landschaft"</span> <span class="ot">=</span> <span class="st">"BL"</span>,</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Schaffhausen"</span> <span class="ot">=</span> <span class="st">"SH"</span>,</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Appenzell A. Rh."</span> <span class="ot">=</span> <span class="st">"AR"</span>,</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Appenzell I. Rh."</span> <span class="ot">=</span> <span class="st">"AI"</span>,</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>  <span class="st">"St. Gallen"</span> <span class="ot">=</span> <span class="st">"SG"</span>,</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Graubünden"</span> <span class="ot">=</span> <span class="st">"GR"</span>,</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Aargau"</span> <span class="ot">=</span> <span class="st">"AG"</span>,</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Thurgau"</span> <span class="ot">=</span> <span class="st">"TG"</span>,</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Ticino"</span> <span class="ot">=</span> <span class="st">"TI"</span>,</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Vaud"</span> <span class="ot">=</span> <span class="st">"VD"</span>,</span>
+<span id="cb12-36"><a href="#cb12-36" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Valais"</span> <span class="ot">=</span> <span class="st">"VS"</span>,</span>
+<span id="cb12-37"><a href="#cb12-37" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Neuchâtel"</span> <span class="ot">=</span> <span class="st">"NE"</span>,</span>
+<span id="cb12-38"><a href="#cb12-38" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Geneva"</span> <span class="ot">=</span> <span class="st">"GE"</span>,</span>
+<span id="cb12-39"><a href="#cb12-39" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Jura"</span> <span class="ot">=</span> <span class="st">"JU"</span></span>
+<span id="cb12-40"><a href="#cb12-40" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-41"><a href="#cb12-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-42"><a href="#cb12-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to named vector for mapping</span></span>
+<span id="cb12-43"><a href="#cb12-43" aria-hidden="true" tabindex="-1"></a>code_map <span class="ot">&lt;-</span> <span class="fu">setNames</span>(<span class="fu">unlist</span>(canton_codes), <span class="fu">names</span>(canton_codes))</span>
+<span id="cb12-44"><a href="#cb12-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-45"><a href="#cb12-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Replace canton names with codes and remove non-cantons</span></span>
+<span id="cb12-46"><a href="#cb12-46" aria-hidden="true" tabindex="-1"></a>cleaned_population <span class="ot">&lt;-</span> population <span class="sc">%&gt;%</span></span>
+<span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(canton <span class="sc">%in%</span> <span class="fu">names</span>(canton_codes)) <span class="sc">%&gt;%</span></span>
+<span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">canton =</span> code_map[canton])</span>
+<span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the processed excel data</span></span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cleaned_population)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 26 × 19
+   canton   total `age_from_0-19` `age_from_20-64` age_from_65_and_over
+   &lt;chr&gt;    &lt;dbl&gt;           &lt;dbl&gt;            &lt;dbl&gt;                &lt;dbl&gt;
+ 1 VD      845870          184231           519663               141976
+ 2 VS      365844           70577           219937                75330
+ 3 GE      524410          111028           326994                86388
+ 4 BE     1063533          203904           624823               234806
+ 5 FR      341537           74535           209478                57524
+ 6 SO      286844           55335           171450                60059
+ 7 NE      178291           36388           106520                35383
+ 8 JU       74548           15217            42651                16680
+ 9 BS      200031           35405           125332                39294
+10 BL      298837           57976           172325                68536
+# ℹ 16 more rows
+# ℹ 14 more variables: male_population &lt;dbl&gt;, female_population &lt;dbl&gt;,
+#   swiss_citizenship &lt;dbl&gt;, foreigner_citizenship &lt;dbl&gt;, single_status &lt;dbl&gt;,
+#   married_status &lt;dbl&gt;, widowed_status &lt;dbl&gt;, divorced_status &lt;dbl&gt;,
+#   unmarried_status &lt;dbl&gt;, in_a_registered_partnership_status &lt;dbl&gt;,
+#   partnership_dissolved &lt;dbl&gt;, urban_commune &lt;dbl&gt;,
+#   intermediate_commune &lt;dbl&gt;, rural_commune &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="merging-transaction-and-demographic-data" class="level3">
+<h3 class="anchored" data-anchor-id="merging-transaction-and-demographic-data">3.7. Merging Transaction and Demographic Data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge on canton code</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>merged_data <span class="ot">&lt;-</span> <span class="fu">left_join</span>(canton_data_final, cleaned_population, <span class="at">by =</span> <span class="st">"canton"</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># View merged dataset</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(merged_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 26 × 24
+   canton total_sales num_transactions avg_order_value top_brand top_category 
+   &lt;chr&gt;        &lt;dbl&gt;            &lt;int&gt;           &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;        
+ 1 ZH        6527271.            38785            168. Apple     kopfhoerer-48
+ 2 BE        2944611.            18198            162. Apple     kopfhoerer-48
+ 3 AG        2238346.            13593            165. Apple     smartphone-24
+ 4 VD        1989040.            12568            158. Apple     kopfhoerer-48
+ 5 SG        1507276.             8819            171. Apple     smartphone-24
+ 6 LU        1192010.             7415            161. Samsung   smartphone-24
+ 7 GE        1185472.             6804            174. Samsung   kopfhoerer-48
+ 8 TG         920509.             5299            174. Apple     smartphone-24
+ 9 BL         815194.             5021            162. Apple     smartphone-24
+10 SO         756160.             4645            163. Apple     smartphone-24
+# ℹ 16 more rows
+# ℹ 18 more variables: total &lt;dbl&gt;, `age_from_0-19` &lt;dbl&gt;,
+#   `age_from_20-64` &lt;dbl&gt;, age_from_65_and_over &lt;dbl&gt;, male_population &lt;dbl&gt;,
+#   female_population &lt;dbl&gt;, swiss_citizenship &lt;dbl&gt;,
+#   foreigner_citizenship &lt;dbl&gt;, single_status &lt;dbl&gt;, married_status &lt;dbl&gt;,
+#   widowed_status &lt;dbl&gt;, divorced_status &lt;dbl&gt;, unmarried_status &lt;dbl&gt;,
+#   in_a_registered_partnership_status &lt;dbl&gt;, partnership_dissolved &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="computing-and-adding-derived-indicators" class="level2">
+<h2 class="anchored" data-anchor-id="computing-and-adding-derived-indicators">4. Computing and Adding Derived Indicators</h2>
+<p>To enable meaningful comparisons across cantons we add derived indicators. These indicators normalize raw counts into ratios and per-capita metrics, making them suitable for correlation analysis, segmentation, and strategic targeting.</p>
+<p>The metrics are the following:</p>
+<ol type="1">
+<li>Gender ratios</li>
+<li>Citizenship ratios</li>
+<li>Age structure</li>
+<li>Urbanization</li>
+<li>Marital status</li>
+</ol>
+<section id="implementation-in-r" class="level3">
+<h3 class="anchored" data-anchor-id="implementation-in-r">4.1 Implementation in R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a> computed_merged_data <span class="ot">&lt;-</span> merged_data <span class="sc">%&gt;%</span> <span class="fu">mutate</span>( </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Economic indicators</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sales_per_capita =</span> total_sales <span class="sc">/</span> total,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">transactions_per_capita =</span> num_transactions <span class="sc">/</span> total,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Gender ratios</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_male =</span> male_population <span class="sc">/</span> total,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_female =</span> female_population <span class="sc">/</span> total,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Citizenship ratios</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_swiss =</span> swiss_citizenship <span class="sc">/</span> total,</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_foreign =</span> foreigner_citizenship <span class="sc">/</span> total,</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Age structure</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_age_0_19 =</span> <span class="st">`</span><span class="at">age_from_0-19</span><span class="st">`</span> <span class="sc">/</span> total,</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_age_20_64 =</span> <span class="st">`</span><span class="at">age_from_20-64</span><span class="st">`</span> <span class="sc">/</span> total,</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_age_65_plus =</span> age_from_65_and_over <span class="sc">/</span> total,</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Urbanization</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_urban =</span> urban_commune <span class="sc">/</span> total,</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_intermediate =</span> intermediate_commune <span class="sc">/</span> total,</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_rural =</span> rural_commune <span class="sc">/</span> total,</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Marital status</span></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_single =</span> single_status <span class="sc">/</span> total,</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_married =</span> married_status <span class="sc">/</span> total,</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_widowed =</span> widowed_status <span class="sc">/</span> total,</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_divorced =</span> divorced_status <span class="sc">/</span> total</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Display final merged data with computed values (note: removal of orignal values.)</span></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(computed_merged_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 26 × 40
+   canton total_sales num_transactions avg_order_value top_brand top_category 
+   &lt;chr&gt;        &lt;dbl&gt;            &lt;int&gt;           &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;        
+ 1 ZH        6527271.            38785            168. Apple     kopfhoerer-48
+ 2 BE        2944611.            18198            162. Apple     kopfhoerer-48
+ 3 AG        2238346.            13593            165. Apple     smartphone-24
+ 4 VD        1989040.            12568            158. Apple     kopfhoerer-48
+ 5 SG        1507276.             8819            171. Apple     smartphone-24
+ 6 LU        1192010.             7415            161. Samsung   smartphone-24
+ 7 GE        1185472.             6804            174. Samsung   kopfhoerer-48
+ 8 TG         920509.             5299            174. Apple     smartphone-24
+ 9 BL         815194.             5021            162. Apple     smartphone-24
+10 SO         756160.             4645            163. Apple     smartphone-24
+# ℹ 16 more rows
+# ℹ 34 more variables: total &lt;dbl&gt;, `age_from_0-19` &lt;dbl&gt;,
+#   `age_from_20-64` &lt;dbl&gt;, age_from_65_and_over &lt;dbl&gt;, male_population &lt;dbl&gt;,
+#   female_population &lt;dbl&gt;, swiss_citizenship &lt;dbl&gt;,
+#   foreigner_citizenship &lt;dbl&gt;, single_status &lt;dbl&gt;, married_status &lt;dbl&gt;,
+#   widowed_status &lt;dbl&gt;, divorced_status &lt;dbl&gt;, unmarried_status &lt;dbl&gt;,
+#   in_a_registered_partnership_status &lt;dbl&gt;, partnership_dissolved &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="analysis" class="level2">
+<h2 class="anchored" data-anchor-id="analysis">5. Analysis</h2>
 <!-- -->
 
 </section>
@@ -696,287 +710,293 @@ Despite nationwide reach, customer behavior likely differs across cantons due to
 </main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
-  const toggleBodyColorMode = (bsSheetEl) => {
-    const mode = bsSheetEl.getAttribute("data-mode");
-    const bodyEl = window.document.querySelector("body");
-    if (mode === "dark") {
-      bodyEl.classList.add("quarto-dark");
-      bodyEl.classList.remove("quarto-light");
-    } else {
-      bodyEl.classList.add("quarto-light");
-      bodyEl.classList.remove("quarto-dark");
-    }
-  }
-  const toggleBodyColorPrimary = () => {
-    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
-    if (bsSheetEl) {
-      toggleBodyColorMode(bsSheetEl);
-    }
-  }
-  toggleBodyColorPrimary();  
-  const icon = "";
-  const anchorJS = new window.AnchorJS();
-  anchorJS.options = {
-    placement: 'right',
-    icon: icon
-  };
-  anchorJS.add('.anchored');
-  const isCodeAnnotation = (el) => {
-    for (const clz of el.classList) {
-      if (clz.startsWith('code-annotation-')) {                     
-        return true;
-      }
-    }
-    return false;
-  }
-  const onCopySuccess = function(e) {
-    // button target
-    const button = e.trigger;
-    // don't keep focus
-    button.blur();
-    // flash "checked"
-    button.classList.add('code-copy-button-checked');
-    var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Copied!");
-    let tooltip;
-    if (window.bootstrap) {
-      button.setAttribute("data-bs-toggle", "tooltip");
-      button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Copied!");
-      tooltip = new bootstrap.Tooltip(button, 
-        { trigger: "manual", 
-          customClass: "code-copy-button-tooltip",
-          offset: [0, -8]});
-      tooltip.show();    
-    }
-    setTimeout(function() {
-      if (tooltip) {
-        tooltip.hide();
-        button.removeAttribute("data-bs-title");
-        button.removeAttribute("data-bs-toggle");
-        button.removeAttribute("data-bs-placement");
-      }
-      button.setAttribute("title", currentTitle);
-      button.classList.remove('code-copy-button-checked');
-    }, 1000);
-    // clear code selection
-    e.clearSelection();
-  }
-  const getTextToCopy = function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-    text: getTextToCopy
-  });
-  clipboard.on('success', onCopySuccess);
-  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-      text: getTextToCopy,
-      container: window.document.getElementById('quarto-embedded-source-code-modal')
-    });
-    clipboardModal.on('success', onCopySuccess);
-  }
-  const viewSource = window.document.getElementById('quarto-view-source') ||
-                     window.document.getElementById('quarto-code-tools-source');
-  if (viewSource) {
-    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
-    viewSource.addEventListener("click", function(e) {
-      if (sourceUrl) {
-        // rstudio viewer pane
-        if (/\bcapabilities=\b/.test(window.location)) {
-          window.open(sourceUrl);
-        } else {
-          window.location.href = sourceUrl;
-        }
-      } else {
-        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
-        modal.show();
-      }
-      return false;
-    });
-  }
-  function toggleCodeHandler(show) {
-    return function(e) {
-      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
-      for (let i=0; i<detailsSrc.length; i++) {
-        const details = detailsSrc[i].parentElement;
-        if (show) {
-          details.open = true;
-        } else {
-          details.removeAttribute("open");
-        }
-      }
-      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
-      const fromCls = show ? "hidden" : "unhidden";
-      const toCls = show ? "unhidden" : "hidden";
-      for (let i=0; i<cellCodeDivs.length; i++) {
-        const codeDiv = cellCodeDivs[i];
-        if (codeDiv.classList.contains(fromCls)) {
-          codeDiv.classList.remove(fromCls);
-          codeDiv.classList.add(toCls);
-        } 
-      }
-      return false;
-    }
-  }
-  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
-  if (hideAllCode) {
-    hideAllCode.addEventListener("click", toggleCodeHandler(false));
-  }
-  const showAllCode = window.document.getElementById("quarto-show-all-code");
-  if (showAllCode) {
-    showAllCode.addEventListener("click", toggleCodeHandler(true));
-  }
-    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
-    var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp('/' + window.location.host + '/');
-    var isInternal = (href) => {
-        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
-    }
-    // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
-    for (var i=0; i<links.length; i++) {
-      const link = links[i];
-      if (!isInternal(link.href)) {
-        // undo the damage that might have been done by quarto-nav.js in the case of
-        // links that we want to consider external
-        if (link.dataset.originalHref !== undefined) {
-          link.href = link.dataset.originalHref;
-        }
-      }
-    }
-  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
-    const config = {
-      allowHTML: true,
-      maxWidth: 500,
-      delay: 100,
-      arrow: false,
-      appendTo: function(el) {
-          return el.parentElement;
-      },
-      interactive: true,
-      interactiveBorder: 10,
-      theme: 'quarto',
-      placement: 'bottom-start',
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
     };
-    if (contentFn) {
-      config.content = contentFn;
-    }
-    if (onTriggerFn) {
-      config.onTrigger = onTriggerFn;
-    }
-    if (onUntriggerFn) {
-      config.onUntrigger = onUntriggerFn;
-    }
-    window.tippy(el, config); 
-  }
-  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
-  for (var i=0; i<noterefs.length; i++) {
-    const ref = noterefs[i];
-    tippyHover(ref, function() {
-      // use id or data attribute instead here
-      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
-      try { href = new URL(href).hash; } catch {}
-      const id = href.replace(/^#\/?/, "");
-      const note = window.document.getElementById(id);
-      if (note) {
-        return note.innerHTML;
-      } else {
-        return "";
-      }
-    });
-  }
-  const xrefs = window.document.querySelectorAll('a.quarto-xref');
-  const processXRef = (id, note) => {
-    // Strip column container classes
-    const stripColumnClz = (el) => {
-      el.classList.remove("page-full", "page-columns");
-      if (el.children) {
-        for (const child of el.children) {
-          stripColumnClz(child);
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
         }
       }
+      return false;
     }
-    stripColumnClz(note)
-    if (id === null || id.startsWith('sec-')) {
-      // Special case sections, only their first couple elements
-      const container = document.createElement("div");
-      if (note.children && note.children.length > 2) {
-        container.appendChild(note.children[0].cloneNode(true));
-        for (let i = 1; i < note.children.length; i++) {
-          const child = note.children[i];
-          if (child.tagName === "P" && child.innerText === "") {
-            continue;
-          } else {
-            container.appendChild(child.cloneNode(true));
-            break;
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
           }
         }
-        if (window.Quarto?.typesetMath) {
-          window.Quarto.typesetMath(container);
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
         }
-        return container.innerHTML
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
       } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
         if (window.Quarto?.typesetMath) {
           window.Quarto.typesetMath(note);
         }
-        return note.innerHTML;
-      }
-    } else {
-      // Remove any anchor links if they are present
-      const anchorLink = note.querySelector('a.anchorjs-link');
-      if (anchorLink) {
-        anchorLink.remove();
-      }
-      if (window.Quarto?.typesetMath) {
-        window.Quarto.typesetMath(note);
-      }
-      if (note.classList.contains("callout")) {
-        return note.outerHTML;
-      } else {
-        return note.innerHTML;
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
       }
     }
-  }
-  for (var i=0; i<xrefs.length; i++) {
-    const xref = xrefs[i];
-    tippyHover(xref, undefined, function(instance) {
-      instance.disable();
-      let url = xref.getAttribute('href');
-      let hash = undefined; 
-      if (url.startsWith('#')) {
-        hash = url;
-      } else {
-        try { hash = new URL(url).hash; } catch {}
-      }
-      if (hash) {
-        const id = hash.replace(/^#\/?/, "");
-        const note = window.document.getElementById(id);
-        if (note !== null) {
-          try {
-            const html = processXRef(id, note.cloneNode(true));
-            instance.setContent(html);
-          } finally {
-            instance.enable();
-            instance.show();
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
           }
         } else {
-          // See if we can fetch this
-          fetch(url.split('#')[0])
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
           .then(res => res.text())
           .then(html => {
             const parser = new DOMParser();
             const htmlDoc = parser.parseFromString(html, "text/html");
-            const note = htmlDoc.getElementById(id);
+            const note = htmlDoc.querySelector('main.content');
             if (note !== null) {
-              const html = processXRef(id, note);
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
               instance.setContent(html);
             } 
           }).finally(() => {
@@ -984,285 +1004,561 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             instance.show();
           });
         }
-      } else {
-        // See if we can fetch a full url (with no hash to target)
-        // This is a special case and we should probably do some content thinning / targeting
-        fetch(url)
-        .then(res => res.text())
-        .then(html => {
-          const parser = new DOMParser();
-          const htmlDoc = parser.parseFromString(html, "text/html");
-          const note = htmlDoc.querySelector('main.content');
-          if (note !== null) {
-            // This should only happen for chapter cross references
-            // (since there is no id in the URL)
-            // remove the first header
-            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
-              note.children[0].remove();
-            }
-            const html = processXRef(null, note);
-            instance.setContent(html);
-          } 
-        }).finally(() => {
-          instance.enable();
-          instance.show();
-        });
-      }
-    }, function(instance) {
-    });
-  }
-      let selectedAnnoteEl;
-      const selectorForAnnotation = ( cell, annotation) => {
-        let cellAttr = 'data-code-cell="' + cell + '"';
-        let lineAttr = 'data-code-annotation="' +  annotation + '"';
-        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
-        return selector;
-      }
-      const selectCodeLines = (annoteEl) => {
-        const doc = window.document;
-        const targetCell = annoteEl.getAttribute("data-target-cell");
-        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
-        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
-        const lineIds = lines.map((line) => {
-          return targetCell + "-" + line;
-        })
-        let top = null;
-        let height = null;
-        let parent = null;
-        if (lineIds.length > 0) {
-            //compute the position of the single el (top and bottom and make a div)
-            const el = window.document.getElementById(lineIds[0]);
-            top = el.offsetTop;
-            height = el.offsetHeight;
-            parent = el.parentElement.parentElement;
-          if (lineIds.length > 1) {
-            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-            height = bottom - top;
-          }
-          if (top !== null && height !== null && parent !== null) {
-            // cook up a div (if necessary) and position it 
-            let div = window.document.getElementById("code-annotation-line-highlight");
-            if (div === null) {
-              div = window.document.createElement("div");
-              div.setAttribute("id", "code-annotation-line-highlight");
-              div.style.position = 'absolute';
-              parent.appendChild(div);
-            }
-            div.style.top = top - 2 + "px";
-            div.style.height = height + 4 + "px";
-            div.style.left = 0;
-            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-            if (gutterDiv === null) {
-              gutterDiv = window.document.createElement("div");
-              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-              gutterDiv.style.position = 'absolute';
-              const codeCell = window.document.getElementById(targetCell);
-              const gutter = codeCell.querySelector('.code-annotation-gutter');
-              gutter.appendChild(gutterDiv);
-            }
-            gutterDiv.style.top = top - 2 + "px";
-            gutterDiv.style.height = height + 4 + "px";
-          }
-          selectedAnnoteEl = annoteEl;
-        }
-      };
-      const unselectCodeLines = () => {
-        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
-        elementsIds.forEach((elId) => {
-          const div = window.document.getElementById(elId);
-          if (div) {
-            div.remove();
-          }
-        });
-        selectedAnnoteEl = undefined;
-      };
-        // Handle positioning of the toggle
-    window.addEventListener(
-      "resize",
-      throttle(() => {
-        elRect = undefined;
-        if (selectedAnnoteEl) {
-          selectCodeLines(selectedAnnoteEl);
-        }
-      }, 10)
-    );
-    function throttle(fn, ms) {
-    let throttle = false;
-    let timer;
-      return (...args) => {
-        if(!throttle) { // first call gets through
-            fn.apply(this, args);
-            throttle = true;
-        } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
-            timer = setTimeout(() => {
-              fn.apply(this, args);
-              timer = throttle = false;
-            }, ms);
-        }
-      };
-    }
-      // Attach click handler to the DT
-      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
-      for (const annoteDlNode of annoteDls) {
-        annoteDlNode.addEventListener('click', (event) => {
-          const clickedEl = event.target;
-          if (clickedEl !== selectedAnnoteEl) {
-            unselectCodeLines();
-            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
-            if (activeEl) {
-              activeEl.classList.remove('code-annotation-active');
-            }
-            selectCodeLines(clickedEl);
-            clickedEl.classList.add('code-annotation-active');
-          } else {
-            // Unselect the line
-            unselectCodeLines();
-            clickedEl.classList.remove('code-annotation-active');
-          }
-        });
-      }
-  const findCites = (el) => {
-    const parentEl = el.parentElement;
-    if (parentEl) {
-      const cites = parentEl.dataset.cites;
-      if (cites) {
-        return {
-          el,
-          cites: cites.split(' ')
-        };
-      } else {
-        return findCites(el.parentElement)
-      }
-    } else {
-      return undefined;
-    }
-  };
-  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
-  for (var i=0; i<bibliorefs.length; i++) {
-    const ref = bibliorefs[i];
-    const citeInfo = findCites(ref);
-    if (citeInfo) {
-      tippyHover(citeInfo.el, function() {
-        var popup = window.document.createElement('div');
-        citeInfo.cites.forEach(function(cite) {
-          var citeDiv = window.document.createElement('div');
-          citeDiv.classList.add('hanging-indent');
-          citeDiv.classList.add('csl-entry');
-          var biblioDiv = window.document.getElementById('ref-' + cite);
-          if (biblioDiv) {
-            citeDiv.innerHTML = biblioDiv.innerHTML;
-          }
-          popup.appendChild(citeDiv);
-        });
-        return popup.innerHTML;
+      }, function(instance) {
       });
     }
-  }
-});
-</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Digitec Analysis"</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: kable</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> visual</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> Fereshteh, Anna, Sen, Collin (please write your whole name)</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1. Business Plan analysis:</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>Digitec Galaxus is Switzerland’s largest online retailer for consumer electronics, operating exclusively via e-commerce.\</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>Despite nationwide reach, customer behavior likely differs across cantons due to income, urbanization, age, citizenship, and household structures.</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>This project explores how these demographic and regional factors influence online purchases using: - \~163’000 Digitec transaction records, and\</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Canton-level demographic data from the Swiss Federal Statistical Office (BFS).</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>The findings will guide a data-driven marketing strategy to personalize digital campaigns and increase online sales efficiency.</span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.1. Business Problem</span></span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **How can regional demographics be used to improve Digitec’s online marketing strategy and boost conversions across Switzerland?**</span></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>Digitec currently uses uniform national marketing, but demographic diversity suggests that: - Urban cantons might favor high-end tech, - Rural areas could prefer affordable products, - Younger, single populations may show distinct category interests.</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>By linking demographic patterns with online purchasing data, Digitec can **target audiences more intelligently** and tailor its digital campaigns for maximum impact.</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.2. Data Overview</span></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>| Source | Description | Key Variables |</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>|:-----------------|:-------------------------|:---------------------------|</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>| **Digitec Transactions (`DigitecLive_Final.csv`)** | \~163k web-scraped online transactions | <span class="in">`brandName`</span>, <span class="in">`infos.Category`</span>, <span class="in">`salesPrice.amountIncl`</span>, <span class="in">`dateTime`</span>, <span class="in">`mun_canton`</span> |</span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>| **BFS Population Data (`population_2023.xlsx`)** | Canton-level demographics (2023) | <span class="in">`Total`</span>, <span class="in">`Male`</span>, <span class="in">`Female`</span>, <span class="in">`Swiss`</span>, <span class="in">`Foreigner`</span>, <span class="in">`Urban`</span>, <span class="in">`Intermediate`</span>, <span class="in">`Rural`</span>, <span class="in">`Age_0_19`</span>, <span class="in">`Age_20_64`</span>, <span class="in">`Age_65plus`</span>, <span class="in">`Single`</span>, <span class="in">`Married`</span>, <span class="in">`Widowed`</span>, <span class="in">`Divorced`</span> |</span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.3. Unit of Analysis</span></span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>The analysis is performed at the canton level ($n = 26$), allowing integration of both datasets and ensuring consistent comparisons.</span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>Each canton will serve as one observation with the following computed indicators: - $sales<span class="sc">\_</span>per<span class="sc">\_</span>capita = \frac{total<span class="sc">\_</span>sales}{population}$ - Average order value (CHF) - Shares of gender, citizenship, age, urbanization, and marital status</span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>This approach balances detail with interpretability and enables clear visual communication.</span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.4. Methodology</span></span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="fu">#### 1.4.1. Analytical Steps</span></span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Aggregate** Digitec transactions by canton (<span class="in">`mun_canton`</span>).\</span>
-<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Merge** with BFS data using canton names as keys.\</span>
-<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Compute** derived indicators:</span>
-<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Demographic ratios: gender, foreign population, age, urbanization, marital status</span>
-<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Economic indicators: total sales, sales per capita, average order value\</span>
-<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**Analyze** correlations and visualize relationships using scatterplots, heatmaps, and choropleths.\</span>
-<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>**Identify** four key findings that can inform marketing decisions.</span>
-<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="fu">#### 1.4.2. Research Questions</span></span>
-<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a>| Demographic Dimension | Research Question | Usage Example (What Digitec Could Do) |</span>
-<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a>|:-----------------------|:-----------------------|:-----------------------|</span>
-<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a>| **Population Size** | Do larger cantons generate proportionally more online sales? | Allocate higher Google Ads and social-media budgets to densely populated cantons to maximize reach. |</span>
-<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a>| **Gender Composition** | Does male/female ratio affect product mix (e.g., gaming vs. home appliances)? | Adapt homepage banners or email content to match regional gender patterns in purchases. |</span>
-<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a>| **Citizenship** | Are foreign residents associated with higher online spending? | Run multilingual (DE/FR/EN) ads and feature global brands (Apple, Samsung) in foreigner-dense cantons. |</span>
-<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a>| **Urbanization** | Do urban cantons buy more premium electronics than rural ones? | Promote high-end products in cities; highlight budget or refurbished offers in rural regions. |</span>
-<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a>| **Age Structure** | Which age profile correlates with online activity? | Target younger regions with gaming and mobile ads; older regions with home-office and wellness tech. |</span>
-<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a>| **Marital Status** | Do single vs. married populations differ in purchase categories? | Offer “family bundles” or smart-home packages for married cantons; focus on personal devices for single-dominant areas. |</span>
-<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1.5. Strategic Impact</span></span>
-<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a>By merging **online sales data** with **BFS demographic indicators**, Digitec can: - Move from national-level campaigns to **regionally adaptive marketing**.\</span>
-<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Align ad language, pricing, and products with **local audience characteristics**.\</span>
-<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Strengthen relevance and **optimize ad spend efficiency**.</span>
-<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a>------------------------------------------------------------------------</span>
-<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2.Loading data..</span></span>
-<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
-<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="co"># data&lt;-read.csv("DigitecLive_Final.csv")</span></span>
-<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="co"># save(data, file = "digitec.RData", compress = "xz")</span></span>
-<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"digitec.RData"</span>)</span>
-<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a>population<span class="ot">&lt;-</span><span class="fu">read_excel</span>(<span class="st">"population_2023.xlsx"</span>)</span>
-<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(data)</span>
-<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(population)</span>
-<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb18" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Digitec Analysis"</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: kable</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> visual</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> Fereshteh, Anna, Sen, Colin Marti (pls add your full name)</span></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1. Business Plan Analysis</span></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>Digitec Galaxus is Switzerland’s largest online retailer for consumer electronics, operating exclusively via e-commerce. Despite nationwide reach, customer behavior likely differs across cantons due to income, urbanization, age, citizenship, and household structures.</span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>This project explores how these demographic and regional factors influence online purchases using: - \~163,000 Digitec transaction records, and - Canton-level demographic data from the Swiss Federal Statistical Office (BFS).</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>The findings will guide a data-driven marketing strategy to personalize digital campaigns and increase online sales efficiency.</span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.1. Business Problem</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; **How can regional demographics be used to improve Digitec’s online marketing strategy and boost conversions across Switzerland?**</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>Digitec currently uses uniform national marketing, but demographic diversity suggests that: - Urban cantons might favor high-end tech, - Rural areas could prefer affordable products, - Younger, single populations may show distinct category interests.</span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>By linking demographic patterns with online purchasing data, Digitec can **target audiences more intelligently** and tailor its digital campaigns for maximum impact.</span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.2. Data Overview</span></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Source <span class="pp">|</span> Description <span class="pp">|</span> Key Variables <span class="pp">|</span></span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a><span class="pp">|:---------------------|:-----------------|:-------------------------------|</span></span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Digitec Transactions (`DigitecLive_Final.csv`)** <span class="pp">|</span> \~163k web-scraped online transactions <span class="pp">|</span> <span class="in">`brandName`</span>, <span class="in">`infos.Category`</span>, <span class="in">`salesPrice.amountIncl`</span>, <span class="in">`dateTime`</span>, <span class="in">`mun_canton`</span> <span class="pp">|</span></span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **BFS Population Data (`population_2023.xlsx`)** <span class="pp">|</span> Canton-level demographics (2023) <span class="pp">|</span> <span class="in">`Total`</span>, <span class="in">`Male`</span>, <span class="in">`Female`</span>, <span class="in">`Swiss`</span>, <span class="in">`Foreigner`</span>, <span class="in">`Urban`</span>, <span class="in">`Intermediate`</span>, <span class="in">`Rural`</span>, <span class="in">`Age_0_19`</span>, <span class="in">`Age_20_64`</span>, <span class="in">`Age_65plus`</span>, <span class="in">`Single`</span>, <span class="in">`Married`</span>, <span class="in">`Widowed`</span>, <span class="in">`Divorced`</span> <span class="pp">|</span></span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.3. Unit of Analysis</span></span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>The analysis is performed at the canton level ($n = 26$), allowing integration of both datasets and ensuring consistent comparisons.</span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>Each canton will serve as one observation with the following computed indicators: - $sales<span class="sc">\_</span>per<span class="sc">\_</span>capita = \frac{total<span class="sc">\_</span>sales}{population}$ - Average order value (CHF) - Shares of gender, citizenship, age, urbanization, and marital status</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a>This approach balances detail with interpretability and enables clear visual communication.</span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1.4. Methodology</span></span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a><span class="fu">#### 1.4.1. Analytical Steps</span></span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>**Aggregate** Digitec transactions by canton (<span class="in">`mun_canton`</span>).\</span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>**Merge** with BFS data using canton names as keys.\</span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>**Compute** derived indicators:</span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Demographic ratios: gender, foreign population, age, urbanization, marital status</span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>Economic indicators: total sales, sales per capita, average order value\</span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>**Analyze** correlations and visualize relationships using scatterplots, heatmaps, and choropleths.\</span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>**Identify** four key findings that can inform marketing decisions.</span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a><span class="fu">#### 1.4.2. Research Questions</span></span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Demographic Dimension <span class="pp">|</span> Research Question <span class="pp">|</span> Usage Example (What Digitec Could Do) <span class="pp">|</span></span>
+<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a><span class="pp">|:-----------------------|:-----------------------|:-----------------------|</span></span>
+<span id="cb18-60"><a href="#cb18-60" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Population Size** <span class="pp">|</span> Do larger cantons generate proportionally more online sales? <span class="pp">|</span> Allocate higher Google Ads and social-media budgets to densely populated cantons to maximize reach. <span class="pp">|</span></span>
+<span id="cb18-61"><a href="#cb18-61" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Gender Composition** <span class="pp">|</span> Does male/female ratio affect product mix (e.g., gaming vs. home appliances)? <span class="pp">|</span> Adapt homepage banners or email content to match regional gender patterns in purchases. <span class="pp">|</span></span>
+<span id="cb18-62"><a href="#cb18-62" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Citizenship** <span class="pp">|</span> Are foreign residents associated with higher online spending? <span class="pp">|</span> Run multilingual (DE/FR/EN) ads and feature global brands (Apple, Samsung) in foreigner-dense cantons. <span class="pp">|</span></span>
+<span id="cb18-63"><a href="#cb18-63" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Urbanization** <span class="pp">|</span> Do urban cantons buy more premium electronics than rural ones? -<span class="sc">\&gt;</span> How do we define premium, expensive things are not always premium for example.<span class="sc">\*</span> (Sen) <span class="pp">|</span> Promote high-end products in cities; highlight budget or refurbished offers in rural regions. <span class="pp">|</span></span>
+<span id="cb18-64"><a href="#cb18-64" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Age Structure** <span class="pp">|</span> Which age profile correlates with online activity? -<span class="sc">\&gt;</span> maybe change to something like: How do different age groups' online purchasing differ? let's find a nice way to phrase this questions (Sen)<span class="sc">\*</span> <span class="pp">|</span> Target younger regions with gaming and mobile ads; older regions with home-office and wellness tech. <span class="pp">|</span></span>
+<span id="cb18-65"><a href="#cb18-65" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> **Marital Status** <span class="pp">|</span> Do single vs. married populations differ in purchase categories? <span class="pp">|</span> Offer “family bundles” or smart-home packages for married cantons; focus on personal devices for single-dominant areas. <span class="pp">|</span></span>
+<span id="cb18-66"><a href="#cb18-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-67"><a href="#cb18-67" aria-hidden="true" tabindex="-1"></a><span class="fu">## 1.5. Strategic Impact</span></span>
+<span id="cb18-68"><a href="#cb18-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-69"><a href="#cb18-69" aria-hidden="true" tabindex="-1"></a>By merging **online sales data** with **BFS demographic indicators**, Digitec can: - Move from national-level campaigns to **regionally adaptive marketing**.\</span>
+<span id="cb18-70"><a href="#cb18-70" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Align ad language, pricing, and products with **local audience characteristics**.\</span>
+<span id="cb18-71"><a href="#cb18-71" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Strengthen relevance and **optimize ad spend efficiency**.</span>
+<span id="cb18-72"><a href="#cb18-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-73"><a href="#cb18-73" aria-hidden="true" tabindex="-1"></a><span class="fu">## 2. Setup and Data Loading</span></span>
+<span id="cb18-74"><a href="#cb18-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-75"><a href="#cb18-75" aria-hidden="true" tabindex="-1"></a>This first code chunk sets up the R environment by loading all necessary libraries for the analysis and loading the two primary datasets. The chunk is configured with <span class="in">`include: false`</span> to hide it from the final rendered report for a cleaner presentation.</span>
+<span id="cb18-76"><a href="#cb18-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-77"><a href="#cb18-77" aria-hidden="true" tabindex="-1"></a><span class="in">```{r setup}</span></span>
+<span id="cb18-78"><a href="#cb18-78" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb18-79"><a href="#cb18-79" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false </span></span>
+<span id="cb18-80"><a href="#cb18-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-81"><a href="#cb18-81" aria-hidden="true" tabindex="-1"></a><span class="co"># Load all required libraries for the project</span></span>
+<span id="cb18-82"><a href="#cb18-82" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># For data manipulation (dplyr) and visualization (ggplot2)</span></span>
+<span id="cb18-83"><a href="#cb18-83" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)    <span class="co"># To read Excel files</span></span>
+<span id="cb18-84"><a href="#cb18-84" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate) <span class="co"># To work with date-time values</span></span>
+<span id="cb18-85"><a href="#cb18-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-86"><a href="#cb18-86" aria-hidden="true" tabindex="-1"></a><span class="co"># Load the datasets</span></span>
+<span id="cb18-87"><a href="#cb18-87" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="st">"digitec.RData"</span>) <span class="co"># Loads the 'data' object</span></span>
+<span id="cb18-88"><a href="#cb18-88" aria-hidden="true" tabindex="-1"></a>population <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"population_2023.xlsx"</span>)</span>
+<span id="cb18-89"><a href="#cb18-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-90"><a href="#cb18-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-91"><a href="#cb18-91" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb18-92"><a href="#cb18-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-93"><a href="#cb18-93" aria-hidden="true" tabindex="-1"></a><span class="fu">## 3. Data Cleaning and Preprocessing</span></span>
+<span id="cb18-94"><a href="#cb18-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-95"><a href="#cb18-95" aria-hidden="true" tabindex="-1"></a>This section details the systematic process of cleaning and preparing the raw transaction data. The goal is to produce a reliable, aggregated dataset at the cantonal level, which will serve as the foundation for the subsequent merge with the BFS demographic data.</span>
+<span id="cb18-96"><a href="#cb18-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-97"><a href="#cb18-97" aria-hidden="true" tabindex="-1"></a><span class="fu">### 3.1. Cleaning Strategy</span></span>
+<span id="cb18-98"><a href="#cb18-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-99"><a href="#cb18-99" aria-hidden="true" tabindex="-1"></a>An initial inspection of the raw data revealed several necessary cleaning steps:</span>
+<span id="cb18-100"><a href="#cb18-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-101"><a href="#cb18-101" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Correcting Data Types:** The <span class="in">`dateTime`</span> column was stored as a character string and needed to be converted into a proper date-time format for time-based analysis.</span>
+<span id="cb18-102"><a href="#cb18-102" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Removing Irrelevant Columns:** Many columns were redundant (e.g., price with and without VAT), contained technical metadata, or were not relevant to the analysis (e.g., image URLs).</span>
+<span id="cb18-103"><a href="#cb18-103" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Ensuring Data Quality:** Transactions without a price or a clear, unique geographic match (<span class="in">`mun_nhits != 1`</span>) were removed to ensure the reliability of the analysis.</span>
+<span id="cb18-104"><a href="#cb18-104" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Feature Engineering:** More useful features were extracted from the raw data, such as the day of the week from the <span class="in">`dateTime`</span> column or the clean product category name from a URL string.</span>
+<span id="cb18-105"><a href="#cb18-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-106"><a href="#cb18-106" aria-hidden="true" tabindex="-1"></a><span class="fu">### 3.2. Implementation of Cleaning Pipeline</span></span>
+<span id="cb18-107"><a href="#cb18-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-108"><a href="#cb18-108" aria-hidden="true" tabindex="-1"></a>The following steps were implemented in a single, coherent <span class="in">`dplyr`</span> pipeline for efficiency and reproducibility. The result is a cleaned DataFrame named <span class="in">`data_clean`</span>.</span>
+<span id="cb18-109"><a href="#cb18-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-110"><a href="#cb18-110" aria-hidden="true" tabindex="-1"></a><span class="in">```{r data-cleaning-pipeline}</span></span>
+<span id="cb18-111"><a href="#cb18-111" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: data-cleaning-pipeline</span></span>
+<span id="cb18-112"><a href="#cb18-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-113"><a href="#cb18-113" aria-hidden="true" tabindex="-1"></a><span class="co"># Comprehensive cleaning and transformation of the raw data</span></span>
+<span id="cb18-114"><a href="#cb18-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-115"><a href="#cb18-115" aria-hidden="true" tabindex="-1"></a>data_clean <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span></span>
+<span id="cb18-116"><a href="#cb18-116" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-117"><a href="#cb18-117" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Select and rename relevant columns for better readability</span></span>
+<span id="cb18-118"><a href="#cb18-118" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb18-119"><a href="#cb18-119" aria-hidden="true" tabindex="-1"></a>    <span class="at">price =</span> salesPrice.amountIncl,</span>
+<span id="cb18-120"><a href="#cb18-120" aria-hidden="true" tabindex="-1"></a>    <span class="at">category_url =</span> infos.Category,</span>
+<span id="cb18-121"><a href="#cb18-121" aria-hidden="true" tabindex="-1"></a>    <span class="at">sales_rank_raw =</span> infos.Sales_Rank,</span>
+<span id="cb18-122"><a href="#cb18-122" aria-hidden="true" tabindex="-1"></a>    <span class="at">canton =</span> mun_canton</span>
+<span id="cb18-123"><a href="#cb18-123" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-124"><a href="#cb18-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb18-125"><a href="#cb18-125" aria-hidden="true" tabindex="-1"></a>    price, dateTime, brandName, category_url, sales_rank_raw, canton, mun_nhits</span>
+<span id="cb18-126"><a href="#cb18-126" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-127"><a href="#cb18-127" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-128"><a href="#cb18-128" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filter rows to ensure data quality</span></span>
+<span id="cb18-129"><a href="#cb18-129" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb18-130"><a href="#cb18-130" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(price),           <span class="co"># Keep only transactions with a price</span></span>
+<span id="cb18-131"><a href="#cb18-131" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(canton),          <span class="co"># Keep only transactions with canton information</span></span>
+<span id="cb18-132"><a href="#cb18-132" aria-hidden="true" tabindex="-1"></a>    mun_nhits <span class="sc">==</span> <span class="dv">1</span>           <span class="co"># Keep only unique geographic matches</span></span>
+<span id="cb18-133"><a href="#cb18-133" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-134"><a href="#cb18-134" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-135"><a href="#cb18-135" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create new, useful columns (Feature Engineering)</span></span>
+<span id="cb18-136"><a href="#cb18-136" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb18-137"><a href="#cb18-137" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Convert timestamp to a proper date-time format</span></span>
+<span id="cb18-138"><a href="#cb18-138" aria-hidden="true" tabindex="-1"></a>    <span class="at">dateTime =</span> <span class="fu">ymd_hms</span>(dateTime),</span>
+<span id="cb18-139"><a href="#cb18-139" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-140"><a href="#cb18-140" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract useful time-based components</span></span>
+<span id="cb18-141"><a href="#cb18-141" aria-hidden="true" tabindex="-1"></a>    <span class="at">hour =</span> <span class="fu">hour</span>(dateTime),</span>
+<span id="cb18-142"><a href="#cb18-142" aria-hidden="true" tabindex="-1"></a>    <span class="at">weekday =</span> <span class="fu">wday</span>(dateTime, <span class="at">label =</span> <span class="cn">TRUE</span>, <span class="at">week_start =</span> <span class="dv">1</span>),</span>
+<span id="cb18-143"><a href="#cb18-143" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-144"><a href="#cb18-144" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Extract the product category from the URL</span></span>
+<span id="cb18-145"><a href="#cb18-145" aria-hidden="true" tabindex="-1"></a>    <span class="at">category =</span> <span class="fu">basename</span>(category_url)</span>
+<span id="cb18-146"><a href="#cb18-146" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-147"><a href="#cb18-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-148"><a href="#cb18-148" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb18-149"><a href="#cb18-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-150"><a href="#cb18-150" aria-hidden="true" tabindex="-1"></a><span class="fu">### 3.3. Exploratory Data Analysis (EDA)</span></span>
+<span id="cb18-151"><a href="#cb18-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-152"><a href="#cb18-152" aria-hidden="true" tabindex="-1"></a>After cleaning the data, an exploratory analysis was performed on the <span class="in">`data_clean`</span> set to understand fundamental patterns before aggregation.</span>
+<span id="cb18-153"><a href="#cb18-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-154"><a href="#cb18-154" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Price Distribution</span></span>
+<span id="cb18-155"><a href="#cb18-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-156"><a href="#cb18-156" aria-hidden="true" tabindex="-1"></a>An analysis of product prices reveals a heavily right-skewed distribution. A large majority of transactions are for lower-priced items, while a long tail of high-value purchases contributes significantly to total revenue. The boxplot identifies these high-priced items as statistical outliers. For a marketing analysis, however, these are valid and highly valuable data points that must be retained.</span>
+<span id="cb18-157"><a href="#cb18-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-158"><a href="#cb18-158" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eda-price-plots}</span></span>
+<span id="cb18-159"><a href="#cb18-159" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: eda-price-plots</span></span>
+<span id="cb18-160"><a href="#cb18-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-161"><a href="#cb18-161" aria-hidden="true" tabindex="-1"></a><span class="co"># Histogram to visualize the price distribution</span></span>
+<span id="cb18-162"><a href="#cb18-162" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data_clean, <span class="fu">aes</span>(<span class="at">x =</span> price)) <span class="sc">+</span></span>
+<span id="cb18-163"><a href="#cb18-163" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">100</span>, <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb18-164"><a href="#cb18-164" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb18-165"><a href="#cb18-165" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Distribution of Product Prices"</span>,</span>
+<span id="cb18-166"><a href="#cb18-166" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Strong right-skewed distribution with most items in the lower price range"</span>,</span>
+<span id="cb18-167"><a href="#cb18-167" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Price (CHF)"</span>,</span>
+<span id="cb18-168"><a href="#cb18-168" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Number of Transactions"</span></span>
+<span id="cb18-169"><a href="#cb18-169" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-170"><a href="#cb18-170" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb18-171"><a href="#cb18-171" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-172"><a href="#cb18-172" aria-hidden="true" tabindex="-1"></a><span class="co"># Boxplot to identify outliers</span></span>
+<span id="cb18-173"><a href="#cb18-173" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(data_clean, <span class="fu">aes</span>(<span class="at">y =</span> price)) <span class="sc">+</span></span>
+<span id="cb18-174"><a href="#cb18-174" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb18-175"><a href="#cb18-175" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb18-176"><a href="#cb18-176" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Boxplot of Product Prices"</span>,</span>
+<span id="cb18-177"><a href="#cb18-177" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Shows a high number of high-priced products (outliers)"</span>,</span>
+<span id="cb18-178"><a href="#cb18-178" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Price (CHF)"</span></span>
+<span id="cb18-179"><a href="#cb18-179" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-180"><a href="#cb18-180" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb18-181"><a href="#cb18-181" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb18-182"><a href="#cb18-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-183"><a href="#cb18-183" aria-hidden="true" tabindex="-1"></a><span class="fu">#### Top Categories and Brands</span></span>
+<span id="cb18-184"><a href="#cb18-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-185"><a href="#cb18-185" aria-hidden="true" tabindex="-1"></a>Analyzing the most frequent categories and brands provides initial insights into customer preferences. Product categories such as headphones, smartphones, and printer toner dominate sales volumes. Among brands, Apple and Samsung are clear leaders, highlighting the importance of these ecosystems to customers.</span>
+<span id="cb18-186"><a href="#cb18-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-187"><a href="#cb18-187" aria-hidden="true" tabindex="-1"></a><span class="in">```{r eda-category-brand-plots}</span></span>
+<span id="cb18-188"><a href="#cb18-188" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: eda-category-brand-plots</span></span>
+<span id="cb18-189"><a href="#cb18-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-190"><a href="#cb18-190" aria-hidden="true" tabindex="-1"></a><span class="co"># Top 15 product categories by transaction count</span></span>
+<span id="cb18-191"><a href="#cb18-191" aria-hidden="true" tabindex="-1"></a>data_clean <span class="sc">%&gt;%</span></span>
+<span id="cb18-192"><a href="#cb18-192" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(category, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-193"><a href="#cb18-193" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">15</span>, n) <span class="sc">%&gt;%</span></span>
+<span id="cb18-194"><a href="#cb18-194" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(category, n), <span class="at">y =</span> n)) <span class="sc">+</span></span>
+<span id="cb18-195"><a href="#cb18-195" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb18-196"><a href="#cb18-196" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb18-197"><a href="#cb18-197" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb18-198"><a href="#cb18-198" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Top 15 Product Categories"</span>,</span>
+<span id="cb18-199"><a href="#cb18-199" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Product Category"</span>,</span>
+<span id="cb18-200"><a href="#cb18-200" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Number of Transactions"</span></span>
+<span id="cb18-201"><a href="#cb18-201" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-202"><a href="#cb18-202" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb18-203"><a href="#cb18-203" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-204"><a href="#cb18-204" aria-hidden="true" tabindex="-1"></a><span class="co"># Top 15 brands by transaction count</span></span>
+<span id="cb18-205"><a href="#cb18-205" aria-hidden="true" tabindex="-1"></a>data_clean <span class="sc">%&gt;%</span></span>
+<span id="cb18-206"><a href="#cb18-206" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(brandName <span class="sc">!=</span> <span class="st">""</span>) <span class="sc">%&gt;%</span> <span class="co"># Exclude blank brand names</span></span>
+<span id="cb18-207"><a href="#cb18-207" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(brandName, <span class="at">sort =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb18-208"><a href="#cb18-208" aria-hidden="true" tabindex="-1"></a>  <span class="fu">top_n</span>(<span class="dv">15</span>, n) <span class="sc">%&gt;%</span></span>
+<span id="cb18-209"><a href="#cb18-209" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">reorder</span>(brandName, n), <span class="at">y =</span> n)) <span class="sc">+</span></span>
+<span id="cb18-210"><a href="#cb18-210" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb18-211"><a href="#cb18-211" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span></span>
+<span id="cb18-212"><a href="#cb18-212" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb18-213"><a href="#cb18-213" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Top 15 Brands"</span>,</span>
+<span id="cb18-214"><a href="#cb18-214" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Brand"</span>,</span>
+<span id="cb18-215"><a href="#cb18-215" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Number of Transactions"</span></span>
+<span id="cb18-216"><a href="#cb18-216" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb18-217"><a href="#cb18-217" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb18-218"><a href="#cb18-218" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb18-219"><a href="#cb18-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-220"><a href="#cb18-220" aria-hidden="true" tabindex="-1"></a><span class="fu">### 3.4. Validation and Final Aggregation</span></span>
+<span id="cb18-221"><a href="#cb18-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-222"><a href="#cb18-222" aria-hidden="true" tabindex="-1"></a>An initial aggregation of the cleaned data surprisingly resulted in 29 groups instead of the 26 expected Swiss cantons. An investigation of the <span class="in">`canton`</span> column revealed that the dataset also contained transactions from neighboring countries, which needed to be excluded for this analysis.</span>
+<span id="cb18-223"><a href="#cb18-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-224"><a href="#cb18-224" aria-hidden="true" tabindex="-1"></a><span class="in">```{r validation-step}</span></span>
+<span id="cb18-225"><a href="#cb18-225" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: validation-step</span></span>
+<span id="cb18-226"><a href="#cb18-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-227"><a href="#cb18-227" aria-hidden="true" tabindex="-1"></a><span class="co"># A list of valid Swiss canton abbreviations</span></span>
+<span id="cb18-228"><a href="#cb18-228" aria-hidden="true" tabindex="-1"></a>valid_swiss_cantons <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb18-229"><a href="#cb18-229" aria-hidden="true" tabindex="-1"></a>  <span class="st">"AG"</span>, <span class="st">"AI"</span>, <span class="st">"AR"</span>, <span class="st">"BE"</span>, <span class="st">"BL"</span>, <span class="st">"BS"</span>, <span class="st">"FR"</span>, <span class="st">"GE"</span>, <span class="st">"GL"</span>, <span class="st">"GR"</span>, </span>
+<span id="cb18-230"><a href="#cb18-230" aria-hidden="true" tabindex="-1"></a>  <span class="st">"JU"</span>, <span class="st">"LU"</span>, <span class="st">"NE"</span>, <span class="st">"NW"</span>, <span class="st">"OW"</span>, <span class="st">"SG"</span>, <span class="st">"SH"</span>, <span class="st">"SO"</span>, <span class="st">"SZ"</span>, <span class="st">"TG"</span>, </span>
+<span id="cb18-231"><a href="#cb18-231" aria-hidden="true" tabindex="-1"></a>  <span class="st">"TI"</span>, <span class="st">"UR"</span>, <span class="st">"VD"</span>, <span class="st">"VS"</span>, <span class="st">"ZG"</span>, <span class="st">"ZH"</span></span>
+<span id="cb18-232"><a href="#cb18-232" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-233"><a href="#cb18-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-234"><a href="#cb18-234" aria-hidden="true" tabindex="-1"></a><span class="co"># Identify which unique codes in our data are NOT in the valid list</span></span>
+<span id="cb18-235"><a href="#cb18-235" aria-hidden="true" tabindex="-1"></a>non_swiss_codes <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="fu">unique</span>(data_clean<span class="sc">$</span>canton), valid_swiss_cantons)</span>
+<span id="cb18-236"><a href="#cb18-236" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-237"><a href="#cb18-237" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="st">"Found the following non-Swiss location codes:"</span>)</span>
+<span id="cb18-238"><a href="#cb18-238" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(non_swiss_codes)</span>
+<span id="cb18-239"><a href="#cb18-239" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb18-240"><a href="#cb18-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-241"><a href="#cb18-241" aria-hidden="true" tabindex="-1"></a>Based on this finding, the dataset was filtered to include only transactions from the 26 Swiss cantons. Afterward, the final aggregation was performed to create the analysis-ready dataset.</span>
+<span id="cb18-242"><a href="#cb18-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-243"><a href="#cb18-243" aria-hidden="true" tabindex="-1"></a><span class="in">```{r final-aggregation}</span></span>
+<span id="cb18-244"><a href="#cb18-244" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: final-aggregation</span></span>
+<span id="cb18-245"><a href="#cb18-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-246"><a href="#cb18-246" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter the dataset to retain only transactions from Swiss cantons</span></span>
+<span id="cb18-247"><a href="#cb18-247" aria-hidden="true" tabindex="-1"></a>data_final_swiss <span class="ot">&lt;-</span> data_clean <span class="sc">%&gt;%</span></span>
+<span id="cb18-248"><a href="#cb18-248" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(canton <span class="sc">%in%</span> valid_swiss_cantons)</span>
+<span id="cb18-249"><a href="#cb18-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-250"><a href="#cb18-250" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform the final aggregation at the cantonal level</span></span>
+<span id="cb18-251"><a href="#cb18-251" aria-hidden="true" tabindex="-1"></a>canton_data_final <span class="ot">&lt;-</span> data_final_swiss <span class="sc">%&gt;%</span></span>
+<span id="cb18-252"><a href="#cb18-252" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(canton) <span class="sc">%&gt;%</span></span>
+<span id="cb18-253"><a href="#cb18-253" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb18-254"><a href="#cb18-254" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_sales =</span> <span class="fu">sum</span>(price, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb18-255"><a href="#cb18-255" aria-hidden="true" tabindex="-1"></a>    <span class="at">num_transactions =</span> <span class="fu">n</span>(),</span>
+<span id="cb18-256"><a href="#cb18-256" aria-hidden="true" tabindex="-1"></a>    <span class="at">avg_order_value =</span> <span class="fu">mean</span>(price, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb18-257"><a href="#cb18-257" aria-hidden="true" tabindex="-1"></a>    <span class="at">top_brand =</span> <span class="fu">names</span>(<span class="fu">which.max</span>(<span class="fu">table</span>(brandName))),</span>
+<span id="cb18-258"><a href="#cb18-258" aria-hidden="true" tabindex="-1"></a>    <span class="at">top_category =</span> <span class="fu">names</span>(<span class="fu">which.max</span>(<span class="fu">table</span>(category)))</span>
+<span id="cb18-259"><a href="#cb18-259" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb18-260"><a href="#cb18-260" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(total_sales))</span>
+<span id="cb18-261"><a href="#cb18-261" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb18-262"><a href="#cb18-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-263"><a href="#cb18-263" aria-hidden="true" tabindex="-1"></a><span class="fu">### 3.5. Final Aggregated Dataset</span></span>
+<span id="cb18-264"><a href="#cb18-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-265"><a href="#cb18-265" aria-hidden="true" tabindex="-1"></a>The result of this cleaning and preprocessing workflow is the <span class="in">`canton_data_final`</span> DataFrame. It contains 26 rows, one for each Swiss canton, with the key performance indicators required for further analysis. This dataset is now ready to be merged with the BFS population data.</span>
+<span id="cb18-266"><a href="#cb18-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-267"><a href="#cb18-267" aria-hidden="true" tabindex="-1"></a><span class="in">```{r display-final-table}</span></span>
+<span id="cb18-268"><a href="#cb18-268" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: display-final-table</span></span>
+<span id="cb18-269"><a href="#cb18-269" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb18-270"><a href="#cb18-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-271"><a href="#cb18-271" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the final, clean table</span></span>
+<span id="cb18-272"><a href="#cb18-272" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(canton_data_final, <span class="at">n =</span> <span class="dv">26</span>)</span>
+<span id="cb18-273"><a href="#cb18-273" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb18-274"><a href="#cb18-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-275"><a href="#cb18-275" aria-hidden="true" tabindex="-1"></a><span class="fu">### 3.6. Preprocessing BFS Population data</span></span>
+<span id="cb18-276"><a href="#cb18-276" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-277"><a href="#cb18-277" aria-hidden="true" tabindex="-1"></a>To ensure a seamless merge between Digitec transaction data and BFS population data, column names in the population dataset converted to snake_case, additionally, canton names found in the Excel file were mapped to their official abbreviations used in the transaction dataset.</span>
+<span id="cb18-278"><a href="#cb18-278" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-279"><a href="#cb18-279" aria-hidden="true" tabindex="-1"></a><span class="in">```{r canton-code-mapping}</span></span>
+<span id="cb18-280"><a href="#cb18-280" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: canton-code-mapping</span></span>
+<span id="cb18-281"><a href="#cb18-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-282"><a href="#cb18-282" aria-hidden="true" tabindex="-1"></a><span class="co">#function which converts input to snake_case</span></span>
+<span id="cb18-283"><a href="#cb18-283" aria-hidden="true" tabindex="-1"></a>clean_names <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb18-284"><a href="#cb18-284" aria-hidden="true" tabindex="-1"></a>  x <span class="sc">%&gt;%</span></span>
+<span id="cb18-285"><a href="#cb18-285" aria-hidden="true" tabindex="-1"></a>    <span class="fu">str_to_lower</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb18-286"><a href="#cb18-286" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb18-287"><a href="#cb18-287" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Replace spaces with underscores</span></span>
+<span id="cb18-288"><a href="#cb18-288" aria-hidden="true" tabindex="-1"></a>    <span class="fu">str_replace_all</span>(<span class="st">" "</span>, <span class="st">"_"</span>)             </span>
+<span id="cb18-289"><a href="#cb18-289" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-290"><a href="#cb18-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-291"><a href="#cb18-291" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(population) <span class="ot">&lt;-</span> <span class="fu">clean_names</span>(<span class="fu">colnames</span>(population))</span>
+<span id="cb18-292"><a href="#cb18-292" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-293"><a href="#cb18-293" aria-hidden="true" tabindex="-1"></a><span class="co"># Define canton name-to-code mapping</span></span>
+<span id="cb18-294"><a href="#cb18-294" aria-hidden="true" tabindex="-1"></a>canton_codes <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb18-295"><a href="#cb18-295" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Zurich"</span> <span class="ot">=</span> <span class="st">"ZH"</span>,</span>
+<span id="cb18-296"><a href="#cb18-296" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Bern"</span> <span class="ot">=</span> <span class="st">"BE"</span>,</span>
+<span id="cb18-297"><a href="#cb18-297" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Lucerne"</span> <span class="ot">=</span> <span class="st">"LU"</span>,</span>
+<span id="cb18-298"><a href="#cb18-298" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Uri"</span> <span class="ot">=</span> <span class="st">"UR"</span>,</span>
+<span id="cb18-299"><a href="#cb18-299" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Schwyz"</span> <span class="ot">=</span> <span class="st">"SZ"</span>,</span>
+<span id="cb18-300"><a href="#cb18-300" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Obwalden"</span> <span class="ot">=</span> <span class="st">"OW"</span>,</span>
+<span id="cb18-301"><a href="#cb18-301" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Nidwalden"</span> <span class="ot">=</span> <span class="st">"NW"</span>,</span>
+<span id="cb18-302"><a href="#cb18-302" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Glarus"</span> <span class="ot">=</span> <span class="st">"GL"</span>,</span>
+<span id="cb18-303"><a href="#cb18-303" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Zug"</span> <span class="ot">=</span> <span class="st">"ZG"</span>,</span>
+<span id="cb18-304"><a href="#cb18-304" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Fribourg"</span> <span class="ot">=</span> <span class="st">"FR"</span>,</span>
+<span id="cb18-305"><a href="#cb18-305" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Solothurn"</span> <span class="ot">=</span> <span class="st">"SO"</span>,</span>
+<span id="cb18-306"><a href="#cb18-306" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Basel-Stadt"</span> <span class="ot">=</span> <span class="st">"BS"</span>,</span>
+<span id="cb18-307"><a href="#cb18-307" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Basel-Landschaft"</span> <span class="ot">=</span> <span class="st">"BL"</span>,</span>
+<span id="cb18-308"><a href="#cb18-308" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Schaffhausen"</span> <span class="ot">=</span> <span class="st">"SH"</span>,</span>
+<span id="cb18-309"><a href="#cb18-309" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Appenzell A. Rh."</span> <span class="ot">=</span> <span class="st">"AR"</span>,</span>
+<span id="cb18-310"><a href="#cb18-310" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Appenzell I. Rh."</span> <span class="ot">=</span> <span class="st">"AI"</span>,</span>
+<span id="cb18-311"><a href="#cb18-311" aria-hidden="true" tabindex="-1"></a>  <span class="st">"St. Gallen"</span> <span class="ot">=</span> <span class="st">"SG"</span>,</span>
+<span id="cb18-312"><a href="#cb18-312" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Graubünden"</span> <span class="ot">=</span> <span class="st">"GR"</span>,</span>
+<span id="cb18-313"><a href="#cb18-313" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Aargau"</span> <span class="ot">=</span> <span class="st">"AG"</span>,</span>
+<span id="cb18-314"><a href="#cb18-314" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Thurgau"</span> <span class="ot">=</span> <span class="st">"TG"</span>,</span>
+<span id="cb18-315"><a href="#cb18-315" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Ticino"</span> <span class="ot">=</span> <span class="st">"TI"</span>,</span>
+<span id="cb18-316"><a href="#cb18-316" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Vaud"</span> <span class="ot">=</span> <span class="st">"VD"</span>,</span>
+<span id="cb18-317"><a href="#cb18-317" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Valais"</span> <span class="ot">=</span> <span class="st">"VS"</span>,</span>
+<span id="cb18-318"><a href="#cb18-318" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Neuchâtel"</span> <span class="ot">=</span> <span class="st">"NE"</span>,</span>
+<span id="cb18-319"><a href="#cb18-319" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Geneva"</span> <span class="ot">=</span> <span class="st">"GE"</span>,</span>
+<span id="cb18-320"><a href="#cb18-320" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Jura"</span> <span class="ot">=</span> <span class="st">"JU"</span></span>
+<span id="cb18-321"><a href="#cb18-321" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-322"><a href="#cb18-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-323"><a href="#cb18-323" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to named vector for mapping</span></span>
+<span id="cb18-324"><a href="#cb18-324" aria-hidden="true" tabindex="-1"></a>code_map <span class="ot">&lt;-</span> <span class="fu">setNames</span>(<span class="fu">unlist</span>(canton_codes), <span class="fu">names</span>(canton_codes))</span>
+<span id="cb18-325"><a href="#cb18-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-326"><a href="#cb18-326" aria-hidden="true" tabindex="-1"></a><span class="co"># Replace canton names with codes and remove non-cantons</span></span>
+<span id="cb18-327"><a href="#cb18-327" aria-hidden="true" tabindex="-1"></a>cleaned_population <span class="ot">&lt;-</span> population <span class="sc">%&gt;%</span></span>
+<span id="cb18-328"><a href="#cb18-328" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(canton <span class="sc">%in%</span> <span class="fu">names</span>(canton_codes)) <span class="sc">%&gt;%</span></span>
+<span id="cb18-329"><a href="#cb18-329" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">canton =</span> code_map[canton])</span>
+<span id="cb18-330"><a href="#cb18-330" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-331"><a href="#cb18-331" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-332"><a href="#cb18-332" aria-hidden="true" tabindex="-1"></a><span class="co"># Display the processed excel data</span></span>
+<span id="cb18-333"><a href="#cb18-333" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(cleaned_population)</span>
+<span id="cb18-334"><a href="#cb18-334" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb18-335"><a href="#cb18-335" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-336"><a href="#cb18-336" aria-hidden="true" tabindex="-1"></a><span class="fu">### 3.7. Merging Transaction and Demographic Data</span></span>
+<span id="cb18-337"><a href="#cb18-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-338"><a href="#cb18-338" aria-hidden="true" tabindex="-1"></a><span class="in">```{r merge-datasets}</span></span>
+<span id="cb18-339"><a href="#cb18-339" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-340"><a href="#cb18-340" aria-hidden="true" tabindex="-1"></a><span class="co"># Merge on canton code</span></span>
+<span id="cb18-341"><a href="#cb18-341" aria-hidden="true" tabindex="-1"></a>merged_data <span class="ot">&lt;-</span> <span class="fu">left_join</span>(canton_data_final, cleaned_population, <span class="at">by =</span> <span class="st">"canton"</span>)</span>
+<span id="cb18-342"><a href="#cb18-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-343"><a href="#cb18-343" aria-hidden="true" tabindex="-1"></a><span class="co"># View merged dataset</span></span>
+<span id="cb18-344"><a href="#cb18-344" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(merged_data)</span>
+<span id="cb18-345"><a href="#cb18-345" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb18-346"><a href="#cb18-346" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-347"><a href="#cb18-347" aria-hidden="true" tabindex="-1"></a><span class="fu">## 4. Computing and Adding Derived Indicators</span></span>
+<span id="cb18-348"><a href="#cb18-348" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-349"><a href="#cb18-349" aria-hidden="true" tabindex="-1"></a>To enable meaningful comparisons across cantons we add derived indicators. These indicators normalize raw counts into ratios and per-capita metrics, making them suitable for correlation analysis, segmentation, and strategic targeting.</span>
+<span id="cb18-350"><a href="#cb18-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-351"><a href="#cb18-351" aria-hidden="true" tabindex="-1"></a>The metrics are the following:</span>
+<span id="cb18-352"><a href="#cb18-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-353"><a href="#cb18-353" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Gender ratios</span>
+<span id="cb18-354"><a href="#cb18-354" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Citizenship ratios</span>
+<span id="cb18-355"><a href="#cb18-355" aria-hidden="true" tabindex="-1"></a><span class="ss">3.  </span>Age structure</span>
+<span id="cb18-356"><a href="#cb18-356" aria-hidden="true" tabindex="-1"></a><span class="ss">4.  </span>Urbanization</span>
+<span id="cb18-357"><a href="#cb18-357" aria-hidden="true" tabindex="-1"></a><span class="ss">5.  </span>Marital status</span>
+<span id="cb18-358"><a href="#cb18-358" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-359"><a href="#cb18-359" aria-hidden="true" tabindex="-1"></a><span class="fu">### 4.1 Implementation in R</span></span>
+<span id="cb18-360"><a href="#cb18-360" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-363"><a href="#cb18-363" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb18-364"><a href="#cb18-364" aria-hidden="true" tabindex="-1"></a> computed_merged_data <span class="ot">&lt;-</span> merged_data <span class="sc">%&gt;%</span> <span class="fu">mutate</span>( </span>
+<span id="cb18-365"><a href="#cb18-365" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-366"><a href="#cb18-366" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Economic indicators</span></span>
+<span id="cb18-367"><a href="#cb18-367" aria-hidden="true" tabindex="-1"></a>  <span class="at">sales_per_capita =</span> total_sales <span class="sc">/</span> total,</span>
+<span id="cb18-368"><a href="#cb18-368" aria-hidden="true" tabindex="-1"></a>  <span class="at">transactions_per_capita =</span> num_transactions <span class="sc">/</span> total,</span>
+<span id="cb18-369"><a href="#cb18-369" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-370"><a href="#cb18-370" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Gender ratios</span></span>
+<span id="cb18-371"><a href="#cb18-371" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_male =</span> male_population <span class="sc">/</span> total,</span>
+<span id="cb18-372"><a href="#cb18-372" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_female =</span> female_population <span class="sc">/</span> total,</span>
+<span id="cb18-373"><a href="#cb18-373" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-374"><a href="#cb18-374" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Citizenship ratios</span></span>
+<span id="cb18-375"><a href="#cb18-375" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_swiss =</span> swiss_citizenship <span class="sc">/</span> total,</span>
+<span id="cb18-376"><a href="#cb18-376" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_foreign =</span> foreigner_citizenship <span class="sc">/</span> total,</span>
+<span id="cb18-377"><a href="#cb18-377" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-378"><a href="#cb18-378" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Age structure</span></span>
+<span id="cb18-379"><a href="#cb18-379" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_age_0_19 =</span> <span class="st">`</span><span class="at">age_from_0-19</span><span class="st">`</span> <span class="sc">/</span> total,</span>
+<span id="cb18-380"><a href="#cb18-380" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_age_20_64 =</span> <span class="st">`</span><span class="at">age_from_20-64</span><span class="st">`</span> <span class="sc">/</span> total,</span>
+<span id="cb18-381"><a href="#cb18-381" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_age_65_plus =</span> age_from_65_and_over <span class="sc">/</span> total,</span>
+<span id="cb18-382"><a href="#cb18-382" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-383"><a href="#cb18-383" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Urbanization</span></span>
+<span id="cb18-384"><a href="#cb18-384" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_urban =</span> urban_commune <span class="sc">/</span> total,</span>
+<span id="cb18-385"><a href="#cb18-385" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_intermediate =</span> intermediate_commune <span class="sc">/</span> total,</span>
+<span id="cb18-386"><a href="#cb18-386" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_rural =</span> rural_commune <span class="sc">/</span> total,</span>
+<span id="cb18-387"><a href="#cb18-387" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb18-388"><a href="#cb18-388" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Marital status</span></span>
+<span id="cb18-389"><a href="#cb18-389" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_single =</span> single_status <span class="sc">/</span> total,</span>
+<span id="cb18-390"><a href="#cb18-390" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_married =</span> married_status <span class="sc">/</span> total,</span>
+<span id="cb18-391"><a href="#cb18-391" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_widowed =</span> widowed_status <span class="sc">/</span> total,</span>
+<span id="cb18-392"><a href="#cb18-392" aria-hidden="true" tabindex="-1"></a>  <span class="at">share_divorced =</span> divorced_status <span class="sc">/</span> total</span>
+<span id="cb18-393"><a href="#cb18-393" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-394"><a href="#cb18-394" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb18-395"><a href="#cb18-395" aria-hidden="true" tabindex="-1"></a><span class="co"># Display final merged data with computed values (note: removal of orignal values.)</span></span>
+<span id="cb18-396"><a href="#cb18-396" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(computed_merged_data)</span>
+<span id="cb18-397"><a href="#cb18-397" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb18-398"><a href="#cb18-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-399"><a href="#cb18-399" aria-hidden="true" tabindex="-1"></a><span class="fu">## 5. Analysis</span></span>
+<span id="cb18-400"><a href="#cb18-400" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-403"><a href="#cb18-403" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb18-404"><a href="#cb18-404" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
