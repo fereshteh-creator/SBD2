@@ -60,10 +60,9 @@ This approach balances detail with interpretability and enables clear visual com
 | **Population Size** | Do larger cantons generate proportionally more online sales? | Allocate higher Google Ads and social-media budgets to densely populated cantons to maximize reach. |
 | **Gender Composition** | Does male/female ratio affect product mix (e.g., gaming vs. home appliances)? | Adapt homepage banners or email content to match regional gender patterns in purchases. |
 | **Citizenship** | Are foreign residents associated with higher online spending? | Run multilingual (DE/FR/EN) ads and feature global brands (Apple, Samsung) in foreigner-dense cantons. |
-| **Urbanization** | Do urban cantons buy more premium electronics than rural ones? | Promote high-end products in cities; highlight budget or refurbished offers in rural regions. |
-| **Age Structure** | Which age profile correlates with online activity? | Target younger regions with gaming and mobile ads; older regions with home-office and wellness tech. |
+| **Urbanization** | Do urban cantons buy more premium electronics than rural ones? -\> How do we define premium, expensive things are not always premium for example.\* (Sen) | Promote high-end products in cities; highlight budget or refurbished offers in rural regions. |
+| **Age Structure** | Which age profile correlates with online activity? -\> maybe change to something like: How do different age groups' online purchasing differ? let's find a nice way to phrase this questions (Sen)\* | Target younger regions with gaming and mobile ads; older regions with home-office and wellness tech. |
 | **Marital Status** | Do single vs. married populations differ in purchase categories? | Offer “family bundles” or smart-home packages for married cantons; focus on personal devices for single-dominant areas. |
-
 
 ## 1.5. Strategic Impact
 
@@ -87,6 +86,8 @@ library(lubridate) # To work with date-time values
 # Load the datasets
 load("digitec.RData") # Loads the 'data' object
 population <- read_excel("population_2023.xlsx")
+
+
 ```
 
 ## 3. Data Cleaning and Preprocessing
@@ -110,6 +111,7 @@ The following steps were implemented in a single, coherent `dplyr` pipeline for 
 #| label: data-cleaning-pipeline
 
 # Comprehensive cleaning and transformation of the raw data
+
 data_clean <- data %>%
   
   # Select and rename relevant columns for better readability
@@ -142,6 +144,7 @@ data_clean <- data %>%
     # Extract the product category from the URL
     category = basename(category_url)
   )
+
 ```
 
 ### 3.3. Exploratory Data Analysis (EDA)
@@ -267,4 +270,133 @@ The result of this cleaning and preprocessing workflow is the `canton_data_final
 
 # Display the final, clean table
 print(canton_data_final, n = 26)
+```
+
+### 3.6. Preprocessing BFS Population data
+
+To ensure a seamless merge between Digitec transaction data and BFS population data, column names in the population dataset converted to snake_case, additionally, canton names found in the Excel file were mapped to their official abbreviations used in the transaction dataset.
+
+```{r canton-code-mapping}
+#| label: canton-code-mapping
+
+#function which converts input to snake_case
+clean_names <- function(x) {
+  x %>%
+    str_to_lower() %>%
+    
+    # Replace spaces with underscores
+    str_replace_all(" ", "_")             
+}
+
+colnames(population) <- clean_names(colnames(population))
+
+# Define canton name-to-code mapping
+canton_codes <- list(
+  "Zurich" = "ZH",
+  "Bern" = "BE",
+  "Lucerne" = "LU",
+  "Uri" = "UR",
+  "Schwyz" = "SZ",
+  "Obwalden" = "OW",
+  "Nidwalden" = "NW",
+  "Glarus" = "GL",
+  "Zug" = "ZG",
+  "Fribourg" = "FR",
+  "Solothurn" = "SO",
+  "Basel-Stadt" = "BS",
+  "Basel-Landschaft" = "BL",
+  "Schaffhausen" = "SH",
+  "Appenzell A. Rh." = "AR",
+  "Appenzell I. Rh." = "AI",
+  "St. Gallen" = "SG",
+  "Graubünden" = "GR",
+  "Aargau" = "AG",
+  "Thurgau" = "TG",
+  "Ticino" = "TI",
+  "Vaud" = "VD",
+  "Valais" = "VS",
+  "Neuchâtel" = "NE",
+  "Geneva" = "GE",
+  "Jura" = "JU"
+)
+
+# Convert to named vector for mapping
+code_map <- setNames(unlist(canton_codes), names(canton_codes))
+
+# Replace canton names with codes and remove non-cantons
+cleaned_population <- population %>%
+  filter(canton %in% names(canton_codes)) %>%
+  mutate(canton = code_map[canton])
+
+
+# Display the processed excel data
+print(cleaned_population)
+```
+
+### 3.7. Merging Transaction and Demographic Data
+
+```{r merge-datasets}
+
+# Merge on canton code
+merged_data <- left_join(canton_data_final, cleaned_population, by = "canton")
+
+# View merged dataset
+print(merged_data)
+```
+
+## 4. Computing and Adding Derived Indicators
+
+To enable meaningful comparisons across cantons we add derived indicators. These indicators normalize raw counts into ratios and per-capita metrics, making them suitable for correlation analysis, segmentation, and strategic targeting.
+
+The metrics are the following:
+
+1.  Gender ratios
+2.  Citizenship ratios
+3.  Age structure
+4.  Urbanization
+5.  Marital status
+
+### 4.1 Implementation in R
+
+```{r}
+
+ computed_merged_data <- merged_data %>% mutate( 
+  
+  # Economic indicators
+  sales_per_capita = total_sales / total,
+  transactions_per_capita = num_transactions / total,
+  
+  # Gender ratios
+  share_male = male_population / total,
+  share_female = female_population / total,
+  
+  # Citizenship ratios
+  share_swiss = swiss_citizenship / total,
+  share_foreign = foreigner_citizenship / total,
+  
+  # Age structure
+  share_age_0_19 = `age_from_0-19` / total,
+  share_age_20_64 = `age_from_20-64` / total,
+  share_age_65_plus = age_from_65_and_over / total,
+  
+  # Urbanization
+  share_urban = urban_commune / total,
+  share_intermediate = intermediate_commune / total,
+  share_rural = rural_commune / total,
+  
+  # Marital status
+  share_single = single_status / total,
+  share_married = married_status / total,
+  share_widowed = widowed_status / total,
+  share_divorced = divorced_status / total
+)
+ 
+# Display final merged data with computed values (note: removal of orignal values.)
+print(computed_merged_data)
+```
+
+## 5. Analysis
+
+```{r}
+
 ```
