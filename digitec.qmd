@@ -7,7 +7,7 @@ format:
     code-tools: true
 
 editor: visual
-author: Fereshteh, Anna, Sen, Colin Marti
+author: Fereshteh, Anna, Sen, Colin Marti (pls add your full name)
 ---
 
 ## 1. Business Plan Analysis
