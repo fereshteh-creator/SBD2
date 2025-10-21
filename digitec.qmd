@@ -29,34 +29,53 @@ By linking demographic patterns with online purchasing data, Digitec can **targe
 ### 1.2. Data Overview
 
 | Source | Description | Key Variables |
-|:---------------------|:-----------------|:-------------------------------|
-| **Digitec Transactions (`DigitecLive_Final.csv`)** | \~163k web-scraped online transactions | `brandName`, `infos.Category`, `salesPrice.amountIncl`, `dateTime`, `mun_canton` |
-| **BFS Population Data (`population_2023.xlsx`)** | Canton-level demographics (2023) | `Total`, `Male`, `Female`, `Swiss`, `Foreigner`, `Urban`, `Intermediate`, `Rural`, `Age_0_19`, `Age_20_64`, `Age_65plus`, `Single`, `Married`, `Widowed`, `Divorced` |
+|:---|:---|:---|
+| **Digitec Transactions (`DigitecLive_Final.csv`)** | \~163k web-scraped online transactions from Digitec’s live purchase feed | `brandName`, `infos.Category`, `salesPrice.amountIncl`, `dateTime`, `mun_canton` |
+| **BFS Population Data (`population_2023.xlsx`)** | Canton-level demographics (2023) | `Total`, `Swiss`, `Foreigner`, `Urban`, `Intermediate`, `Rural`, `Age_0_19`, `Age_20_64`, `Age_65plus`, `Single`, `Married`, `Widowed`, `Divorced` |
+| **BFS Population by Age (`mns_population-by-age-2023.xlsx`)** | Detailed population structure by age and region | `Region`, `Total`, `Age_0_4`, `Age_5_9`, …, `Age_80plus` |
+| **BFS Population by Gender (`mns-population-by-gender-2023.xlsx`)** | Gender composition by canton and municipality (2023) | `Region`, `Total_All`, `Mann_All`, `Frau_All`, `Swiss`, `Foreigner` |
+
+These additional datasets allow the inclusion of **more granular demographic information** — enabling a refined analysis of age- and gender-related purchasing behavior across regions.
 
 ### 1.3. Unit of Analysis
 
-The analysis is performed at the canton level ($n = 26$), allowing integration of both datasets and ensuring consistent comparisons.
+The analysis is now conducted at the **municipality level** ($n \approx 2,200$), using the official **BFS municipality number (`mun_bfsnr`)** as the join key between datasets.
 
-Each canton will serve as one observation with the following computed indicators: - $sales\_per\_capita = \frac{total\_sales}{population}$ - Average order value (CHF) - Shares of gender, citizenship, age, urbanization, and marital status
+Each municipality represents one observation containing: - $sales\_per\_capita = \frac{total\_sales}{population}$\
+- Average order value (CHF)\
+- Age-group shares (e.g., % under 20, % over 65)\
+- Gender composition (% male, % female)\
+- Citizenship composition (% Swiss, % foreign)
 
-This approach balances detail with interpretability and enables clear visual communication.
+This finer-grained approach allows for **more localized insights**, capturing demographic and purchasing differences that are hidden when aggregating by canton.
+
+------------------------------------------------------------------------
 
 ### 1.4. Methodology
 
 #### 1.4.1. Analytical Steps
 
-1.  **Aggregate** Digitec transactions by canton (`mun_canton`).\
-2.  **Merge** with BFS data using canton names as keys.\
-3.  **Compute** derived indicators:
-    -   Demographic ratios: gender, foreign population, age, urbanization, marital status
-    -   Economic indicators: total sales, sales per capita, average order value\
-4.  **Analyze** correlations and visualize relationships using scatterplots, heatmaps, and choropleths.\
-5.  **Identify** four key findings that can inform marketing decisions.
+1.  **Aggregate** Digitec transaction data by municipality (`mun_bfsnr`)\
+    → Compute total sales, average price, and transaction count for each municipality.\
+2.  **Merge** the municipality-level BFS datasets on population, gender, and age using the `mun_bfsnr` key.\
+3.  **Compute derived demographic indicators:**
+    -   Gender ratio: $\frac{Male}{Female}$\
+    -   Share of foreign residents: $\frac{Foreigner}{Total}$\
+    -   Age structure: $\frac{Population_{0-19}}{Total}$, $\frac{Population_{20-64}}{Total}$, $\frac{Population_{65+}}{Total}$\
+    -   Sales per capita and average order value\
+4.  **Explore correlations** between online sales indicators and demographics:
+    -   Are younger or more international municipalities buying more expensive products?\
+    -   Do gender or age structures explain variations in spending per capita?\
+5.  **Visualize** geographic and demographic patterns using:
+    -   Choropleth maps by municipality (sales per capita, average price, etc.)\
+    -   Scatterplots linking demographics to sales variables\
+    -   Heatmaps of demographic vs. economic indicators\
+6.  **Identify four key insights** to inform Digitec’s new data-driven marketing campaign.
 
 #### 1.4.2. Research Questions
 
 | Demographic Dimension | Research Question | Usage Example (What Digitec Could Do) |
-|:-----------------------|:-----------------------|:-----------------------|
+|:---|:---|:---|
 | **Population Size** | Do larger cantons generate proportionally more online sales? | Allocate higher Google Ads and social-media budgets to densely populated cantons to maximize reach. |
 | **Gender Composition** | Does male/female ratio affect product mix (e.g., gaming vs. home appliances)? | Adapt homepage banners or email content to match regional gender patterns in purchases. |
 | **Citizenship** | Are foreign residents associated with higher online spending? | Run multilingual (DE/FR/EN) ads and feature global brands (Apple, Samsung) in foreigner-dense cantons. |
