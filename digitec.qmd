@@ -29,7 +29,7 @@ By linking demographic patterns with online purchasing data, Digitec can **targe
 ### 1.2. Data Overview
 
 | Source | Description | Key Variables |
-|:---|:---|:---|
+|:-----------------------|:-----------------------|:-----------------------|
 | **Digitec Transactions (`DigitecLive_Final.csv`)** | \~163k web-scraped online transactions from Digitec’s live purchase feed | `brandName`, `infos.Category`, `salesPrice.amountIncl`, `dateTime`, `mun_canton` |
 | **BFS Population Data (`population_2023.xlsx`)** | Canton-level demographics (2023) | `Total`, `Swiss`, `Foreigner`, `Urban`, `Intermediate`, `Rural`, `Age_0_19`, `Age_20_64`, `Age_65plus`, `Single`, `Married`, `Widowed`, `Divorced` |
 | **BFS Population by Age (`mns_population-by-age-2023.xlsx`)** | Detailed population structure by age and region | `Region`, `Total`, `Age_0_4`, `Age_5_9`, …, `Age_80plus` |
@@ -75,7 +75,7 @@ This finer-grained approach allows for **more localized insights**, capturing de
 #### 1.4.2. Research Questions
 
 | Demographic Dimension | Research Question | Usage Example (What Digitec Could Do) |
-|:---|:---|:---|
+|:-----------------------|:-----------------------|:-----------------------|
 | **Population Size** | Do larger cantons generate proportionally more online sales? | Allocate higher Google Ads and social-media budgets to densely populated cantons to maximize reach. |
 | **Gender Composition** | Does male/female ratio affect product mix (e.g., gaming vs. home appliances)? | Adapt homepage banners or email content to match regional gender patterns in purchases. |
 | **Citizenship** | Are foreign residents associated with higher online spending? | Run multilingual (DE/FR/EN) ads and feature global brands (Apple, Samsung) in foreigner-dense cantons. |
@@ -102,7 +102,7 @@ library(tidyverse) # For data manipulation (dplyr) and visualization (ggplot2)
 library(readxl)    # To read Excel files
 library(lubridate) # To work with date-time values
 library(stringr)   # To work with regex
-
+library(dlookr)
 
 # Load digitect dataset
 load("digitec.RData") # Loads the 'data' object
@@ -170,37 +170,23 @@ print(profile)
 ```
 
 -   `salesPrice.currency`, `infos.Currency` → `n_unique_non_na == 1` (“CHF”) we decided to remove this column.
-
-<!-- -->
-
 -   `salesPrice` → `n_non_na == 0` empty column so we decided to delete it.
-
 -   `mun_nhits` → mostly/all 1
 
-```{{r}}
+```{r}
 if ("mun_nhits" %in% names(digitec_data)) {
   cat("mun_nhits frequency:\n")
   print(table(digitec_data$mun_nhits, useNA = "ifany"))
 }
-
 ```
 
 -   **`1`** → 153 778 rows matched exactly one municipality.
-
-<!-- -->
-
--    **`0`** → 9 194 rows had *no municipality match*.
-
-<!-- -->
-
--    **`2`** → 21 rows matched *two possible municipalities*.
+-   **`0`** → 9 194 rows had *no municipality match*.
+-   **`2`** → 21 rows matched *two possible municipalities*.
 
 We would drop the rows where `mun_nhits == 0` or `mun_nhits == 2`, then remove the `mun_nhits` column. If we keep those bad rows, they’ll mess up our regional analysis (since they don’t have a valid municipality).
 
 -   `cityName` → unique city name inserted by customer, since we have the city and municipality takes from SWISS POST Api we decided to drop this column.
-
-<!-- -->
-
 -   `infos.Price` → many NAs - 63% of the data is missing so the column is invalid.
 
 ```{r}
@@ -235,7 +221,7 @@ digitec_data_clean <- digitec_data %>%
     bfsnr = mun_bfsnr
   ) %>%
   select(
-    price, dateTime, brandName, category_url, sales_rank_raw, canton, mun_nhits, bfsnr
+    price, dateTime, brandName, fullProductName, socialShoppingTransactionTypeId, category_url, sales_rank_raw, canton, mun_nhits, bfsnr
   ) %>%
   
   # Filter rows to ensure data quality
@@ -245,7 +231,7 @@ digitec_data_clean <- digitec_data %>%
     mun_nhits == 1           # Keep only unique geographic matches
   ) %>%
   
-  # Remove irrelevant or redundant columns if they exist
+  # Remove irrelevant or redundant columns
   select(-any_of(c(
     "cityName",
     "salesPrice.currency",
@@ -270,16 +256,37 @@ digitec_data_clean <- digitec_data %>%
 
 ```
 
-We also decided to drop all duplicates in our dataframe.
+Overview of the current state of our DataFrame.
+
+```{r}
+overview(digitec_data_clean)
+```
+
+We dropped all duplicates in our DataFrame.
 
 ```{r}
 
-library(dlookr)
-
-overview(digitec_data_clean)
-
 digitec_data_clean <- digitec_data_clean %>%
   distinct()
+
+overview(digitec_data_clean)
+```
+
+```{r}
+library(dplyr)
+library(tidyr)
+
+digitec_data_clean <- digitec_data_clean %>%
+  # Keep only rows where the rank actually contains "von"
+  filter(grepl("von", sales_rank_raw)) %>%
+  # Now safely separate
+  separate(sales_rank_raw, into = c("rank_position", "rank_total"), sep = " von ") %>%
+  mutate(
+    rank_position = as.numeric(rank_position),
+    rank_total = as.numeric(rank_total),
+    rank_relative = round(rank_position / rank_total, 5),
+    rank_score = round(1 - rank_relative, 5)
+  )
 ```
 
 #### 3.1.2. Exploratory Data Analysis (EDA)
@@ -578,7 +585,7 @@ print(canton_merged_data)
 municipality_merged_data <- digitec_grouped %>%
   left_join(municipal_population_age_clean, by = "bfsnr")
 
-# Merge gejder municipality dataset on bfsnr code
+# Merge gender municipality dataset on bfsnr code
 municipality_merged_data <- municipality_merged_data %>%
   left_join(municipal_population_gender_clean, by = "bfsnr")
 
@@ -653,7 +660,7 @@ final_municipality_data <- municipality_merged_data %>%
     foreigner_citizenship = total_foreigner
   )
 
-final_municipality_data <- municipality_merged_data %>% mutate( 
+final_municipality_data <- final_municipality_data %>% mutate( 
   
   # Gender ratios
   share_male = male_population / total,
@@ -670,5 +677,5 @@ final_municipality_data <- municipality_merged_data %>% mutate(
 )
  
 # Display final merged data with computed values (note: removal of orignal values.)
-print(final_canton_data)
+print(final_municipality_data)
 ```
