@@ -2,7 +2,7 @@
 title: "Digitec Analysis"
 format:
   html:
-    df-print: kable
+    df-print: paged
     toc: true
     code-tools: true
 
@@ -93,7 +93,7 @@ By merging **online sales data** with **BFS demographic indicators**, Digitec ca
 
 This first code chunk sets up the R environment by loading all necessary libraries for the analysis and loading the four primary datasets. The chunk is configured with `include: false` to hide it from the final rendered report for a cleaner presentation.
 
-```{r setup}
+```{r}
 #| label: setup
 #| include: false 
 
@@ -166,7 +166,7 @@ check_var <- function(df, var) {
 }
 
 profile <- map_dfr(existing, ~check_var(digitec_data, .x))
-print(profile)
+profile
 ```
 
 -   `salesPrice.currency`, `infos.Currency` → `n_unique_non_na == 1` (“CHF”) we decided to remove this column.
@@ -176,7 +176,7 @@ print(profile)
 ```{r}
 if ("mun_nhits" %in% names(digitec_data)) {
   cat("mun_nhits frequency:\n")
-  print(table(digitec_data$mun_nhits, useNA = "ifany"))
+  table(digitec_data$mun_nhits, useNA = "ifany")
 }
 ```
 
@@ -197,7 +197,7 @@ if (all(c("infos.Price", "salesPrice.amountIncl") %in% names(digitec_data))) {
       n = n(),
       max_abs_diff = max(abs(infos.Price - salesPrice.amountIncl), na.rm = TRUE)
     )
-  print(same_info)
+  same_info
 }
 ```
 
@@ -422,7 +422,7 @@ municipal_population_gender_clean <- municipal_population_gender %>%
     bfsnr = as.integer(bfsnr)
   )
 
-print(municipal_population_age_clean)
+municipal_population_age_clean
 
 ```
 
@@ -440,7 +440,7 @@ municipal_population_age_clean <- municipal_population_age_clean %>%
   ) %>%
   ungroup() %>% select(bfsnr, total, `age_from_0-19`, `age_from_20-64`, age_from_65_and_over)
 
-print(municipal_population_age_clean)
+municipal_population_age_clean
 ```
 
 **Canton Level**
@@ -491,7 +491,7 @@ cleaned_canton_population <- canton_population %>%
 
 
 # Display the processed excel data
-print(cleaned_canton_population)
+cleaned_canton_population
 ```
 
 ## 4. Validation and Final Aggregation
@@ -514,7 +514,7 @@ valid_swiss_cantons <- c(
 non_swiss_codes <- setdiff(unique(digitec_data_clean$canton), valid_swiss_cantons)
 
 print("Found the following non-Swiss location codes:")
-print(non_swiss_codes)
+non_swiss_codes
 ```
 
 Based on this finding, the dataset was filtered to include only transactions from the 26 Swiss cantons. Afterward, the final aggregation was performed to create the analysis-ready dataset.
@@ -548,7 +548,7 @@ The result of this cleaning and preprocessing workflow is the `canton_data_final
 #| echo: false
 
 # Display the final, clean table
-print(canton_data_final, n = 26)
+head(canton_data_final, n = 26)
 ```
 
 ### 4.2 BFS Datasets
@@ -574,7 +574,7 @@ digitec_grouped <- digitec_data_clean %>%
 canton_merged_data <- left_join(canton_data_final, cleaned_canton_population, by = "canton")
 
 # View merged dataset
-print(canton_merged_data)
+canton_merged_data
 ```
 
 ### 5.2. Municipality Level Dataset Merge
@@ -590,7 +590,7 @@ municipality_merged_data <- municipality_merged_data %>%
   left_join(municipal_population_gender_clean, by = "bfsnr")
 
 # View merged dataset
-print(municipality_merged_data)
+municipality_merged_data
 ```
 
 ## 6. Post-merge Aggregation
@@ -643,7 +643,7 @@ The metrics are the following:
 )
  
 # Display final merged data with computed values (note: removal of orignal values.)
-print(final_canton_data)
+final_canton_data
 ```
 
 #### Municipality
@@ -677,5 +677,5 @@ final_municipality_data <- final_municipality_data %>% mutate(
 )
  
 # Display final merged data with computed values (note: removal of orignal values.)
-print(final_municipality_data)
+final_municipality_data
 ```
