@@ -494,9 +494,9 @@ cleaned_canton_population <- canton_population %>%
 print(cleaned_canton_population)
 ```
 
-### 4. Validation and Final Aggregation
+## 4. Validation and Final Aggregation
 
-#### 4.1 Digitec Dataset
+### 4.1 Digitec Dataset
 
 An initial aggregation of the cleaned data surprisingly resulted in 29 groups instead of the 26 expected Swiss cantons. An investigation of the `canton` column revealed that the dataset also contained transactions from neighboring countries, which needed to be excluded for this analysis.
 
@@ -551,7 +551,7 @@ The result of this cleaning and preprocessing workflow is the `canton_data_final
 print(canton_data_final, n = 26)
 ```
 
-#### 4.1 BFS Datasets
+### 4.2 BFS Datasets
 
 ```{r}
 
@@ -564,9 +564,9 @@ digitec_grouped <- digitec_data_clean %>%
   )
 ```
 
-### 5. Data Merging
+## 5. Data Merging
 
-#### 5.1. Canton Level Dataset Merge
+### 5.1. Canton Level Dataset Merge
 
 ```{r merge-canton-level-datasets}
 
@@ -577,7 +577,7 @@ canton_merged_data <- left_join(canton_data_final, cleaned_canton_population, by
 print(canton_merged_data)
 ```
 
-#### 5.2. Municipality Level Dataset Merge
+### 5.2. Municipality Level Dataset Merge
 
 ```{r merge-municipality-level-merge}
 
