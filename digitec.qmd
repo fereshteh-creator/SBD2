@@ -29,7 +29,7 @@ By linking demographic patterns with online purchasing data, Digitec can **targe
 ### 1.2. Data Overview
 
 | Source | Description | Key Variables |
-|:-----------------------|:-----------------------|:-----------------------|
+|:---|:---|:---|
 | **Digitec Transactions (`DigitecLive_Final.csv`)** | \~163k web-scraped online transactions from Digitec’s live purchase feed | `brandName`, `infos.Category`, `salesPrice.amountIncl`, `dateTime`, `mun_canton` |
 | **BFS Population Data (`population_2023.xlsx`)** | Canton-level demographics (2023) | `Total`, `Swiss`, `Foreigner`, `Urban`, `Intermediate`, `Rural`, `Age_0_19`, `Age_20_64`, `Age_65plus`, `Single`, `Married`, `Widowed`, `Divorced` |
 | **BFS Population by Age (`mns_population-by-age-2023.xlsx`)** | Detailed population structure by age and region | `Region`, `Total`, `Age_0_4`, `Age_5_9`, …, `Age_80plus` |
@@ -75,7 +75,7 @@ This finer-grained approach allows for **more localized insights**, capturing de
 #### 1.4.2. Research Questions
 
 | Demographic Dimension | Research Question | Usage Example (What Digitec Could Do) |
-|:-----------------------|:-----------------------|:-----------------------|
+|:---|:---|:---|
 | **Population Size** | Do larger cantons generate proportionally more online sales? | Allocate higher Google Ads and social-media budgets to densely populated cantons to maximize reach. |
 | **Gender Composition** | Does male/female ratio affect product mix (e.g., gaming vs. home appliances)? | Adapt homepage banners or email content to match regional gender patterns in purchases. |
 | **Citizenship** | Are foreign residents associated with higher online spending? | Run multilingual (DE/FR/EN) ads and feature global brands (Apple, Samsung) in foreigner-dense cantons. |
@@ -138,9 +138,88 @@ An initial inspection of the raw Digitec data revealed several necessary cleanin
 
 #### 3.1.1. Data Cleaning & Engineering
 
+First we check the dataset columns that we think might require some filtering or deletion.
+
+```{r}
+candidates <- c(
+  "cityName",
+  "salesPrice.currency",
+  "infos.Price",
+  "infos.Currency",
+  "salesPrice",
+  "mun_nhits"
+)
+
+existing <- intersect(candidates, names(digitec_data))
+
+check_var <- function(df, var) {
+  x <- df[[var]]
+  tibble(
+    variable      = var,
+    exists        = TRUE,
+    n             = length(x),
+    n_non_na      = sum(!is.na(x)),
+    prop_na       = mean(is.na(x)),
+    n_unique_non_na = dplyr::n_distinct(x, na.rm = TRUE),
+    example_values  = paste(utils::head(unique(x), 3), collapse = " | ")
+  )
+}
+
+profile <- map_dfr(existing, ~check_var(digitec_data, .x))
+print(profile)
+```
+
+-   `salesPrice.currency`, `infos.Currency` → `n_unique_non_na == 1` (“CHF”) we decided to remove this column.
+
+<!-- -->
+
+-   `salesPrice` → `n_non_na == 0` empty column so we decided to delete it.
+
+-   `mun_nhits` → mostly/all 1
+
+```{{r}}
+if ("mun_nhits" %in% names(digitec_data)) {
+  cat("mun_nhits frequency:\n")
+  print(table(digitec_data$mun_nhits, useNA = "ifany"))
+}
+
+```
+
+-   **`1`** → 153 778 rows matched exactly one municipality.
+
+<!-- -->
+
+-    **`0`** → 9 194 rows had *no municipality match*.
+
+<!-- -->
+
+-    **`2`** → 21 rows matched *two possible municipalities*.
+
+We would drop the rows where `mun_nhits == 0` or `mun_nhits == 2`, then remove the `mun_nhits` column. If we keep those bad rows, they’ll mess up our regional analysis (since they don’t have a valid municipality).
+
+-   `cityName` → unique city name inserted by customer, since we have the city and municipality takes from SWISS POST Api we decided to drop this column.
+
+<!-- -->
+
+-   `infos.Price` → many NAs - 63% of the data is missing so the column is invalid.
+
+```{r}
+if (all(c("infos.Price", "salesPrice.amountIncl") %in% names(digitec_data))) {
+  same_info <- digitec_data %>%
+    filter(!is.na(infos.Price) & !is.na(salesPrice.amountIncl)) %>%
+    summarise(
+      n = n(),
+      max_abs_diff = max(abs(infos.Price - salesPrice.amountIncl), na.rm = TRUE)
+    )
+  print(same_info)
+}
+```
+
+60 577 rows had *both* `infos.Price` and `salesPrice.amountIncl` . The value `max_abs_diff = 1021.9` means that in some rows, the difference between the two price fields is CHF 1 021.90soprices differ a lot. We decided that this column is inconsistent.
+
 The following steps were implemented in a single, coherent `dplyr` pipeline for efficiency and reproducibility. The result is a cleaned DataFrame named `data_clean`.
 
-```{r data-cleaning-pipeline}
+```{r}
 #| label: data-cleaning-pipeline
 
 # Comprehensive cleaning and transformation of the raw data
@@ -166,6 +245,15 @@ digitec_data_clean <- digitec_data %>%
     mun_nhits == 1           # Keep only unique geographic matches
   ) %>%
   
+  # Remove irrelevant or redundant columns if they exist
+  select(-any_of(c(
+    "cityName",
+    "salesPrice.currency",
+    "infos.Price",
+    "infos.Currency",
+    "salesPrice"
+  ))) %>%
+  
   # Create new, useful columns (Feature Engineering)
   mutate(
     # Convert timestamp to a proper date-time format
@@ -179,6 +267,19 @@ digitec_data_clean <- digitec_data %>%
     category = basename(category_url)
   )
 
+
+```
+
+We also decided to drop all duplicates in our dataframe.
+
+```{r}
+
+library(dlookr)
+
+overview(digitec_data_clean)
+
+digitec_data_clean <- digitec_data_clean %>%
+  distinct()
 ```
 
 #### 3.1.2. Exploratory Data Analysis (EDA)
@@ -253,7 +354,7 @@ digitec_data_clean %>%
 
 ### 3.2. BFS Datasets
 
-The data within the three BFS is mostly clean. There are no apparent missing values or errors, just some unnecessary rows. More importantly, the datasets need to be compatible for the upcoming merge with the Digitec data. \
+The data within the three BFS is mostly clean. There are no apparent missing values or errors, just some unnecessary rows. More importantly, the datasets need to be compatible for the upcoming merge with the Digitec data.\
 \
 The issues that we identified were as follows:
 
@@ -456,7 +557,7 @@ digitec_grouped <- digitec_data_clean %>%
   )
 ```
 
-### 5. Data Merging 
+### 5. Data Merging
 
 #### 5.1. Canton Level Dataset Merge
 
@@ -485,7 +586,7 @@ municipality_merged_data <- municipality_merged_data %>%
 print(municipality_merged_data)
 ```
 
-## 6. Post-merge Aggregation 
+## 6. Post-merge Aggregation
 
 To enable meaningful comparisons across cantons we add derived indicators. These indicators normalize raw counts into ratios and per-capita metrics, making them suitable for correlation analysis, segmentation, and strategic targeting.
 
