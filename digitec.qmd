@@ -83,7 +83,7 @@ This finer-grained approach allows for **more localized insights**, capturing de
 | **Age Structure** | Which age profile correlates with online activity? -\> maybe change to something like: How do different age groups' online purchasing differ? let's find a nice way to phrase this questions (Sen)\* | Target younger regions with gaming and mobile ads; older regions with home-office and wellness tech. |
 | **Marital Status** | Do single vs. married populations differ in purchase categories? | Offer “family bundles” or smart-home packages for married cantons; focus on personal devices for single-dominant areas. |
 
-## 1.5. Strategic Impact
+### 1.5. Strategic Impact
 
 By merging **online sales data** with **BFS demographic indicators**, Digitec can: - Move from national-level campaigns to **regionally adaptive marketing**.\
 - Align ad language, pricing, and products with **local audience characteristics**.\
