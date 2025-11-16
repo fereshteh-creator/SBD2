@@ -242,9 +242,9 @@ digitec_data_clean <- digitec_data %>%
   
   # Create new, useful columns (Feature Engineering)
   mutate(
-    # Convert timestamp to a proper date-time format
-    dateTime = ymd_hms(dateTime),
-    
+    # Convert timestamps
+    date=as_date(dateTime),
+    dateTime=ymd_hms(dateTime),
     # Extract useful time-based components
     hour = hour(dateTime),
     weekday = wday(dateTime, label = TRUE, week_start = 1),
@@ -288,6 +288,62 @@ digitec_data_clean <- digitec_data_clean %>%
     rank_score = round(1 - rank_relative, 5)
   )
 ```
+We change 3 and 5 in `socialShoppingTransactionTypeId` to  `bought` and `shipped`
+
+```{r}
+
+digitec_data_clean <- digitec_data_clean |>
+  filter(socialShoppingTransactionTypeId %in% c(3, 5)) |>
+  mutate(
+    transaction_type = case_when(
+      socialShoppingTransactionTypeId == 3 ~ "bought",
+      socialShoppingTransactionTypeId == 5 ~ "shipped"
+    ),
+    transaction_type = fct_relevel(transaction_type, "bought", "shipped")
+  )|>
+  select(-socialShoppingTransactionTypeId)
+```
+
+looking at the summary we see that some character variables could be converted into factors to gives us an overview also our ranking is including some infinite numbers
+```{r}
+summary(digitec_data_clean)
+```
+
+
+```{r}
+# 1) factoring
+digitec_data_clean <- digitec_data_clean |>
+  mutate(
+    category  = as.factor(category),
+    brandName = as.factor(brandName)
+    )
+# 2) getting rid of inf, too big and too small numbers
+
+# 1) first make Inf -> NA
+digitec_data_clean <- digitec_data_clean |>
+  mutate(
+    rank_score    = ifelse(is.infinite(rank_score),    NA_real_, rank_score),
+    rank_relative = ifelse(is.infinite(rank_relative), NA_real_, rank_relative)
+  )
+
+# 2) quantiles on the finite values
+qs_score <- quantile(digitec_data_clean$rank_score,
+                     probs = c(0.025, 0.975), na.rm = TRUE)
+qs_rel   <- quantile(digitec_data_clean$rank_relative,
+                     probs = c(0.025, 0.975), na.rm = TRUE)
+
+# 3) overwrite with winsorized values
+digitec_data_clean <- digitec_data_clean |>
+  mutate(
+    rank_score    = pmin(pmax(rank_score,    qs_score[1]), qs_score[2]),
+    rank_relative = pmin(pmax(rank_relative, qs_rel[1]),   qs_rel[2])
+  ) |>
+  # 4) drop remaining NAs in these columns
+  filter(!is.na(rank_score), !is.na(rank_relative))
+
+summary(digitec_data_clean)
+```
+
 
 #### 3.1.2. Exploratory Data Analysis (EDA)
 
@@ -322,6 +378,105 @@ ggplot(digitec_data_clean, aes(y = price)) +
   theme_minimal()
 ```
 
+```{r}
+# 1) Keep only the top 20 categories by number of rows
+top_cats <- digitec_data_clean |>
+  count(category, sort = TRUE) |>
+  slice_head(n = 20) |>
+  pull(category)
+
+plot_data <- digitec_data_clean |>
+  filter(category %in% top_cats) |>
+  mutate(
+    # order these 20 by median price
+    category = fct_reorder(category, price, .fun = median, .na_rm = TRUE)
+  )
+
+# 2) Boxplot (static)
+p_cat_box <- ggplot(
+  plot_data,
+  aes(x = category, y = price)
+) +
+  geom_boxplot(outlier.alpha = 0.2) +
+  scale_y_log10() +
+  coord_flip() +
+  labs(
+    title = "Price distribution for top 20 product categories",
+    x = "Category",
+    y = "Price (CHF, log10 scale)"
+  ) +
+  theme_minimal()
+
+p_cat_box
+```
+
+```{r}
+ggplot(digitec_data_clean, aes(x = price)) +
+  geom_histogram(bins = 80, fill = "grey60", colour = "black") +
+  scale_x_log10() +
+  facet_wrap(~ transaction_type, nrow = 1) +
+  labs(
+    title = "Price distribution by transaction type",
+    x = "Price (CHF, log10 scale)",
+    y = "Number of transactions"
+  ) +
+  theme_minimal()
+
+
+ggplot(digitec_data_clean, aes(x = transaction_type, y = price)) +
+  geom_boxplot(outlier.alpha = 0.2) +
+  scale_y_log10() +
+  labs(
+    title = "Price distribution: bought vs shipped",
+    x = "Transaction type",
+    y = "Price (CHF, log10 scale)"
+  ) +
+  theme_minimal()
+
+ggplot(digitec_data_clean, aes(x = weekday, fill = transaction_type)) +
+  geom_bar(position = "dodge") +
+  labs(
+    title = "Number of transactions per weekday by transaction type",
+    x = "Weekday",
+    y = "Number of transactions",
+    fill = "Transaction type"
+  ) +
+  theme_minimal()
+
+# Aggregate counts per date and type
+daily_counts <- digitec_data_clean |>
+  count(date, transaction_type)
+
+ggplot(daily_counts,
+       aes(x = date, y = n, color = transaction_type)) +
+  geom_line(linewidth = 0.7) +
+  labs(
+    title = "Daily number of transactions by type",
+    x = "Date",
+    y = "Number of transactions",
+    color = "Transaction type"
+  ) +
+  theme_minimal()
+
+hourly_counts <- digitec_data_clean |>
+  count(hour, transaction_type)
+
+ggplot(hourly_counts,
+       aes(x = hour, y = n, color = transaction_type)) +
+  geom_line(linewidth = 0.7) +
+  geom_point(size = 1.8) +
+  scale_x_continuous(breaks = 0:23) +
+  labs(
+    title = "Number of transactions by hour of day and type",
+    x = "Hour of day",
+    y = "Number of transactions",
+    color = "Transaction type"
+  ) +
+  theme_minimal()
+```
+
+
+
 #### Top Categories and Brands
 
 Analyzing the most frequent categories and brands provides initial insights into customer preferences. Product categories such as headphones, smartphones, and printer toner dominate sales volumes. Among brands, Apple and Samsung are clear leaders, highlighting the importance of these ecosystems to customers.
@@ -343,21 +498,23 @@ digitec_data_clean %>%
   ) +
   theme_minimal()
 
-# Top 15 brands by transaction count
-digitec_data_clean %>%
-  filter(brandName != "") %>% # Exclude blank brand names
-  count(brandName, sort = TRUE) %>%
-  top_n(15, n) %>%
-  ggplot(aes(x = reorder(brandName, n), y = n)) +
-  geom_col(fill = "steelblue") +
-  coord_flip() +
-  labs(
-    title = "Top 15 Brands",
-    x = "Brand",
-    y = "Number of Transactions"
-  ) +
-  theme_minimal()
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### 3.2. BFS Datasets
 
@@ -679,3 +836,108 @@ final_municipality_data <- final_municipality_data %>% mutate(
 # Display final merged data with computed values (note: removal of orignal values.)
 final_municipality_data
 ```
+### visualisation municipalities
+```{r}
+library(sf)
+# Path 
+muni <- st_read("swissBOUNDARIES/swissBOUNDARIES3D_1_5_TLM_HOHEITSGEBIET.shp")
+
+# Inspect columns to find the BFS field
+names(muni)
+head(muni)
+
+```
+
+```{r}
+# Transactions per municipality (BFS number) in your Digitec data
+digitec_by_bfs <- digitec_data_clean |>
+  group_by(bfsnr) |>
+  summarise(
+    transactions = n(),
+    mean_price   = mean(price, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+
+# Ensure BFS_NUMMER is integer to match bfsnr
+muni2 <- muni |>
+  mutate(BFS_NUMMER = as.integer(BFS_NUMMER))
+
+muni_digitec <- muni2 |>
+  left_join(digitec_by_bfs, by = c("BFS_NUMMER" = "bfsnr"))
+
+# number of transactions per municipality
+ggplot(muni_digitec) +
+  geom_sf(aes(fill = transactions),
+          colour = "grey30", linewidth = 0.05) +
+  scale_fill_viridis_c(
+    option = "C",
+    na.value = "white",
+    name = "Transactions"
+  ) +
+  labs(
+    title = "Number of Digitec transactions per municipality"
+  ) +
+  theme_minimal()
+
+
+
+# Alternative: average price per municipality
+ggplot(muni_digitec) +
+  geom_sf(aes(fill = mean_price),
+          colour = "grey30", linewidth = 0.05) +
+  scale_fill_viridis_c(
+    option = "C",
+    na.value = "white",
+    name = "Mean price (CHF)"
+  ) +
+  labs(
+    title = "Average Digitec transaction price per municipality"
+  ) +
+  theme_minimal()
+
+```
+
+interactive
+
+```{r}
+p_muni <- ggplot(muni_digitec) +
+  geom_sf(
+    aes(
+      fill = transactions,
+      text = paste0(
+        "Gemeinde: ", NAME,
+        "<br>BFS: ", BFS_NUMMER,
+        "<br>Transaktionen: ", ifelse(is.na(transactions), 0, transactions),
+        "<br>Ø Preis: ",
+        ifelse(is.na(mean_price), "n/a",
+               paste0(round(mean_price, 1), " CHF"))
+      )
+    ),
+    colour = "grey30",
+    linewidth = 0.05
+  ) +
+  scale_fill_viridis_c(
+    option = "C",
+    na.value = "white",
+    name = "Transactions"
+  ) +
+  labs(
+    title = "Digitec-Transaktionen pro Gemeinde"
+  ) +
+  theme_minimal()
+
+library(plotly)
+ggplotly(p_muni, tooltip = "text")
+
+```
+
+
+
+
+
+
+
+
+
+
