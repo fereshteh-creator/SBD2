@@ -74,14 +74,13 @@ This finer-grained approach allows for **more localized insights**, capturing de
 
 #### 1.4.2. Research Questions
 
-| Demographic Dimension | Research Question | Usage Example (What Digitec Could Do) |
-|:-----------------------|:-----------------------|:-----------------------|
-| **Population Size** | Do larger cantons generate proportionally more online sales? | Allocate higher Google Ads and social-media budgets to densely populated cantons to maximize reach. |
-| **Gender Composition** | Does male/female ratio affect product mix (e.g., gaming vs. home appliances)? | Adapt homepage banners or email content to match regional gender patterns in purchases. |
-| **Citizenship** | Are foreign residents associated with higher online spending? | Run multilingual (DE/FR/EN) ads and feature global brands (Apple, Samsung) in foreigner-dense cantons. |
-| **Urbanization** | Do urban cantons buy more premium electronics than rural ones? -\> How do we define premium, expensive things are not always premium for example.\* (Sen) | Promote high-end products in cities; highlight budget or refurbished offers in rural regions. |
-| **Age Structure** | Which age profile correlates with online activity? -\> maybe change to something like: How do different age groups' online purchasing differ? let's find a nice way to phrase this questions (Sen)\* | Target younger regions with gaming and mobile ads; older regions with home-office and wellness tech. |
-| **Marital Status** | Do single vs. married populations differ in purchase categories? | Offer “family bundles” or smart-home packages for married cantons; focus on personal devices for single-dominant areas. |
+| **Demographic Dimension** | **Research Question** | **Usage Example (What Digitec Could Do)** |
+|---------------|--------------------|-------------------------------------|
+| **Population Size** | Do larger cantons generate more online purchases? | Focus major campaigns and product launches in high-activity cantons, while using localized ads to increase engagement in smaller regions. |
+| **Gender Composition** | Does the male/female balance influence which product categories are bought? | Promote gaming content in female-dominant cantons and highlight smartphone or smartwatch deals in male-dominant regions. |
+| **Citizenship** | Do cantons with more foreign residents show different tech-buying patterns? | Use multilingual ads (DE/FR/EN) and highlight global brands such as Apple or Samsung in foreign-dense cantons. |
+| **Urbanization** | Do urban regions buy more high-end devices compared to rural regions? | Promote flagships and new releases in urban cantons; emphasize budget or refurbished products in rural areas. |
+| **Marital Status** | Do single vs. married populations differ in what they purchase? | Focus gaming offers in single-dominant cantons; promote smart-home and smartwatch bundles in married-dominant regions. |
 
 ### 1.5. Strategic Impact
 
@@ -288,7 +287,8 @@ digitec_data_clean <- digitec_data_clean %>%
     rank_score = round(1 - rank_relative, 5)
   )
 ```
-We change 3 and 5 in `socialShoppingTransactionTypeId` to  `bought` and `shipped`
+
+We change 3 and 5 in `socialShoppingTransactionTypeId` to `bought` and `shipped`
 
 ```{r}
 
@@ -305,10 +305,10 @@ digitec_data_clean <- digitec_data_clean |>
 ```
 
 looking at the summary we see that some character variables could be converted into factors to gives us an overview also our ranking is including some infinite numbers
+
 ```{r}
 summary(digitec_data_clean)
 ```
-
 
 ```{r}
 # 1) factoring
@@ -343,7 +343,6 @@ digitec_data_clean <- digitec_data_clean |>
 
 summary(digitec_data_clean)
 ```
-
 
 #### 3.1.2. Exploratory Data Analysis (EDA)
 
@@ -475,8 +474,6 @@ ggplot(hourly_counts,
   theme_minimal()
 ```
 
-
-
 #### Top Categories and Brands
 
 Analyzing the most frequent categories and brands provides initial insights into customer preferences. Product categories such as headphones, smartphones, and printer toner dominate sales volumes. Among brands, Apple and Samsung are clear leaders, highlighting the importance of these ecosystems to customers.
@@ -499,22 +496,6 @@ digitec_data_clean %>%
   theme_minimal()
 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ### 3.2. BFS Datasets
 
@@ -836,7 +817,9 @@ final_municipality_data <- final_municipality_data %>% mutate(
 # Display final merged data with computed values (note: removal of orignal values.)
 final_municipality_data
 ```
-### visualisation municipalities
+
+## 7. Visualisation municipalities
+
 ```{r}
 library(sf)
 # Path 
@@ -932,12 +915,487 @@ ggplotly(p_muni, tooltip = "text")
 
 ```
 
+## 8. Visualization Cantons
+
+### 8.1 pre-visualization joins and processing
+
+```{r}
+
+
+library(sf)
+library(dplyr)
+
+canton_lookup <- tibble::tibble(
+  KANTONSNUM = 1:26,
+  canton = c(
+    "ZH","BE","LU","UR","SZ","OW","NW","GL","ZG","FR",
+    "SO","BS","BL","SH","AR","AI","SG","GR","AG","TG",
+    "TI","VD","VS","NE","GE","JU"
+  )
+)
+
+muni_canton <- muni %>%
+  left_join(canton_lookup, by = "KANTONSNUM")
+
+canton_sf <- muni_canton %>%
+  group_by(canton) %>%
+  summarise(geometry = st_union(geometry), .groups = "drop")
+
+canton_sf <- st_cast(canton_sf, "MULTIPOLYGON")
+
+```
+
+```{r}
+canton_map_data <- canton_sf %>%
+  left_join(final_canton_data, by = "canton")
+
+```
+
+```{r}
+#| label: canton-kpi-prep
+
+library(dplyr)
+library(stringr)
+library(tidyr)
+
+## 0.1 Cheap / Expensive segments
+
+price_q <- quantile(data_final_swiss$price, probs = c(0.25, 0.75), na.rm = TRUE)
+cheap_thr <- price_q[1]
+exp_thr   <- price_q[2]
+
+data_final_swiss <- data_final_swiss %>%
+  mutate(
+    price_segment = case_when(
+      price <= cheap_thr ~ "Cheap",
+      price >= exp_thr   ~ "Expensive",
+      TRUE               ~ "Mid"
+    )
+  )
+
+canton_segments <- data_final_swiss %>%
+  count(canton, price_segment) %>%
+  group_by(canton) %>%
+  mutate(share = n / sum(n)) %>%
+  ungroup() %>%
+  pivot_wider(
+    names_from  = price_segment,
+    values_from = share,
+    values_fill = 0
+  ) %>%
+  rename(
+    cheap_share     = Cheap,
+    mid_share       = Mid,
+    expensive_share = Expensive
+  )
+
+final_canton_data <- final_canton_data %>%
+  left_join(canton_segments, by = "canton")
+
+data_final_swiss <- data_final_swiss %>%
+  mutate(
+    product_group = case_when(
+      str_detect(category, "smartphone")                    ~ "Smartphone",
+      str_detect(category, "gaming")                        ~ "Gaming",
+      str_detect(category, "sportuhr-smartwatch")           ~ "Smartwatch",
+      str_detect(category, "einbaukuehlschrank|foehn")      ~ "Home/Appliance",
+      TRUE                                                  ~ "Other"
+    )
+  )
+
+group_shares <- data_final_swiss %>%
+  group_by(canton, product_group) %>%
+  summarise(n = n(), .groups = "drop") %>%
+  group_by(canton) %>%
+  mutate(share = n / sum(n)) %>%
+  ungroup() %>%
+  select(canton, product_group, share) %>%
+  pivot_wider(
+    names_from  = product_group,
+    values_from = share,
+    values_fill = 0
+  ) %>%
+  rename(
+    smartphone_share = Smartphone,
+    gaming_share     = Gaming,
+    smartwatch_share = Smartwatch,
+    home_share       = `Home/Appliance`
+  )
+
+final_canton_data <- final_canton_data %>%
+  left_join(group_shares, by = "canton")
+
+canton_map_data <- canton_sf %>%
+  left_join(final_canton_data, by = "canton")
+```
+
+### 8.2 Average Digitec Transaction Price by Canton
+
+```{r}
+#| label: interactive-canton-meanprice
+#| warning: false
+#| message: false
+
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(scales)
+
+canton_map_data <- canton_map_data %>%
+  mutate(
+    tooltip_mean = paste0(
+      "Canton: ", canton,
+      "<br>Mean order value: ", round(avg_order_value, 1), " CHF",
+      "<br>Total sales: ", round(total_sales, 0), " CHF",
+      "<br>Transactions: ", num_transactions,
+      "<br>Sales per capita: ", round(sales_per_capita, 2), " CHF"
+    )
+  )
+
+p_mean <- ggplot(canton_map_data) +
+  geom_sf(
+    aes(
+      fill = avg_order_value,
+      text = tooltip_mean           
+    ),
+    color = "grey20",
+    linewidth = 0.2
+  ) +
+  scale_fill_viridis_c(
+    option = "C",
+    name = "Mean order value [CHF]"
+  ) +
+  labs(
+    title = "Average Digitec Transaction Price by Canton",
+  ) +
+  theme_minimal()
+
+ggplotly(p_mean, tooltip = "text")
+
+
+```
+
+*“Where do customers spend the most per order?”*
+
+This interactive map shows large regional differences in average order value. Cantons like AI, SZ, ZG and OW show significantly higher spending levels per transaction compared to the national average.
+
+**Marketing implication for Digitec**
+
+Understanding where customers tend to place expensive orders helps identify regions with greater purchasing power and a stronger need for premium electronics. These insights help Digitec to focus premium advertising and exclusive product promotions in the regions where customers are most willing to invest in high-end devices.
+
+Target premium campaigns and up-sell messaging to high-value cantons to maximize revenue per customer.
+
+### 8.3 Digitec Transactions per Canton
+
+```{r}
+
+p_canton_trans <- ggplot(canton_map_data) +
+  geom_sf(
+    aes(
+      fill = num_transactions,
+      text = paste0(
+        "Canton: ", canton,
+        "<br>Total transactions: ", num_transactions,
+        "<br>Total sales: ", round(total_sales, 0), " CHF",
+        "<br>Sales per capita: ", round(sales_per_capita, 2), " CHF",
+        "<br>Mean order value: ", round(avg_order_value, 1), " CHF"
+      )
+    ),
+    colour = "grey30",
+    linewidth = 0.05
+  ) +
+  scale_fill_viridis_c(
+    option = "C",
+    na.value = "white",
+    name = "Transactions"
+  ) +
+  labs(
+    title = "Digitec transactions per canton"
+  ) +
+  theme_minimal()
+
+library(plotly)
+ggplotly(p_canton_trans, tooltip = "text")
+
+```
+
+*“Where is Digitec most active?”*
+
+This map shows the number of purchases made across Switzerland. Cantons with large populations and strong digital adoption, such as Zurich or Bern, naturally generate more transactions, while others show lower activity.
+
+**Marketing implication for Digitec**
+
+Transaction volume highlights where Digitec has its strongest market presence and where further growth is possible. In cantons with low activity, Digitec may need to advertise more or explain delivery options better so that more people start shopping there.
+
+It is best to use the very active cantons such as Zurich or Bern for big product launches, because many people will see them. Cantons with fewer purchases should receive more basic marketing to grow awareness and trust.
+
+### 8.4 Share of smartphone-related purchases by canton
+
+Smartphones are one of Digitec’s strongest product categories: high demand and frequent upgrades. They represent a “universal tech product” bought by almost every demographic group. In short, almost everyone buys a phone, and people replace them often. This makes smartphones a good way to understand general buying behaviour.\
+
+Understanding regional differences in smartphone buying helps Digitec target the right audiences with mobile phone deals, subscription bundles or upgrade
+
+```{r}
+#| label: interactive-canton-smartphone-share
+#| warning: false
+#| message: false
+
+canton_map_data <- canton_map_data %>%
+  mutate(
+    tooltip_smart = paste0(
+      "Canton: ", canton,
+      "<br>Smartphone share: ",
+      percent(smartphone_share, accuracy = 0.1),
+      "<br>Male share: ", percent(share_male, accuracy = 0.1),
+      "<br>Avg order value: ", round(avg_order_value, 1), " CHF"
+    )
+  )
+
+p_smart <- ggplot(canton_map_data) +
+  geom_sf(aes(fill = smartphone_share),
+          colour = "grey20",
+          linewidth = 0.2) +
+  scale_fill_viridis_c(
+    option = "C",
+    labels = percent_format(accuracy = 1),
+    name   = "Smartphone purchase share"
+  ) +
+  labs(
+    title = "Where do people buy smartphones?",
+  ) +
+  theme_minimal()
+
+ggplotly(p_smart, tooltip = "tooltip_smart")
+
+```
+
+*“Where do people buy smartphones most often?”*
+
+This visualization shows the distribution of smartphone purchases across cantons, with some regions like Jura and Graubünden showing exceptionally high smartphone demand.
+
+**Marketing implication for Digitec**
+
+Smartphones are one of Digitec’s most important products, and people replace them regularly. Knowing which regions buy the most smartphones helps Digitec decide where to advertise new phone models, upgrades, and accessories.
+
+The cantons like Jura and Graubünden with the highest smartphone shares are the best places to run phone-focused promotions for Digitec.
+
+### 8.5 Gaming Purchase Share by Canton
+
+Gaming is a very strong and growing market segment for Digitec. It includes consoles, graphics cards, monitors and gaming PCs which are all high-value items. Gaming purchases also strongly correlate with demographics (younger, tech-oriented and often male). This makes gaming an excellent category for targeted marketing because interest varies significantly across regions.
+
+```{r}
+#| label: interactive-canton-gaming
+#| warning: false
+#| message: false
+
+canton_map_data <- canton_map_data %>%
+  mutate(
+    tooltip_gaming = paste0(
+      "Canton: ", canton,
+      "<br>Gaming share: ", percent(gaming_share, accuracy = 0.1),
+      "<br>Male share: ", percent(share_male, accuracy = 0.1),
+      "<br>Avg order value: ", round(avg_order_value, 1), " CHF"
+    )
+  )
+
+p_gaming <- ggplot(canton_map_data) +
+  geom_sf(aes(fill = gaming_share, text = tooltip_gaming),
+          colour = "grey20",
+          linewidth = 0.2) +
+  scale_fill_viridis_c(
+    option = "C",
+    labels = percent_format(accuracy = 1),
+    name   = "Gaming\npurchase share"
+  ) +
+  labs(
+    title = "Where do people buy gaming-related products?",
+  ) +
+  theme_minimal()
+
+ggplotly(p_gaming, tooltip = "text")
+
+```
+
+This map highlights regions where gaming-related products (such as consoles, GPUs, and monitors) are most frequently purchased.
+
+**Marketing implication for Digitec**
+
+Gaming customers often display high engagement and repeated purchasing behavior. Knowing where gaming demand is strongest helps Digitec deliver campaigns that resonate with these audiences, especially during product launches, major game releases, and seasonal sales.
+
+Digitec should focus gaming events, influencer collaborations and bundle promotions in top gaming cantons like Neuchâtel, Glarus and Valais.
+
+### 8.6 Gender Composition by Canton
+
+```{r}
+#| label: interactive-canton-maleshare
+#| warning: false
+#| message: false
+
+canton_map_data <- canton_map_data %>%
+  mutate(
+    tooltip_gender = paste0(
+      "Canton: ", canton,
+      "<br>Male share: ", percent(share_male, accuracy = 0.1),
+      "<br>Avg order value: ", round(avg_order_value, 1), " CHF",
+      "<br>Gaming share: ", percent(gaming_share, accuracy = 0.1),
+      "<br>Smartphone share: ", percent(smartphone_share, accuracy = 0.1)
+    )
+  )
+
+p_gender <- ggplot(canton_map_data) +
+  geom_sf(aes(fill = share_male, text = tooltip_gender),
+          colour = "grey20",
+          linewidth = 0.2) +
+  scale_fill_viridis_c(
+    option = "C",
+    labels = percent_format(accuracy = 1),
+    name   = "Male share"
+  ) +
+  labs(
+    title = "Gender composition by canton",
+    subtitle = "Share of male population and tech preferences (hover)"
+  ) +
+  theme_minimal()
+
+ggplotly(p_gender, tooltip = "text")
+
+```
+
+*“Which regions are more male or female?”*
+
+This map displays the share of male population per canton, with some regions leaning slightly male and others slightly female. When you interact with the map it's also possible to see the insights such as average order value, gaming share and smartphone share from the previous visualizations.
+
+**Marketing implication for Digitec**
+
+Even minor gender imbalances can shape regional purchasing behavior so it's very important for Digitec to take it into account. Male-dominant regions tend to show greater interest in categories such as gaming and wearables, while female-dominant regions lean toward home appliances and lifestyle electronics. These demographic differences provide a valuable insight for audience segmentation.
+
+Digitec should adjust product recommendations and homepage content to reflect gender-driven preferences within each canton. Next visualization will show the difference in purchases made by different gender dominated cantons.
+
+#### 8.6.1 What Do Male vs Female Regions Buy?
+
+```{r}
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+
+gender_category_summary <- final_canton_data %>%
+  select(canton, share_male) %>%
+  mutate(
+    gender_group = if_else(share_male >= median(share_male, na.rm = TRUE),
+                           "male",
+                           "female")
+  ) %>%
+  left_join(group_shares, by = "canton") %>%
+  group_by(gender_group) %>%
+  summarise(
+    Smartphones   = mean(smartphone_share, na.rm = TRUE),
+    Gaming        = mean(gaming_share, na.rm = TRUE),
+    Smartwatches  = mean(smartwatch_share, na.rm = TRUE),
+    `Home appliances` = mean(home_share, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(
+    cols = -gender_group,
+    names_to = "category",
+    values_to = "share"
+  )
+
+ggplot(gender_category_summary,
+       aes(x = category, y = share, fill = gender_group)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = percent_format(accuracy = 0.1)) +
+  labs(
+    title = "What do male vs female regions typically buy?",
+    x = "Product group",
+    y = "Share of purchases",
+    fill = "Region type"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 20, hjust = 1)
+  )
 
 
 
+```
+
+This chart compares product preferences in male-dominant and female-dominant cantons. Although one might expect gaming products to be more popular in male regions, the data shows the opposite: female-dominant regions actually buy slightly more gaming items.
+
+**Marketing implication for Digitec**
+
+This is important because it shows that common assumptions about gender and technology shopping do not always match real behaviour. Digitec should rely on data rather than stereotypes when planning campaigns. Gaming promotions can be targeted in female-dominant areas just as effectively as in male ones and smartphone campaigns are likely to work well across both.
+
+### 8.7 Single vs Married Regions and what Do They Buy.
+
+```{r}
+marital_profile <- final_canton_data %>%
+  mutate(
+    marital_group = if_else(share_single > share_married,
+                            "Single-dominant",
+                            "Married-dominant")
+  ) %>%
+  select(
+    marital_group, smartphone_share, gaming_share,
+    smartwatch_share, home_share
+  ) %>%
+  group_by(marital_group) %>%
+  summarise(across(everything(), mean, na.rm = TRUE)) %>%
+  pivot_longer(cols = -marital_group, names_to = "category", values_to = "share")
+
+ggplot(marital_profile, aes(x = category, y = share, fill = marital_group)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = percent_format(0.1)) +
+  labs(
+    title = "What do single vs married regions buy?",
+    x = "Product category",
+    y = "Purchase share",
+    fill = "Region type"
+  ) +
+  theme_minimal()
+```
+
+This visualization contrasts product preferences between regions dominated by singles and those dominated by married populations.
+
+**Marketing implication for Digitec**
+
+Household structure significantly influences purchasing motivations. Single regions buy slightly more gaming products, while married regions lean a bit more toward smartwatches. Overall, household structure does not strongly affect what people buy, but these small tendencies can help Digitec adjust its marketing. For example gaming works slightly better in single-dominant areas, and smartwatch or wellness-related promotions may perform better in married-dominant ones.
+
+## 9. Monthly Purchase Activity
+
+```{r}
+#| label: monthly-seasonality
+
+library(lubridate)
+
+monthly_sales <- data_final_swiss %>%
+  mutate(month = floor_date(dateTime, "month")) %>%
+  group_by(month) %>%
+  summarise(
+    total_sales = sum(price, na.rm = TRUE),
+    avg_price   = mean(price, na.rm = TRUE),
+    transactions = n()
+  )
+
+ggplot(monthly_sales, aes(x = month, y = transactions)) +
+  geom_line(color = "#0099C6", linewidth = 1.3) +
+  geom_point(color = "#0099C6", size = 2) +
+  labs(
+    title = "Monthly purchase activity",,
+    x = "Month",
+    y = "Number of transactions"
+  ) +
+  theme_minimal()
 
 
+```
 
+*"When do people buy more?"*
 
+This line plot shows transaction trends throughout the year. Even though the dataset ends in October, the pattern clearly indicates rising interest during late spring and summer months.
 
+**Marketing implication for Digitec**
 
+Seasonality strongly influences consumer electronics purchases. Understanding when demand naturally rises allows Digitec to plan promotions, stock allocation and marketing budgets more efficiently. Although holiday-season data in digitec set is missing, the observed patterns still provide useful insight into mid-year behavior.
+
+Digitec can strengthen promotional campaigns before summer peaks and prepare inventory well in advance.
