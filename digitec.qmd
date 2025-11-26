@@ -94,6 +94,7 @@ By merging **online sales data** with **BFS demographic indicators**, Digitec ca
 This first code chunk sets up the R environment by loading all necessary libraries for the analysis and loading the four primary datasets. The chunk is configured with `include: false` to hide it from the final rendered report for a cleaner presentation.
 
 ```{r}
+
 #| label: setup
 #| include: false 
 
@@ -104,11 +105,46 @@ library(lubridate) # To work with date-time values
 library(stringr)   # To work with regex
 library(dlookr)
 library(ggrepel)
-library(stringr)
 library(ggcorrplot)
 library(viridis)
 library(dplyr)
 library(plotly)
+library(sf)
+library(scales)    
+
+# --- GLOBAL DESIGN DEFINITION ---
+# Save the original theme_minimal
+orig_theme_minimal <- ggplot2::theme_minimal
+
+# Override with custom settings
+theme_minimal <- function(base_size = 11, base_family = "", ...) {
+  orig_theme_minimal(base_size = base_size, base_family = base_family, ...) +
+  theme(
+    # 1. Axis text (values on ticks)
+    axis.text = element_text(size = 18, color = "black"),
+    
+    # 2. Axis titles 
+    axis.title = element_text(size = 20, color = "black", margin = margin(t=15, r=15)),
+    
+    # 3. Main Plot Title
+    plot.title = element_text(size = 26, color = "black", margin = margin(b=15)),
+    
+    # 4. Plot Subtitle
+    plot.subtitle = element_text(
+      size = 20, 
+      color = "black", 
+      margin = margin(b=20)
+    ),
+    
+    # 5. Caption 
+    plot.caption = element_text(size = 14, color = "grey30", hjust = 1),
+    
+    # 6. Legends
+    legend.text = element_text(size = 16),
+    legend.title = element_text(size = 18)
+  )
+}
+
 # Load digitect dataset
 load("digitec.RData") # Loads the 'data' object
 
@@ -116,14 +152,8 @@ load("digitec.RData") # Loads the 'data' object
 digitec_data <- get("data")
 
 ## Load BFS data sets
-
-# Load cantonal population data 
 canton_population <- read_excel("population_2023.xlsx")
-
-# Load Municipal population data by gender
 municipal_population_gender <- read_excel("mns-population-by-gender-2023.xlsx")
-
-# Load Municipal population data by age
 municipal_population_age <- read_excel("mns-population-by-age-2023.xlsx")
 
 ```
@@ -322,7 +352,7 @@ After cleaning the data, an exploratory analysis was performed on the `data_clea
 
 An analysis of product prices reveals a heavily right-skewed distribution. A large majority of transactions are for lower-priced items, while a long tail of high-value purchases contributes significantly to total revenue. The boxplot identifies these high-priced items as statistical outliers. For a marketing analysis, however, these are valid and highly valuable data points that must be retained.
 
-```{r eda-price-plots}
+```{r}
 #| label: eda-price-plots
 
 # Histogram to visualize the price distribution
@@ -383,6 +413,7 @@ ggplot(digitec_data_clean, aes(x = "", y = price)) +
 ```
 
 We plot median price against number of transactions for all categories.To understand which categories are cheap or expensive and how often they are bought.
+
 ```{r}
 
 #| label: category-price-summary
@@ -429,7 +460,6 @@ p_cat_scatter <- ggplot(
 ggplotly(p_cat_scatter, tooltip = "text")
 
 ```
-
 
 ```{r}
 # 1) Keep only the top 20 categories by number of rows
@@ -534,7 +564,7 @@ ggplot(hourly_counts,
 
 Analyzing the most frequent categories and brands provides initial insights into customer preferences. Product categories such as headphones, smartphones, and printer toner dominate sales volumes. Among brands, Apple and Samsung are clear leaders, highlighting the importance of these ecosystems to customers.
 
-```{r eda-category-brand-plots}
+```{r}
 #| label: eda-category-brand-plots
 
 # Top 15 product categories by transaction count
@@ -594,7 +624,8 @@ colnames(municipal_population_gender) <- clean_names(colnames(municipal_populati
 
 Then within the age and gender datasets we can remove the unnecessary rows, rename the column and extract the bfsnr from the municipalities.
 
-```{r row-removal}
+```{r}
+#| label: row-removal
 
 # Rename first column to bfsnr like in the digitec dataset
 colnames(municipal_population_age)[1] <- "bfsnr"
@@ -642,7 +673,7 @@ municipal_population_age_clean
 
 For the canton level we need to map the canton names found in the canton BFS dataset to their official abbreviations used in the transaction dataset.
 
-```{r canton-code-mapping}
+```{r}
 #| label: canton-code-mapping
 
 
@@ -687,6 +718,7 @@ cleaned_canton_population <- canton_population %>%
 
 # Display the processed excel data
 cleaned_canton_population
+
 ```
 
 ## 4. Validation and Final Aggregation
@@ -695,7 +727,7 @@ cleaned_canton_population
 
 An initial aggregation of the cleaned data surprisingly resulted in 29 groups instead of the 26 expected Swiss cantons. An investigation of the `canton` column revealed that the dataset also contained transactions from neighboring countries, which needed to be excluded for this analysis.
 
-```{r validation-step}
+```{r}
 #| label: validation-step
 
 # A list of valid Swiss canton abbreviations
@@ -714,7 +746,7 @@ non_swiss_codes
 
 Based on this finding, the dataset was filtered to include only transactions from the 26 Swiss cantons. Afterward, the final aggregation was performed to create the analysis-ready dataset.
 
-```{r final-aggregation}
+```{r}
 #| label: final-aggregation
 
 # Filter the dataset to retain only transactions from Swiss cantons
@@ -738,7 +770,7 @@ canton_data_final <- data_final_swiss %>%
 
 The result of this cleaning and preprocessing workflow is the `canton_data_final` DataFrame. It contains 26 rows, one for each Swiss canton, with the key performance indicators required for further analysis. This dataset is now ready to be merged with the BFS population data.
 
-```{r display-final-table}
+```{r}
 #| label: display-final-table
 #| echo: false
 
@@ -879,6 +911,7 @@ final_municipality_data
 ## 7. Visualization Cantons
 
 We first connect the cleaned Digitec transactions to the official municipality geometries.
+
 ```{r}
 library(sf)
 # Path 
@@ -888,6 +921,7 @@ muni <- st_read("swissBOUNDARIES/swissBOUNDARIES3D_1_5_TLM_HOHEITSGEBIET.shp")
 names(muni)
 
 ```
+
 ### 7.1 pre-visualization joins and processing
 
 ```{r}
@@ -1332,20 +1366,16 @@ This visualization contrasts product preferences between regions dominated by si
 
 Household structure significantly influences purchasing motivations. Single regions buy slightly more gaming products, while married regions lean a bit more toward smartwatches. Overall, household structure does not strongly affect what people buy, but these small tendencies can help Digitec adjust its marketing. For example gaming works slightly better in single-dominant areas, and smartwatch or wellness-related promotions may perform better in married-dominant ones.
 
-
-
-
 ## 8. Visualisation municipalities
 
 In this section we use the municipality level to answer our questions.
 
-We therefore combine Digitec transactions with the official Swiss municipality boundaries and the BFS municipality indicators.
------------------------------------------------------------------------------------
+## We therefore combine Digitec transactions with the official Swiss municipality boundaries and the BFS municipality indicators.
 
 ### 8.1 Mapping Digitec activity by municipality
 
-
 We aggregate transactions by BFS municipality number and join these indicators back to the municipality polygons.
+
 ```{r}
 # Transactions per municipality (BFS number) in Digitec data
 digitec_by_bfs <- digitec_data_clean |>
@@ -1366,6 +1396,7 @@ muni_digitec <- muni2 |>
 
 names(muni_digitec)
 ```
+
 ### 8.2 Comparison to the conton data
 
 We then create interactive maps that show the number of Digitec transactions and the average order price per municipality.
@@ -1400,13 +1431,12 @@ p_muni <- ggplot(muni_digitec) +
 ggplotly(p_muni, tooltip = "text")
 
 ```
+
 *“Where is Digitec most active?”*
 
-We see that Zürich with 10923 has the highest number of transactions, then we have Bern with 3269, Basel 3243, Winterthur 2828, Geneve 2797 and Lausane 2315. Other municipalities have only transactions of a few hundred or less than a hundred. Which makes sense because these municipalities have the highest populations. 
+We see that Zürich with 10923 has the highest number of transactions, then we have Bern with 3269, Basel 3243, Winterthur 2828, Geneve 2797 and Lausane 2315. Other municipalities have only transactions of a few hundred or less than a hundred. Which makes sense because these municipalities have the highest populations.
 
 If we compare this to what we saw in cantonal analysis we see that its following the same logic. Same contons specially zurich has the highest transactions but this viualisation also reviles the truth that most of the transactions are from the central cities of these cantons.
-
-
 
 ```{r}
 p_muni_price <- ggplot(muni_digitec) +
@@ -1439,18 +1469,17 @@ p_muni_price <- ggplot(muni_digitec) +
 ggplotly(p_muni_price, tooltip = "text")
 
 ```
+
 *“Where do customers spend the most per order?”*
 
-The median price seems to be very different for example the highest average price is from Ronmont which is 1513 CHF but we have to consider that, this was the only transaction from there.
-In comparison to to cantonal analysis most of the higher prices are in the center and south of Switzerland and less concentrated in the east side.
+The median price seems to be very different for example the highest average price is from Ronmont which is 1513 CHF but we have to consider that, this was the only transaction from there. In comparison to to cantonal analysis most of the higher prices are in the center and south of Switzerland and less concentrated in the east side.
 
 To analyse how municipal characteristics are related to Digitec activity, we compute Pearson correlations between:
 
-- number of transactions  
-- average order price and total sales  
-- per-capita indicators  
-- key demographic shares (age structure and share of foreign residents).
-
+-   number of transactions\
+-   average order price and total sales\
+-   per-capita indicators\
+-   key demographic shares (age structure and share of foreign residents).
 
 ```{r}
 #| label: muni-combined
@@ -1521,8 +1550,8 @@ Cant really explain the price with correlations. Transaction of course do strong
 
 ### 8.3 Cheapest and most expensive categories
 
-
 Pick the cheapest and most expensive categories
+
 ```{r}
 
 #| label: pick-cheap-expensive-categories
@@ -1538,6 +1567,7 @@ cheap_cats <- cat_summary |>
   pull(category)
 
 ```
+
 We then identify the 3 cheapest and 3 most expensive categories, municipalities and brands by median price.
 
 ```{r}
@@ -1643,6 +1673,7 @@ Overall, this means that “cheap” municipalities are characterised by many sm
 ### 8.4 Clustering municipalities
 
 We investigate whether municipalities can be grouped into behaviourally similar segments based only on Digitec purchase patterns.
+
 ```{r}
 #| label: muni-behaviour-features
 #| warning: false
@@ -1695,6 +1726,7 @@ muni_behaviour <- digitec_bought_seg |>
 muni_behaviour
 
 ```
+
 k-means on behavioural features (compare k)
 
 ```{r}
@@ -1729,7 +1761,9 @@ cluster_results_df <- bind_rows(cluster_results)
 cluster_results_df
 
 ```
+
 Elbow + silhouette plots:
+
 ```{r}
 # Elbow plot
 p_elbow <- ggplot(cluster_results_df,
@@ -1762,6 +1796,7 @@ ggplotly(p_sil)
 ```
 
 Choosing the best number of clusters:
+
 ```{r}
 best_row <- cluster_results_df |>
   slice_max(avg_sil, n = 1)
@@ -1777,7 +1812,9 @@ muni_behaviour_clusters <- muni_behaviour |>
 muni_behaviour_clusters
 
 ```
+
 Lets look at these clusters on the map
+
 ```{r}
 #| label: muni-behaviour-cluster-map
 #| warning: false
@@ -1821,7 +1858,9 @@ p_cluster_map <- ggplot() +
 ggplotly(p_cluster_map)
 
 ```
+
 And in the PCA space:
+
 ```{r}
 #| label: cluster-pca-scatter
 #| warning: false
@@ -1882,6 +1921,7 @@ ggplotly(p_pca, tooltip = "text")
 ```
 
 Finally, we summarise each cluster in terms of its average behavioural indicators and basic demographics to see what each of these clusters mean.
+
 ```{r}
 #| label: cluster-profile-meaning
 #| warning: false
@@ -1930,21 +1970,7 @@ cluster_profile
 
 ```
 
-
 By clustering municipalities purely on Digitec purchasing behaviour (order volume, basket value, price segments and category mix) we obtain five clearly separated segments. At one end we find low-volume, price-sensitive municipalities (Cluster 1) and small, specialised premium buyers (Cluster 3). At the other end are premium-oriented municipalities with high basket values (Cluster 4) and a handful of big-city “power users” with very broad product demand and massive order volumes (Cluster 5). The largest group (Cluster 2) consists of mid-range, all-round buyers with balanced cheap/expensive purchases and a broad category mix. These segments give Digitec a compact way to target campaigns: discount-driven offers for bargain municipalities, flagship launches for premium segments, and broad, always-on marketing in large city hubs.
-
-
-
-     
-
-
-
-
-
-
-
-
-
 
 ## 9. Monthly Purchase Activity
 
