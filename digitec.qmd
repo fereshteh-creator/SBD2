@@ -661,11 +661,9 @@ final_municipality_data <- municipality_merged_data %>%
 # Display final merged data with computed values
 final_municipality_data
 ```
-
 ## 7. Data visualization
 
 We first want to fin out which categories have the widest distribution:
-
 ```{r}
 #| label: category-price-spread
 #| warning: false
@@ -676,7 +674,7 @@ library(forcats)
 library(ggplot2)
 library(scales)
 
-# 1. Compute spread + transaction count per category
+# --- 1) Compute spread + transaction count per category ----------------
 spread_stats <- digitec_data_clean |>
   group_by(category) |>
   summarise(
@@ -687,35 +685,43 @@ spread_stats <- digitec_data_clean |>
     .groups = "drop"
   )
 
-# 2. Rank categories by:
-#    - widest IQR first
-#    - within that, more transactions first
-spread_stats_top <- spread_stats |>
-  arrange(desc(iqr_price), desc(n_obs)) |>
-  slice_head(n = 10)
 
-top_spread_cats <- spread_stats_top$category
+top_n_by_transactions <- 30  # first filter: keep 30 categories with most transactions
+top_n_by_spread       <- 10  # second filter: from those, keep 10 with widest IQR
 
-# 3. Plot boxplots for those top 10 categories
+# --- 2) First filter by transactions, then by widest distribution ------
+# step 1: keep categories with most transactions
+spread_stats_tx <- spread_stats |>
+  arrange(desc(n_obs)) |>
+  slice_head(n = top_n_by_transactions)
+
+# step 2: from these, keep the ones with the widest price distribution
+spread_stats_final <- spread_stats_tx |>
+  arrange(desc(iqr_price)) |>
+  slice_head(n = top_n_by_spread)
+
+final_cats <- spread_stats_final$category
+
+# --- 3) Plot: categories ordered by IQR (widest at top) ---------------
 plot_spread <- digitec_data_clean |>
-  filter(category %in% top_spread_cats) |>
+  filter(category %in% final_cats) |>
   mutate(
-    # order by IQR (descending) using the stats we just computed
-    category = fct_reorder(
-      category,
-      price,
-      .fun   = IQR,
-      .desc  = TRUE
-    )
+    category = factor(category, levels = rev(final_cats))  # first = widest IQR
   )
 
 p_spread <- ggplot(plot_spread, aes(x = category, y = price)) +
-  geom_boxplot(outlier.alpha = 0.15,
-               fill = viridis::viridis(1, begin = 0.4, end = 0.6)) +
+  geom_boxplot(
+    outlier.alpha = 0.15,
+    fill = viridis::viridis(1, begin = 0.4, end = 0.6)
+  ) +
   coord_flip() +
   labs(
-    title = "Top 10 Categories with Widest Price Distribution",
-    subtitle = "Ranked by IQR (primary) and number of transactions (secondary)",
+    title = "Top Categories by Transactions and Price Spread",
+    subtitle = paste0(
+      "First filtered to ", top_n_by_transactions,
+      " categories with most transactions,\nthen ",
+      top_n_by_spread, " with widest price distribution (IQR); plot ordered by IQR (descending)"
+    ),
     x = "Category",
     y = "Price (CHF)"
   ) +
@@ -723,11 +729,24 @@ p_spread <- ggplot(plot_spread, aes(x = category, y = price)) +
 
 p_spread
 
+# --- 4) Small table: show those categories with stats ------------------
+top_spread_table <- spread_stats_final |>
+  mutate(
+    median_price = round(median_price, 1),
+    iqr_price    = round(iqr_price, 1),
+    sd_price     = round(sd_price, 1)
+  )
+
+top_spread_table
+
+
 
 
 ```
 
-Lets focus on Notebook and PC and see if different cantons and municipalities prefer different prices!
+Lets focus on notebooks and see if different regional areas prefer different prices!
+
+
 
 ### 7.1 Pre-visualization joins and processing
 
@@ -774,6 +793,298 @@ canton_map_data <- canton_sf %>%
   left_join(final_canton_data, by = "canton")
 
 ```
+
+
+
+### 7.2 Notebooks 
+
+Notebook transactions & prices per canton
+```{r}
+#| label: canton-notebook-agg
+#| warning: false
+#| message: false
+
+library(dplyr)
+library(ggplot2)
+library(viridis)
+library(scales)
+
+# category name for notebooks (from your earlier plot)
+notebook_cat <- "notebook-6"
+
+# Aggregate notebook transactions per canton
+notebook_canton <- digitec_data_clean |>
+  filter(
+    canton %in% valid_swiss_cantons,
+    category == notebook_cat,
+  ) |>
+  group_by(canton) |>
+  summarise(
+    n_notebook          = n(),
+    median_price_nb     = median(price, na.rm = TRUE),
+    mean_price_nb       = mean(price,   na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Join notebook stats to canton geometry
+canton_notebook_sf <- canton_sf |>
+  left_join(notebook_canton, by = "canton")
+
+canton_notebook_sf <- canton_sf |>
+  left_join(notebook_canton, by = "canton") |>
+  mutate(
+    # labels for transactions:  ZH (1'234)
+    label_nb_trans = ifelse(
+      is.na(n_notebook),
+      canton,
+      paste0(canton, " (", scales::comma(n_notebook), ")")
+    ),
+    # labels for prices:  ZH (1'200)
+    label_nb_price = ifelse(
+      is.na(median_price_nb),
+      canton,
+      paste0(canton, " (", round(median_price_nb), ")")
+    )
+  )
+
+
+
+```
+
+Map 1 – Notebook transactions per canton
+```{r}
+#| label: map-notebook-transactions-canton
+#| warning: false
+#| message: false
+
+p_nb_trans_canton <- ggplot(canton_notebook_sf) +
+  geom_sf(
+    aes(fill = n_notebook),
+    colour = "grey30",
+    linewidth = 0.2
+  ) +
+  geom_sf_text(
+    aes(label = label_nb_trans),
+    colour = "darkgray",
+    size   = 3
+  ) +
+  scale_fill_viridis_c(
+    option   = "C",
+    na.value = "white",
+    labels   = scales::comma,
+    name     = "Notebook-\nTransactions"
+  ) +
+  labs(
+    title    = "Notebook Transaction Numbers",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal()
+
+p_nb_trans_canton
+
+
+
+```
+Map 2 – Median notebook price per canton
+```{r}
+#| label: map-notebook-price-canton
+#| warning: false
+#| message: false
+
+p_nb_price_canton <- ggplot(canton_notebook_sf) +
+  geom_sf(
+    aes(fill = median_price_nb),
+    colour = "grey30",
+    linewidth = 0.2
+  ) +
+  geom_sf_text(
+    aes(label = label_nb_price),
+    colour = "darkgray",
+    size   = 3
+  ) +
+  scale_fill_viridis_c(
+    option   = "C",
+    na.value = "white",
+    labels   = scales::label_comma(suffix = " CHF"),
+    name     = "Median-\nNotebookpreis"
+  ) +
+  labs(
+    title    = "Median Notebook Price",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal()
+
+p_nb_price_canton
+
+
+
+```
+Lets see if that has anything to do with age distribution
+```{r}
+#| label: nb-age-extremes
+#| warning: false
+#| message: false
+#| fig-height: 6
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+
+# 1) Join notebook counts with canton demographics
+nb_demo <- notebook_canton |>
+  left_join(final_canton_data, by = "canton")
+
+# 2) Find canton with most and least notebook transactions
+top_canton <- nb_demo |>
+  filter(n_notebook == max(n_notebook, na.rm = TRUE)) |>
+  slice(1) |>
+  pull(canton)
+
+bottom_canton <- nb_demo |>
+  filter(n_notebook == min(n_notebook, na.rm = TRUE)) |>
+  slice(1) |>
+  pull(canton)
+
+top_canton; bottom_canton   # optional: see which they are
+
+# 3) Prepare age shares for just these two cantons
+age_compare <- nb_demo |>
+  filter(canton %in% c(top_canton, bottom_canton)) |>
+  select(canton,
+         share_age_0_19,
+         share_age_20_64,
+         share_age_65_plus) |>
+  pivot_longer(
+    cols = starts_with("share_age"),
+    names_to = "age_group",
+    values_to = "share"
+  ) |>
+  mutate(
+    age_group = factor(
+      age_group,
+      levels = c("share_age_0_19", "share_age_20_64", "share_age_65_plus"),
+      labels  = c("0–19", "20–64", "65+")
+    )
+  )
+
+# 4) Plot: age groups for canton with most vs least notebook transactions
+ggplot(age_compare,
+       aes(x = age_group, y = share, fill = canton)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  labs(
+    title    = "Age structure: canton with most vs least notebook transactions",
+    x        = "Age group",
+    y        = "Share of population",
+    fill     = "Canton"
+  ) +
+  theme_minimal()
+
+```
+Or gender?
+```{r}
+#| label: nb-gender-extremes
+#| warning: false
+#| message: false
+#| fig-height: 5
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(scales)
+
+# 1) Get canton with most and least notebook transactions (again, for safety)
+nb_extremes <- nb_demo |>
+  arrange(desc(n_notebook)) |>
+  slice(c(1, n())) |>
+  mutate(
+    position = c("Most notebook transactions", "Least notebook transactions")
+  )
+
+# 2) Build male/female shares for just these two cantons
+gender_compare <- nb_extremes |>
+  transmute(
+    position,
+    canton,
+    share_male,
+    share_female = 1 - share_male
+  ) |>
+  pivot_longer(
+    cols = c(share_male, share_female),
+    names_to = "gender",
+    values_to = "share"
+  ) |>
+  mutate(
+    gender = ifelse(gender == "share_male", "Male", "Female")
+  )
+
+gender_compare
+
+# 3) Plot: male vs female for most vs least notebook cantons
+ggplot(gender_compare,
+       aes(x = gender, y = share, fill = position)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  labs(
+    title = "Gender structure: canton with most vs least notebook transactions",
+    x     = "Gender",
+    y     = "Share of population",
+    fill  = "Canton type"
+  ) +
+  theme_minimal()
+
+```
+
+
+
+Or even foreigner ratio
+```{r}
+#| label: nb-foreign-extremes
+#| warning: false
+#| message: false
+#| fig-height: 5
+
+library(dplyr)
+library(ggplot2)
+library(scales)
+
+# 1) Canton with most and least notebook transactions
+nb_extremes <- nb_demo |>
+  arrange(desc(n_notebook)) |>
+  slice(c(1, n())) |>
+  mutate(
+    position = c("Most notebook transactions", "Least notebook transactions")
+  )
+
+# 2) Foreign share for these two cantons
+foreign_compare <- nb_extremes |>
+  select(position, canton, share_foreign)
+
+foreign_compare
+
+# 3) Plot: x = canton code, fill = "most / least"
+ggplot(foreign_compare,
+       aes(x = canton, y = share_foreign, fill = position)) +
+  geom_col() +
+  scale_y_continuous(labels = percent_format(accuracy = 1)) +
+  labs(
+    title    = "Foreign resident share",
+    subtitle = "Canton with most vs least notebook transactions",
+    x        = "Canton",
+    y        = "Share of foreign residents",
+    fill     = NULL
+  ) +
+  theme_minimal()
+
+
+
+
+```
+
+
+
+
 
 ```{r}
 #| label: canton-kpi-prep
@@ -917,7 +1228,7 @@ canton_map_data <- canton_map_data %>%
 
 ```
 
-### 7.2 Gaming sales across Switzerland
+### 7.3 Gaming sales across Switzerland
 
 To understand regional differences in gaming demand, we first aggregated Nintendo, PlayStation, Xbox and Ugreen (Switch-related) transactions to the canton level. We then merged these data with demographic and geographic information from the Federal Statistical Office.
 
@@ -1133,8 +1444,20 @@ Vaud’s adult population buys premium Nintendo consoles and major franchises li
 
 This means Nintendo advertising in Vaud should not focus only on kids but it must mostly target adult gamers who choose Switch for themselves.
 
-#### Summary
+#### Gamming commercial recommendations
 
 Zurich, Bern, Aargau, St. Gallen, and Geneva all show a clear preference for PlayStation. These cantons are also the largest contributors to gaming sales overall. So, Digitec should push **PS5 bundles, controllers, PS Plus subscriptions, and headline releases** heavily in these markets.
 
 Vaud is the only major canton where Nintendo dominates PlayStation. Adults (20–64) drive most of these sales, especially premium Switch models and Zelda titles. Campaigns here should focus on **adult Nintendo players**, premium Switch upgrades and promotions on favourite fanchises like Zelda.
+
+
+
+
+
+
+
+
+
+
+
+
