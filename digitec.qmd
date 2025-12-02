@@ -96,7 +96,7 @@ This first code chunk sets up the R environment by loading all necessary librari
 ```{r}
 
 #| label: setup
-#| include: false 
+#| include: false
 
 # Load all required libraries for the project
 library(tidyverse) # For data manipulation (dplyr) and visualization (ggplot2)
@@ -768,7 +768,7 @@ canton_data_final <- data_final_swiss %>%
 
 #### Final Aggregated Digitec Dataset
 
-The result of this cleaning and preprocessing workflow is the `canton_data_final` DataFrame. It contains 26 rows, one for each Swiss canton, with the key performance indicators required for further analysis. This dataset is now ready to be merged with the BFS population data.
+The result of this cleaning and preprocessing workflow is the `canton_data_final` DataFrame. It contains 26 rows, one for each Swiss canton, with the key performance indicators required for further analysis (total number of sales, number of transactions, average value of orders, most ordered brand, most ordered category). This dataset is now ready to be merged with the BFS population data.
 
 ```{r}
 #| label: display-final-table
@@ -782,6 +782,7 @@ head(canton_data_final, n = 26)
 
 ```{r}
 
+# Calculate number of transactions, average price, and median price for each bfsnr
 digitec_grouped <- digitec_data_clean %>%
   group_by(bfsnr) %>%
   summarise(
@@ -792,11 +793,11 @@ digitec_grouped <- digitec_data_clean %>%
   )
 ```
 
-## 5. Data Merging
+## 5. Canton Dataset
 
 ### 5.1. Canton Level Dataset Merge
 
-```{r merge-canton-level-datasets}
+```{r}
 
 # Merge on canton code
 canton_merged_data <- left_join(canton_data_final, cleaned_canton_population, by = "canton")
@@ -805,9 +806,50 @@ canton_merged_data <- left_join(canton_data_final, cleaned_canton_population, by
 canton_merged_data
 ```
 
-### 5.2. Municipality Level Dataset Merge
+### 5.2. Canton Level Post-merge Aggregation
 
-```{r merge-municipality-level-merge}
+To enable meaningful comparisons across cantons we add derived indicators. These indicators normalize raw counts into ratios and per-capita metrics, making them suitable for correlation analysis, segmentation, and strategic targeting.
+
+The metrics are the following:
+
+1.  Gender ratios
+2.  Citizenship ratios
+3.  Age structure
+4.  Marital status
+
+```{r}
+
+ final_canton_data <- canton_merged_data %>% mutate( 
+  
+  # Economic indicators
+  sales_per_capita = total_sales / total,
+  transactions_per_capita = num_transactions / total,
+  
+  # Gender ratios
+  share_male = male_population / total,
+
+  # Citizenship ratios
+  share_foreign = foreigner_citizenship / total,
+  
+  # Age structure
+  share_age_0_19 = `age_from_0-19` / total,
+  share_age_20_64 = `age_from_20-64` / total,
+  share_age_65_plus = age_from_65_and_over / total,
+  
+  # Marital status
+  share_single = single_status / total,
+  share_married = married_status / total,
+)
+ 
+# Display final merged data with computed values (note: removal of original values.)
+final_canton_data
+```
+
+## 6. Municipality Dataset
+
+### 6.1 Municipality Level Dataset Merge
+
+```{r}
 
 # Merge age municipality dataset on bfsnr code
 municipality_merged_data <- digitec_grouped %>%
@@ -821,60 +863,13 @@ municipality_merged_data <- municipality_merged_data %>%
 municipality_merged_data
 ```
 
-## 6. Post-merge Aggregation
+### 6.2 Municipality Level Post-merge Aggregation
 
-To enable meaningful comparisons across cantons we add derived indicators. These indicators normalize raw counts into ratios and per-capita metrics, making them suitable for correlation analysis, segmentation, and strategic targeting.
-
-The metrics are the following:
+The metrics for the municipalities are the following:
 
 1.  Gender ratios
 2.  Citizenship ratios
 3.  Age structure
-4.  Urbanization
-5.  Marital status
-
-### 6.1 Implementation in R
-
-#### **Canton**
-
-```{r}
-
- final_canton_data <- canton_merged_data %>% mutate( 
-  
-  # Economic indicators
-  sales_per_capita = total_sales / total,
-  transactions_per_capita = num_transactions / total,
-  
-  # Gender ratios
-  share_male = male_population / total,
-  share_female = female_population / total,
-  
-  # Citizenship ratios
-  share_swiss = swiss_citizenship / total,
-  share_foreign = foreigner_citizenship / total,
-  
-  # Age structure
-  share_age_0_19 = `age_from_0-19` / total,
-  share_age_20_64 = `age_from_20-64` / total,
-  share_age_65_plus = age_from_65_and_over / total,
-  
-  # Urbanization
-  share_urban = urban_commune / total,
-  share_intermediate = intermediate_commune / total,
-  share_rural = rural_commune / total,
-  
-  # Marital status
-  share_single = single_status / total,
-  share_married = married_status / total,
-  share_widowed = widowed_status / total,
-  share_divorced = divorced_status / total
-)
- 
-# Display final merged data with computed values (note: removal of orignal values.)
-final_canton_data
-```
-
-#### Municipality
 
 ```{r}
 
@@ -892,10 +887,8 @@ final_municipality_data <- municipality_merged_data %>%
 
     # Gender ratios
     share_male   = male_population   / total_pop,
-    share_female = female_population / total_pop,
-  
+
     # Citizenship ratios
-    share_swiss   = swiss_citizenship    / total_pop,
     share_foreign = foreigner_citizenship / total_pop,
   
     # Age structure
