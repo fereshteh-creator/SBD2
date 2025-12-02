@@ -344,244 +344,8 @@ summary(digitec_data_clean)
 
 ```
 
-#### 3.1.2. Exploratory Data Analysis (EDA)
-
-After cleaning the data, an exploratory analysis was performed on the `data_clean` set to understand fundamental patterns before aggregation.
-
-#### Price Distribution
-
-An analysis of product prices reveals a heavily right-skewed distribution. A large majority of transactions are for lower-priced items, while a long tail of high-value purchases contributes significantly to total revenue. The boxplot identifies these high-priced items as statistical outliers. For a marketing analysis, however, these are valid and highly valuable data points that must be retained.
-
-```{r}
-#| label: eda-price-plots
-
-# Histogram to visualize the price distribution
-ggplot(digitec_data_clean, aes(x = price)) +
-  geom_histogram(bins = 100, fill = "steelblue", color = "black") +
-  labs(
-    title = "Distribution of Product Prices",
-    subtitle = "Strong right-skewed distribution with most items in the lower price range",
-    x = "Price (CHF)",
-    y = "Number of Transactions"
-  ) +
-  theme_minimal()
-
-# Boxplot
-# 1) Compute "outlier" threshold (1.5 * IQR above Q3)
-q1  <- quantile(digitec_data_clean$price, 0.25, na.rm = TRUE)
-q3  <- quantile(digitec_data_clean$price, 0.75, na.rm = TRUE)
-iqr <- q3 - q1
-upper_whisker <- q3 + 1.5 * iqr
-
-# 2) Outliers = anything above upper whisker
-outliers <- digitec_data_clean %>%
-  filter(price > upper_whisker)
-
-# 3) Only label the top 10 most expensive outliers
-outliers_top <- outliers %>%
-  slice_max(price, n = 10) %>%
-  mutate(
-    # Brand + category in one short label
-    label_bc = str_trunc(
-      paste0(brandName, " – ", as.character(category)),
-      width = 30   # shorten if it gets too long
-    )
-  )
-
-ggplot(digitec_data_clean, aes(x = "", y = price)) +
-  geom_boxplot(fill = "steelblue", outlier.shape = NA) +
-  geom_point(
-    data = outliers,
-    aes(y = price),
-    colour = "red",
-    size = 1
-  ) +
-  geom_text_repel(
-    data = outliers_top,
-    aes(y = price, label = label_bc),
-    size = 5,
-    max.overlaps = 20
-  ) +
-  coord_cartesian(ylim = c(upper_whisker, max(outliers_top$price) * 1.05)) +
-  labs(
-    title = "High-priced outliers in Digitec transactions",
-    subtitle = "Top 10 most expensive outliers labelled by brand and category",
-    x = NULL,
-    y = "Price (CHF)"
-  ) +
-  theme_minimal()
-```
-
-We plot median price against number of transactions for all categories.To understand which categories are cheap or expensive and how often they are bought.
-
-```{r}
-
-#| label: category-price-summary
-
-# only bought
-digitec_bought <- digitec_data_clean |>
-  filter(transaction_type == "bought")
-
-cat_summary <- digitec_bought |>
-  group_by(category) |>
-  summarise(
-    n_transactions = n(),
-    mean_price     = mean(price, na.rm = TRUE),
-    median_price   = median(price, na.rm = TRUE),
-    p90_price      = quantile(price, 0.9, na.rm = TRUE),
-    .groups = "drop"
-  ) |>
-  arrange(desc(median_price))
 
 
-p_cat_scatter <- ggplot(
-  cat_summary,
-  aes(
-    x = n_transactions,
-    y = median_price,
-    text = paste0(
-      "Kategorie: ", category,
-      "<br>Medianpreis: ", round(median_price, 1), " CHF",
-      "<br>Ø Preis: ", round(mean_price, 1), " CHF",
-      "<br>90%-Quantil: ", round(p90_price, 1), " CHF",
-      "<br>Transaktionen: ", n_transactions
-    )
-  )
-) +
-  geom_point(alpha = 0.7) +
-  scale_x_log10() +
-  labs(
-    title = "Category price levels vs. volume",
-    x = "Number of transactions",
-    y = "Median Price (CHF)"
-  ) +
-  theme_minimal()
-
-ggplotly(p_cat_scatter, tooltip = "text")
-
-```
-
-```{r}
-# 1) Keep only the top 20 categories by number of rows
-top_cats <- digitec_data_clean |>
-  count(category, sort = TRUE) |>
-  slice_head(n = 20) |>
-  pull(category)
-
-plot_data <- digitec_data_clean |>
-  filter(category %in% top_cats) |>
-  mutate(
-    # order these 20 by median price
-    category = fct_reorder(category, price, .fun = median, .na_rm = TRUE)
-  )
-
-# 2) Boxplot (static)
-p_cat_box <- ggplot(
-  plot_data,
-  aes(x = category, y = price)
-) +
-  geom_boxplot(outlier.alpha = 0.2) +
-  scale_y_log10() +
-  coord_flip() +
-  labs(
-    title = "Price distribution for top 20 product categories",
-    x = "Category",
-    y = "Price (CHF, log10 scale)"
-  ) +
-  theme_minimal()
-
-p_cat_box
-```
-
-#### Bought or shipped?
-
-```{r}
-ggplot(digitec_data_clean, aes(x = price)) +
-  geom_histogram(bins = 80, fill = "grey60", colour = "black") +
-  scale_x_log10() +
-  facet_wrap(~ transaction_type, nrow = 1) +
-  labs(
-    title = "Price distribution by transaction type",
-    x = "Price (CHF, log10 scale)",
-    y = "Number of transactions"
-  ) +
-  theme_minimal()
-
-
-ggplot(digitec_data_clean, aes(x = transaction_type, y = price)) +
-  geom_boxplot(outlier.alpha = 0.2) +
-  scale_y_log10() +
-  labs(
-    title = "Price distribution: bought vs shipped",
-    x = "Transaction type",
-    y = "Price (CHF, log10 scale)"
-  ) +
-  theme_minimal()
-
-ggplot(digitec_data_clean, aes(x = weekday, fill = transaction_type)) +
-  geom_bar(position = "dodge") +
-  labs(
-    title = "Number of transactions per weekday by transaction type",
-    x = "Weekday",
-    y = "Number of transactions",
-    fill = "Transaction type"
-  ) +
-  theme_minimal()
-
-# Aggregate counts per date and type
-daily_counts <- digitec_data_clean |>
-  count(date, transaction_type)
-
-ggplot(daily_counts,
-       aes(x = date, y = n, color = transaction_type)) +
-  geom_line(linewidth = 0.7) +
-  labs(
-    title = "Daily number of transactions by type",
-    x = "Date",
-    y = "Number of transactions",
-    color = "Transaction type"
-  ) +
-  theme_minimal()
-
-hourly_counts <- digitec_data_clean |>
-  count(hour, transaction_type)
-
-ggplot(hourly_counts,
-       aes(x = hour, y = n, color = transaction_type)) +
-  geom_line(linewidth = 0.7) +
-  geom_point(size = 1.8) +
-  scale_x_continuous(breaks = 0:23) +
-  labs(
-    title = "Number of transactions by hour of day and type",
-    x = "Hour of day",
-    y = "Number of transactions",
-    color = "Transaction type"
-  ) +
-  theme_minimal()
-```
-
-#### Top Categories and Brands
-
-Analyzing the most frequent categories and brands provides initial insights into customer preferences. Product categories such as headphones, smartphones, and printer toner dominate sales volumes. Among brands, Apple and Samsung are clear leaders, highlighting the importance of these ecosystems to customers.
-
-```{r}
-#| label: eda-category-brand-plots
-
-# Top 15 product categories by transaction count
-digitec_data_clean %>%
-  count(category, sort = TRUE) %>%
-  top_n(15, n) %>%
-  ggplot(aes(x = reorder(category, n), y = n)) +
-  geom_col(fill = "steelblue") +
-  coord_flip() +
-  labs(
-    title = "Top 15 Product Categories",
-    x = "Product Category",
-    y = "Number of Transactions"
-  ) +
-  theme_minimal()
-
-```
 
 ### 3.2. BFS Datasets
 
@@ -901,7 +665,76 @@ final_municipality_data <- municipality_merged_data %>%
 final_municipality_data
 ```
 
-## 7. Visualization Cantons
+#### 7. Data visualization
+
+We first want to fin out which categories have the widest distribution:
+```{r}
+#| label: category-price-spread
+#| warning: false
+#| message: false
+
+library(dplyr)
+library(forcats)
+library(ggplot2)
+library(scales)
+
+# 1. Compute spread + transaction count per category
+spread_stats <- digitec_data_clean |>
+  group_by(category) |>
+  summarise(
+    n_obs        = n(),
+    median_price = median(price, na.rm = TRUE),
+    iqr_price    = IQR(price, na.rm = TRUE),
+    sd_price     = sd(price, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# 2. Rank categories by:
+#    - widest IQR first
+#    - within that, more transactions first
+spread_stats_top <- spread_stats |>
+  arrange(desc(iqr_price), desc(n_obs)) |>
+  slice_head(n = 10)
+
+top_spread_cats <- spread_stats_top$category
+
+# 3. Plot boxplots for those top 10 categories
+plot_spread <- digitec_data_clean |>
+  filter(category %in% top_spread_cats) |>
+  mutate(
+    # order by IQR (descending) using the stats we just computed
+    category = fct_reorder(
+      category,
+      price,
+      .fun   = IQR,
+      .desc  = TRUE
+    )
+  )
+
+p_spread <- ggplot(plot_spread, aes(x = category, y = price)) +
+  geom_boxplot(outlier.alpha = 0.15,
+               fill = viridis::viridis(1, begin = 0.4, end = 0.6)) +
+  coord_flip() +
+  labs(
+    title = "Top 10 Categories with Widest Price Distribution",
+    subtitle = "Ranked by IQR (primary) and number of transactions (secondary)",
+    x = "Category",
+    y = "Price (CHF)"
+  ) +
+  theme_minimal()
+
+p_spread
+
+
+
+```
+
+Lets focus on Notebook and PC and see if different cantons and municipalities prefer different prices!
+
+
+
+
+## 7.1 Visualization Cantons
 
 We first connect the cleaned Digitec transactions to the official municipality geometries.
 
@@ -915,7 +748,7 @@ names(muni)
 
 ```
 
-### 7.1 pre-visualization joins and processing
+### 7.1.1  pre-visualization joins and processing
 
 ```{r}
 
@@ -1027,7 +860,7 @@ canton_map_data <- canton_sf %>%
   left_join(final_canton_data, by = "canton")
 ```
 
-### 7.2 Average Digitec Transaction Price by Canton
+### 7.1.2 Average Digitec Transaction Price by Canton
 
 ```{r}
 #| label: interactive-canton-meanprice
@@ -1083,7 +916,7 @@ Understanding where customers tend to place expensive orders helps identify regi
 
 Target premium campaigns and up-sell messaging to high-value cantons to maximize revenue per customer.
 
-### 7.3 Digitec Transactions per Canton
+### 7.1.3  Digitec Transactions per Canton
 
 ```{r}
 
@@ -1127,7 +960,7 @@ Transaction volume highlights where Digitec has its strongest market presence an
 
 It is best to use the very active cantons such as Zurich or Bern for big product launches, because many people will see them. Cantons with fewer purchases should receive more basic marketing to grow awareness and trust.
 
-### 7.4 Share of smartphone-related purchases by canton
+### 7.1.4  Share of smartphone-related purchases by canton
 
 Smartphones are one of Digitec’s strongest product categories: high demand and frequent upgrades. They represent a “universal tech product” bought by almost every demographic group. In short, almost everyone buys a phone, and people replace them often. This makes smartphones a good way to understand general buying behaviour.\
 
@@ -1177,7 +1010,7 @@ Smartphones are one of Digitec’s most important products, and people replace t
 
 The cantons like Jura and Graubünden with the highest smartphone shares are the best places to run phone-focused promotions for Digitec.
 
-### 7.5 Gaming Purchase Share by Canton
+### 7.1.5 Gaming Purchase Share by Canton
 
 Gaming is a very strong and growing market segment for Digitec. It includes consoles, graphics cards, monitors and gaming PCs which are all high-value items. Gaming purchases also strongly correlate with demographics (younger, tech-oriented and often male). This makes gaming an excellent category for targeted marketing because interest varies significantly across regions.
 
@@ -1222,7 +1055,7 @@ Gaming customers often display high engagement and repeated purchasing behavior.
 
 Digitec should focus gaming events, influencer collaborations and bundle promotions in top gaming cantons like Neuchâtel, Glarus and Valais.
 
-### 7.6 Gender Composition by Canton
+### 7.1.6 Gender Composition by Canton
 
 ```{r}
 #| label: interactive-canton-maleshare
@@ -1269,7 +1102,7 @@ Even minor gender imbalances can shape regional purchasing behavior so it's very
 
 Digitec should adjust product recommendations and homepage content to reflect gender-driven preferences within each canton. Next visualization will show the difference in purchases made by different gender dominated cantons.
 
-#### 7.6.1 What Do Male vs Female Regions Buy?
+#### 7.1.7 What Do Male vs Female Regions Buy?
 
 ```{r}
 library(dplyr)
@@ -1324,7 +1157,7 @@ This chart compares product preferences in male-dominant and female-dominant can
 
 This is important because it shows that common assumptions about gender and technology shopping do not always match real behaviour. Digitec should rely on data rather than stereotypes when planning campaigns. Gaming promotions can be targeted in female-dominant areas just as effectively as in male ones and smartphone campaigns are likely to work well across both.
 
-### 7.7 Single vs Married Regions and what Do They Buy.
+### 7.1.8 Single vs Married Regions and what Do They Buy.
 
 ```{r}
 marital_profile <- final_canton_data %>%
@@ -1359,611 +1192,7 @@ This visualization contrasts product preferences between regions dominated by si
 
 Household structure significantly influences purchasing motivations. Single regions buy slightly more gaming products, while married regions lean a bit more toward smartwatches. Overall, household structure does not strongly affect what people buy, but these small tendencies can help Digitec adjust its marketing. For example gaming works slightly better in single-dominant areas, and smartwatch or wellness-related promotions may perform better in married-dominant ones.
 
-## 8. Visualisation municipalities
 
-In this section we use the municipality level to answer our questions.
-
-## We therefore combine Digitec transactions with the official Swiss municipality boundaries and the BFS municipality indicators.
-
-### 8.1 Mapping Digitec activity by municipality
-
-We aggregate transactions by BFS municipality number and join these indicators back to the municipality polygons.
-
-```{r}
-# Transactions per municipality (BFS number) in Digitec data
-digitec_by_bfs <- digitec_data_clean |>
-  group_by(bfsnr) |>
-  summarise(
-    transactions = n(),
-    median_price   = median(price, na.rm = TRUE),
-    .groups = "drop"
-  )
-
-
-# Ensure BFS_NUMMER is integer to match bfsnr
-muni2 <- muni |>
-  mutate(BFS_NUMMER = as.integer(BFS_NUMMER))
-
-muni_digitec <- muni2 |>
-  left_join(digitec_by_bfs, by = c("BFS_NUMMER" = "bfsnr"))
-
-names(muni_digitec)
-```
-
-### 8.2 Comparison to the conton data
-
-We then create interactive maps that show the number of Digitec transactions and the average order price per municipality.
-
-```{r}
-p_muni <- ggplot(muni_digitec) +
-  geom_sf(
-    aes(
-      fill = transactions,
-      text = paste0(
-        "Municipality ", NAME,
-        "<br>BFS: ", BFS_NUMMER,
-        "<br>Transactions: ", ifelse(is.na(transactions), 0, transactions),
-        "<br>Ø Price: ",
-        ifelse(is.na(median_price), "n/a",
-               paste0(round(median_price, 1), " CHF"))
-      )
-    ),
-    colour = "grey30",
-    linewidth = 0.05
-  ) +
-  scale_fill_viridis_c(
-    option = "C",
-    na.value = "white",
-    name = "Transactions"
-  ) +
-  labs(
-    title = "Digitec-Transaktionen per municipality"
-  ) +
-  theme_minimal()
-
-ggplotly(p_muni, tooltip = "text")
-
-```
-
-*“Where is Digitec most active?”*
-
-We see that Zürich with 10923 has the highest number of transactions, then we have Bern with 3269, Basel 3243, Winterthur 2828, Geneve 2797 and Lausane 2315. Other municipalities have only transactions of a few hundred or less than a hundred. Which makes sense because these municipalities have the highest populations.
-
-If we compare this to what we saw in cantonal analysis we see that its following the same logic. Same contons specially zurich has the highest transactions but this viualisation also reviles the truth that most of the transactions are from the central cities of these cantons.
-
-```{r}
-p_muni_price <- ggplot(muni_digitec) +
-  geom_sf(
-    aes(
-      fill = median_price,
-      text = paste0(
-        "Municipality ", NAME,
-        "<br>BFS: ", BFS_NUMMER,
-        "<br>Transactions: ", ifelse(is.na(transactions), 0, transactions),
-        "<br>Ø Price: ",
-        ifelse(is.na(median_price), "n/a",
-               paste0(round(median_price, 1), " CHF"))
-      )
-    ),
-    colour = "grey30",
-    linewidth = 0.05
-  ) +
-  scale_fill_viridis_c(
-    option = "C",
-    na.value = "white",
-    name = "Median Price (CHF)"
-  ) +
-  labs(
-    title = "Digitec order price per municipality"
-  ) +
-  theme_minimal()
-
-
-ggplotly(p_muni_price, tooltip = "text")
-
-```
-
-*“Where do customers spend the most per order?”*
-
-The median price seems to be very different for example the highest average price is from Ronmont which is 1513 CHF but we have to consider that, this was the only transaction from there. In comparison to to cantonal analysis most of the higher prices are in the center and south of Switzerland and less concentrated in the east side.
-
-To analyse how municipal characteristics are related to Digitec activity, we compute Pearson correlations between:
-
--   number of transactions\
--   average order price and total sales\
--   per-capita indicators\
--   key demographic shares (age structure and share of foreign residents).
-
-```{r}
-#| label: muni-combined
-#| echo: false
-
-library(dplyr)
-library(sf)
-
-# Combine sf geometries with final municipality indicators
-
-muni_full <- muni %>%
-mutate(BFS_NUMMER = as.integer(BFS_NUMMER)) %>%
-left_join(
-final_municipality_data,
-by = c("BFS_NUMMER" = "bfsnr")
-) %>%
-mutate(
-# total sales ≈ median_price * number of transactions
-total_sales = transactions * median_price,
-# per-capita indicators
-transactions_per_capita = transactions / total_pop,
-sales_per_capita        = total_sales / total_pop
-)
-
-
-
-```
-
-```{r}
-#| label: muni-correlation-setup
-#| echo: false
-
-# 1) Select numeric variables for correlation (drop geometry)
-muni_num <- muni_full |>
-  st_drop_geometry() |>
-  select(
-    transactions,
-    avg_price,
-    total_sales,
-    transactions_per_capita,
-    sales_per_capita,
-    total_pop,
-    share_foreign,
-    share_age_0_19,
-    share_age_20_64,
-    share_age_65_plus
-  ) |>
-  # keep municipalities with valid population and transaction info
-  filter(
-    !is.na(transactions),
-    !is.na(avg_price),
-    total_pop > 0
-  )
-
-# 2) Correlation matrix (Pearson)
-cor_mat <- cor(muni_num, use = "pairwise.complete.obs")
-
-
-ggcorrplot(cor_mat, 
-           type = "lower",
-           outline.col = "white",
-           ggtheme = ggplot2::theme_gray,
-           colors = c("#6D9EC1", "white", "#E46726"),
-           lab = TRUE)
-```
-
-Cant really explain the price with correlations. Transaction of course do strongly correlate with population, but also with sales per capita which is nomalised, that indicates that people in the big cities usually order more from digitec.
-
-### 8.3 Cheapest and most expensive categories
-
-Pick the cheapest and most expensive categories
-
-```{r}
-
-#| label: pick-cheap-expensive-categories
-
-# top 5 most expensive categories
-expensive_cats <- cat_summary |>
-  slice_max(order_by = median_price, n = 5) |>
-  pull(category)
-
-# top 5 cheapest categories
-cheap_cats <- cat_summary |>
-  slice_min(order_by = median_price, n = 5) |>
-  pull(category)
-
-```
-
-We then identify the 3 cheapest and 3 most expensive categories, municipalities and brands by median price.
-
-```{r}
-
-#| label: muni-price-extremes
-#| warning: false
-#| message: false
-
-## 1) Municipality lookup (BFS -> name, no geometry)
-muni_names <- muni %>%
-  mutate(BFS_NUMMER = as.integer(BFS_NUMMER)) %>%
-  st_drop_geometry() %>%
-  select(bfsnr = BFS_NUMMER, muni_name = NAME)
-
-## 2) Only bought transactions, attach municipality name
-digitec_bought <- digitec_data_clean %>%
-  filter(transaction_type == "bought") %>%
-  mutate(bfsnr = as.integer(bfsnr)) %>%
-  left_join(muni_names, by = "bfsnr") %>%
-  filter(!is.na(muni_name), !is.na(price))
-
-## 3) Municipality-level price summary (median + mean)
-muni_price_summary <- digitec_bought %>%
-  group_by(bfsnr, muni_name) %>%
-  summarise(
-    n_transactions = n(),
-    mean_price     = mean(price, na.rm = TRUE),
-    median_price   = median(price, na.rm = TRUE),
-    .groups        = "drop"
-  )
-
-# require a minimum number of transactions to avoid noise
-muni_price_rank <- muni_price_summary %>%
-  filter(n_transactions >= 10) %>%    
-  arrange(median_price)
-
-# 3 cheapest + 3 most expensive municipalities (by median price)
-cheapest_munis  <- muni_price_rank %>%
-  slice_head(n = 3) %>%
-  mutate(type = "cheapest")
-
-expensive_munis <- muni_price_rank %>%
-  slice_tail(n = 3) %>%
-  mutate(type = "most_expensive")
-
-selected_munis <- bind_rows(cheapest_munis, expensive_munis)
-
-selected_munis  
-
-## 4) Restrict transactions to those 6 municipalities
-digitec_selected <- digitec_bought %>%
-  inner_join(
-    selected_munis %>% select(bfsnr, muni_name, type),
-    by = c("bfsnr", "muni_name")
-  )
-
-## 5) Top 3 categories per municipality (by number of bought transactions)
-top_cats_per_muni <- digitec_selected %>%
-  group_by(type, muni_name, category) %>%
-  summarise(
-    n_transactions = n(),
-    median_price   = median(price, na.rm = TRUE),
-    .groups        = "drop"
-  ) %>%
-  group_by(type, muni_name) %>%
-  slice_max(order_by = n_transactions, n = 3, with_ties = FALSE) %>%
-  ungroup() %>%
-  arrange(type, muni_name, desc(n_transactions))
-
-top_cats_per_muni 
-
-## 6) For those muni–category combos: top 3 brands
-top_brands_per_muni_cat <- digitec_selected %>%
-  inner_join(
-    top_cats_per_muni %>% select(type, muni_name, category),
-    by = c("type", "muni_name", "category")
-  ) %>%
-  group_by(type, muni_name, category, brandName) %>%
-  summarise(
-    n_transactions = n(),
-    median_price   = median(price, na.rm = TRUE),
-    .groups        = "drop"
-  ) %>%
-  group_by(type, muni_name, category) %>%
-  slice_max(order_by = n_transactions, n = 3, with_ties = FALSE) %>%
-  ungroup() %>%
-  arrange(type, muni_name, category, desc(n_transactions))
-
-top_brands_per_muni_cat 
-
-```
-
-*“Which categories or municipalities are cheap or expensive overall”*
-
-Looking at median prices per municipality, Liesberg, Seedorf (BE) and Trun are among the cheapest places in our sample (typical basket around 17–21 CHF), while Grône, Vandoeuvres and Tujetsch are clearly more expensive (median basket ≈ 260–330 CHF).
-
-In the cheap municipalities, the top categories are mainly low-ticket accessories: video cables, headphones, folders, smartphone screen protectors and small electronics kits, plus a single Apple gift card or Spotify membership. These are everyday add-ons and office supplies, so even when one higher-priced item appears (e.g. a 200 CHF Apple gift card in Liesberg), the median price stays low.
-
-In the expensive municipalities, the dominant categories are high-value hardware and mobility products: monitors, gaming controllers, gimbals, smartphones, hoverboards, routers and e-scooters. Especially in Tujetsch, several premium smartphones (Apple, Google, Samsung) and hoverboards push the median basket above 800 CHF in that category.
-
-Overall, this means that “cheap” municipalities are characterised by many small accessory and subscription purchases, while “expensive” municipalities stand out because their top categories are big-ticket devices and mobility products. The results are based on relatively few transactions per municipality (around 11–12), so they highlight tendencies rather than statistically stable patterns.
-
-### 8.4 Clustering municipalities
-
-We investigate whether municipalities can be grouped into behaviourally similar segments based only on Digitec purchase patterns.
-
-```{r}
-#| label: muni-behaviour-features
-#| warning: false
-#| message: false
-
-library(dplyr)
-library(tidyr)
-
-# Only bought transactions
-digitec_bought <- digitec_data_clean |>
-  filter(transaction_type == "bought") |>
-  mutate(bfsnr = as.integer(bfsnr))
-
-# Global price quantiles to define cheap / expensive
-price_quants <- quantile(
-  digitec_bought$price,
-  probs = c(0.25, 0.75),
-  na.rm = TRUE
-)
-
-digitec_bought_seg <- digitec_bought |>
-  mutate(
-    price_segment = case_when(
-      price <= price_quants[1] ~ "cheap",
-      price >= price_quants[2] ~ "expensive",
-      TRUE                     ~ "mid"
-    )
-  )
-
-# Behavioural features per municipality
-muni_behaviour <- digitec_bought_seg |>
-  group_by(bfsnr) |>
-  summarise(
-    n_transactions   = n(),
-    mean_price       = mean(price, na.rm = TRUE),
-    median_price     = median(price, na.rm = TRUE),
-    share_cheap      = mean(price_segment == "cheap"),
-    share_expensive  = mean(price_segment == "expensive"),
-    n_categories     = n_distinct(category),
-    # category concentration (Herfindahl index)
-    hhi_category     = {
-      cat_counts <- table(category)
-      sum((cat_counts / sum(cat_counts))^2)
-    },
-    .groups = "drop"
-  ) |>
-  # keep only municipalities with a decent sample size
-  filter(n_transactions >= 20)
-
-muni_behaviour
-
-```
-
-k-means on behavioural features (compare k)
-
-```{r}
-#| label: muni-behaviour-clustering
-#| warning: false
-#| message: false
-
-library(cluster)
-library(ggplot2)
-library(plotly)
-
-# Features for clustering (scaled)
-X <- muni_behaviour |>
-  select(-bfsnr) |>
-  scale()
-
-k_values <- 3:6
-
-cluster_results <- lapply(k_values, function(k) {
-  set.seed(42)
-  km <- kmeans(X, centers = k, nstart = 25)
-  sil <- silhouette(km$cluster, dist(X))
-  tibble(
-    k            = k,
-    tot_withinss = km$tot.withinss,
-    avg_sil      = mean(sil[, "sil_width"]),
-    model        = list(km)
-  )
-})
-
-cluster_results_df <- bind_rows(cluster_results)
-cluster_results_df
-
-```
-
-Elbow + silhouette plots:
-
-```{r}
-# Elbow plot
-p_elbow <- ggplot(cluster_results_df,
-                  aes(x = k, y = tot_withinss)) +
-  geom_line() +
-  geom_point() +
-  labs(
-    title = "Elbow-Plot (nur Verhaltensdaten)",
-    x = "Anzahl Cluster (k)",
-    y = "Totale Within-Cluster-Varianz"
-  ) +
-  theme_minimal()
-
-ggplotly(p_elbow)
-
-# Silhouette plot
-p_sil <- ggplot(cluster_results_df,
-                aes(x = k, y = avg_sil)) +
-  geom_line() +
-  geom_point() +
-  labs(
-    title = "Durchschnittliche Silhouette (nur Verhaltensdaten)",
-    x = "Anzahl Cluster (k)",
-    y = "Durchschnittliche Silhouette"
-  ) +
-  theme_minimal()
-
-ggplotly(p_sil)
-
-```
-
-Choosing the best number of clusters:
-
-```{r}
-best_row <- cluster_results_df |>
-  slice_max(avg_sil, n = 1)
-
-best_k  <- best_row$k
-best_k
-
-best_km <- best_row$model[[1]]
-
-muni_behaviour_clusters <- muni_behaviour |>
-  mutate(cluster = factor(best_km$cluster))
-
-muni_behaviour_clusters
-
-```
-
-Lets look at these clusters on the map
-
-```{r}
-#| label: muni-behaviour-cluster-map
-#| warning: false
-#| message: false
-
-
-# join clusters to municipality polygons
-muni_clusters_sf <- muni |>
-  mutate(BFS_NUMMER = as.integer(BFS_NUMMER)) |>
-  left_join(
-    muni_behaviour_clusters,
-    by = c("BFS_NUMMER" = "bfsnr")
-  )
-
-bb <- st_bbox(muni_clusters_sf)
-
-p_cluster_map <- ggplot() +
-  geom_sf(
-    data = muni_clusters_sf,
-    aes(fill = cluster),
-    colour = "grey70",
-    linewidth = 0.1
-  ) +
-  coord_sf(
-    xlim = c(bb["xmin"], bb["xmax"]),
-    ylim = c(bb["ymin"], bb["ymax"]),
-    expand = FALSE
-  ) +
-  scale_fill_viridis_d(name = "Cluster") +
-  labs(
-    title = "Gemeinde-Cluster basierend auf Kaufverhalten",
-    subtitle = "nur Digitec-Transaktionen (Preisniveau & Kategorie-Mix)"
-  ) +
-  theme_minimal() +
-  theme(
-    axis.title  = element_blank(),
-    axis.text   = element_blank(),
-    axis.ticks  = element_blank()
-  )
-
-ggplotly(p_cluster_map)
-
-```
-
-And in the PCA space:
-
-```{r}
-#| label: cluster-pca-scatter
-#| warning: false
-#| message: false
-
-library(dplyr)
-library(ggplot2)
-library(plotly)
-
-# numeric features scaled
-X_scaled <- muni_behaviour_clusters |>
-  select(
-    n_transactions,
-    mean_price,
-    median_price,
-    share_cheap,
-    share_expensive,
-    n_categories,
-    hhi_category
-  ) |>
-  scale()
-
-pca <- prcomp(X_scaled)
-
-pca_df <- as_tibble(pca$x[, 1:2]) |>
-  mutate(
-    cluster        = muni_behaviour_clusters$cluster,
-    n_transactions = muni_behaviour_clusters$n_transactions
-  )
-
-p_pca <- ggplot(
-  pca_df,
-  aes(
-    x = PC1,
-    y = PC2,
-    colour = factor(cluster),
-    size = n_transactions,
-    text = paste0(
-      "Cluster: ", cluster,
-      "<br>PC1: ", round(PC1, 2),
-      "<br>PC2: ", round(PC2, 2),
-      "<br>Transaktionen: ", n_transactions
-    )
-  )
-) +
-  geom_point(alpha = 0.7) +
-  labs(
-    title = "Gemeinde-Cluster im PCA-Raum (nur Verhaltensdaten)",
-    x = "PC1",
-    y = "PC2",
-    colour = "Cluster",
-    size = "Transaktionen"
-  ) +
-  theme_minimal()
-
-ggplotly(p_pca, tooltip = "text")
-
-```
-
-Finally, we summarise each cluster in terms of its average behavioural indicators and basic demographics to see what each of these clusters mean.
-
-```{r}
-#| label: cluster-profile-meaning
-#| warning: false
-#| message: false
-
-# muni_behaviour_clusters: bfsnr + behavioural features + cluster
-# final_municipality_data: bfsnr + demographics (already created earlier)
-
-# join demographics JUST for interpretation
-muni_cluster_full <- muni_behaviour_clusters |>
-  left_join(
-    final_municipality_data |>
-      select(
-        bfsnr,
-        total_pop,
-        share_foreign,
-        share_age_0_19,
-        share_age_20_64,
-        share_age_65_plus
-      ),
-    by = "bfsnr"
-  )
-
-cluster_profile <- muni_cluster_full |>
-  group_by(cluster) |>
-  summarise(
-    n_munis           = n(),
-    avg_n_trans       = mean(n_transactions),
-    median_n_trans    = median(n_transactions),
-    avg_mean_price    = mean(mean_price),
-    avg_median_price  = mean(median_price),
-    avg_share_cheap   = mean(share_cheap),
-    avg_share_exp     = mean(share_expensive),
-    avg_n_categories  = mean(n_categories),
-    avg_hhi_category  = mean(hhi_category),
-    # demographics (interpretation only)
-    avg_pop           = mean(total_pop, na.rm = TRUE),
-    avg_share_foreign = mean(share_foreign,   na.rm = TRUE),
-    avg_share_young   = mean(share_age_0_19,  na.rm = TRUE),
-    avg_share_working = mean(share_age_20_64, na.rm = TRUE),
-    avg_share_old     = mean(share_age_65_plus, na.rm = TRUE),
-    .groups = "drop"
-  )
-
-cluster_profile
-
-```
-
-By clustering municipalities purely on Digitec purchasing behaviour (order volume, basket value, price segments and category mix) we obtain five clearly separated segments. At one end we find low-volume, price-sensitive municipalities (Cluster 1) and small, specialised premium buyers (Cluster 3). At the other end are premium-oriented municipalities with high basket values (Cluster 4) and a handful of big-city “power users” with very broad product demand and massive order volumes (Cluster 5). The largest group (Cluster 2) consists of mid-range, all-round buyers with balanced cheap/expensive purchases and a broad category mix. These segments give Digitec a compact way to target campaigns: discount-driven offers for bargain municipalities, flagship launches for premium segments, and broad, always-on marketing in large city hubs.
 
 ## 9. Monthly Purchase Activity
 
