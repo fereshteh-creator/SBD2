@@ -713,7 +713,7 @@ top_spread_table
 
 ```
 
-For the remainder of the analysis, we focus on the notebook category `(notebook-6)`, which is both economically relevant and exhibits one of the widest price distributions in the Digitec data.
+Lets focus on notebooks and smartphones, which are both economically relevant and exhibits two of the widest price distributions in the Digitec data.
 
 ### 7.1 Pre-visualization joins and processing
 
@@ -1372,7 +1372,7 @@ To understand why Nintendo is so strong in Vaud, we analyzed how gaming purchasi
 ```{r}
 vaud_demo <- canton_map_data %>%
   filter(canton == "VD") %>%
-  slice(1) %>%   # <-- IMPORTANT
+  slice(1) %>%   
   mutate(
     share_age_0_19 = `age_from_0-19` / total,
     share_age_20_64 = `age_from_20-64` / total,
@@ -1495,7 +1495,7 @@ Vaud is the only major canton where Nintendo dominates PlayStation. Adults (20â€
 ## 8. Individual contributions
 
 | Name | Contribution |
-|------------------------------------|------------------------------------|
+|-----------------|--------------------------------------------------------------------------------------------|
 | Anna | Business plan analysis, data cleaning, pre-visualization processing, gaming sales vizualizations |
 | Fereshteh | Business plan analysis, data cleaning, pre-visualization processing, Notebooks and smartphone vizualizations |
 | Sen |  |
