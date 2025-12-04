@@ -20,9 +20,9 @@ The findings will guide a data-driven marketing strategy to personalize digital 
 
 ### 1.1. Business Problem
 
-> **How can Digitec leverage demographic and regional differences to optimise marketing strategies for high-impact categories like notebooks, while also tailoring campaigns for strategic niche segments such as gaming-related products?**
+> **How can Digitec leverage demographic and regional differences to optimise marketing strategies for high-impact categories, while also tailoring campaigns for strategic niche categories?**
 
-By understanding these patterns, Digitec can move from generic campaigns to **data-driven, regionally adaptive marketing** that maximises relevance and return on investment.
+Digitec handles thousands of sales every day across many product categories, regions and customer types. But most of the marketing is still done on a national level – one broad message for the whole country. That raises a simple question: Are all customers in Switzerland really the same, or do different regions buy differently? If purchasing behaviour varies by canton or by demographics, then Digitec might be spending budget on campaigns that are not equally effective everywhere. That's why we decided to dive into this problem and explore high- and low-impact categories of Digitec products.
 
 ### 1.2. Data Overview
 
