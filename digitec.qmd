@@ -1492,11 +1492,49 @@ Zurich, Bern, Aargau, St. Gallen, and Geneva all show a clear preference for Pla
 
 Vaud is the only major canton where Nintendo dominates PlayStation. Adults (20–64) drive most of these sales, especially premium Switch models and Zelda titles. Campaigns here should focus on **adult Nintendo players**, premium Switch upgrades and promotions on favourite fanchises like Zelda.
 
-## 8. Individual contributions
+# 8. Conclusions & Strategic Recommendations
+
+Our analysis of Digitec transaction records combined with FSO demographic data confirms that a generic, nationwide marketing strategy is inefficient. The data reveals significant regional and demographic disparities that necessitate a shift towards "Smart Targeting."
+
+We demonstrated that sales volume and sales value follow different geographic patterns and that cultural differences (the "Röstigraben") influence purchasing behavior more strongly than expected.
+
+### Key Insights
+
+1.  **The Volume-Value Paradox:**
+    While sales volume (number of transactions) strongly correlates with population density (Zurich, Bern), these urban centers do not necessarily yield the highest average basket sizes. Our analysis highlights a strong correlation between the share of foreign residents and higher median prices for notebooks and smartphones. This points to high-purchasing-power clusters (e.g., in Zug or Geneva) that are significantly more likely to purchase premium products than the average consumer.
+
+2.  **The "Gaming Divide" & The Vaud Anomaly:**
+    While German-speaking Switzerland (Zurich, St. Gallen, Aargau) is clearly dominated by PlayStation, the Canton of Vaud exhibits a unique preference for Nintendo. Crucially, our deep-dive analysis refutes the "kids' console" stereotype: It is the 20–64 age demographic in Vaud that drives spending on premium Nintendo products (OLED models, Zelda franchise), rather than parents buying for children.
+
+### Strategic Recommendations
+
+Based on these findings, we recommend the following strategic actions for Digitec:
+
+*   **Purchasing Power Segmentation (High-End Targeting):**
+    Shift advertising budgets for premium hardware (MacBook Pro, iPhone Pro, Samsung Ultra) towards cantons with high expat densities and purchasing power (ZG, GE, BS). In traditional population hubs (ZH, BE), marketing should focus on value-for-money and product variety to maintain transaction volume.
+
+*   **Regionally Differentiated Gaming Marketing:**
+    *   **German-speaking Switzerland:** Focus on PlayStation performance, competitive gaming, and hardware bundles.
+    *   **Romandy (Vaud):** Launch a dedicated Nintendo campaign specifically targeting **adult gamers**. The messaging should emphasize premium hardware and sophisticated gameplay (e.g., Zelda), moving away from child-centric imagery.
+
+## 8.1 Campaign Concept: "Switzerland in Data"
+
+To translate these strategic findings into customer-facing communication and demonstrate product variety, we designed four visuals following the established Galaxus campaign style ("Our range explained with data"). These are directly based on the four "catchy findings" from our analysis:
+
+1.  **The Vaud Paradox (Gaming):** Based on our age structure analysis, highlighting that Nintendo in Vaud is primarily purchased by adults (20–64).
+    *   *Headline:* "Why do almost only adults buy this game in Vaud?"
+2.  **The Zug Premium (Notebooks):** Illustrates the massive gap in median basket size between Zug and Bern, driven by the purchasing power in Zug.
+    *   *Headline:* "Why does Zug buy more expensive laptops than Bern?"
+3.  **The Console Divide (Platforms):** Visualizes the cultural split in gaming behavior: PlayStation dominates Zurich, while Vaud prefers Nintendo.
+    *   *Headline:* "Why does Zurich play PlayStation and Vaud Nintendo?"
+4.  **The Geneva Connection (Smartphones):** Leverages our correlation analysis regarding foreign resident shares. Geneva (high expat share) shows a significantly higher willingness to pay for smartphones than the average.
+    *   *Headline:* "Why does Geneva swipe more expensively?"
+
+## 9. Individual contributions
 
 | Name | Contribution |
 |-----------------|--------------------------------------------------------------------------------------------|
 | Anna | Business plan analysis, data cleaning, pre-visualization processing, gaming sales vizualizations |
 | Fereshteh | Business plan analysis, data cleaning, pre-visualization processing, Notebooks and smartphone vizualizations |
 | Sen |  |
-| Colin |  |
+| Colin | Digitec Data Cleaning and Preprocessing, Basic Data Visualization, Conclusion and Commercial Recommandation |
