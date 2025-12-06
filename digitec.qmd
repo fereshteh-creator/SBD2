@@ -52,18 +52,19 @@ This finer-grained approach allows for **more localized insights**, capturing de
 
 ## 2. Setup and Data Loading
 
-This first code chunk sets up the R environment by loading all necessary libraries for the analysis and loading the four primary datasets. The chunk is configured with `include: false` to hide it from the final rendered report for a cleaner presentation.
+This first code chunk sets up the R environment by loading all necessary libraries for the analysis and loading the four primary datasets. You can have a look only if you want.
 
 ```{r}
-
 #| label: setup
-#| include: false
+#| code-fold: true
+#| message: false
+#| warning: false
 
 # Load all required libraries for the project
-library(tidyverse) # For data manipulation (dplyr) and visualization (ggplot2)
-library(readxl)    # To read Excel files
-library(lubridate) # To work with date-time values
-library(stringr)   # To work with regex
+library(tidyverse) 
+library(readxl)    
+library(lubridate) 
+library(stringr)   
 library(dlookr)
 library(ggrepel)
 library(ggcorrplot)
@@ -74,6 +75,9 @@ library(dplyr)
 library(plotly)
 library(sf)
 library(scales)
+library(tidyr)
+library(lubridate)
+library(forcats)
 
 
 
@@ -210,11 +214,6 @@ The following steps were implemented in a single, coherent `dplyr` pipeline for 
 
 ```{r}
 #| label: data-cleaning-pipeline
-
-library(dplyr)
-library(tidyr)
-library(lubridate)
-library(forcats)
 
 digitec_data_clean <- digitec_data %>%
   # 1) Select and rename relevant columns for better readability
@@ -380,21 +379,32 @@ municipal_population_gender_clean
 
 ```
 
-Now we group the ages from 0-19, 20-64, and 65-100+ and our age and population datasets are ready for merging.
+Now we group the ages from 10-19, 20-64, and 65-100+ and our age and population datasets are ready for merging.
 
 ```{r}
 
 # Collapse into age bands
+# Collapse into 10-year age bands at municipality level
 municipal_population_age_clean <- municipal_population_age_clean %>%
   rowwise() %>%
   mutate(
-    `age_from_0-19` = sum(c_across(`0`:`19`), na.rm = TRUE),
-    `age_from_20-64` = sum(c_across(`20`:`64`), na.rm = TRUE),
-    age_from_65_and_over = sum(c_across(`65`:`99`), `100_und_mehr`, na.rm = TRUE)
+    age_10_19  = sum(c_across(`10`:`19`), na.rm = TRUE),
+    age_20_29  = sum(c_across(`20`:`29`), na.rm = TRUE),
+    age_30_39  = sum(c_across(`30`:`39`), na.rm = TRUE),
+    age_40_49  = sum(c_across(`40`:`49`), na.rm = TRUE),
+    age_50_59  = sum(c_across(`50`:`59`), na.rm = TRUE),
+    age_60_69  = sum(c_across(`60`:`69`), na.rm = TRUE),
+    age_70_79  = sum(c_across(`70`:`79`), na.rm = TRUE),
+    age_80_plus = sum(c_across(`80`:`99`), `100_und_mehr`, na.rm = TRUE)
   ) %>%
-  ungroup() %>% select(bfsnr, total, `age_from_0-19`, `age_from_20-64`, age_from_65_and_over)
+  ungroup() %>%
+  select(
+    bfsnr, total,
+    age_10_19, age_20_29, age_30_39,
+    age_40_49, age_50_59, age_60_69, age_70_79, age_80_plus
+  )
 
-municipal_population_age_clean
+
 ```
 
 **Canton Level**
@@ -600,7 +610,6 @@ The metrics for the municipalities are the following:
 3.  Age structure
 
 ```{r}
-
 final_municipality_data <- municipality_merged_data %>%
   rename(
     male_population   = mann_all,
@@ -610,23 +619,23 @@ final_municipality_data <- municipality_merged_data %>%
     foreigner_citizenship = total_foreigner
   ) %>%
   mutate(
-    # choose one total population column to use everywhere
     total_pop = coalesce(total_population, total),
 
-    # Gender ratios
-    share_male   = male_population   / total_pop,
-
-    # Citizenship ratios
+    # gender + citizenship
+    share_male    = male_population   / total_pop,
     share_foreign = foreigner_citizenship / total_pop,
-  
-    # Age structure
-    share_age_0_19    = `age_from_0-19`      / total_pop,
-    share_age_20_64   = `age_from_20-64`     / total_pop,
-    share_age_65_plus = age_from_65_and_over / total_pop
+
+    # new 10-year age shares
+    share_age_10_19  = age_10_19  / total_pop,
+    share_age_20_29  = age_20_29  / total_pop,
+    share_age_30_39  = age_30_39  / total_pop,
+    share_age_40_49  = age_40_49  / total_pop,
+    share_age_50_59  = age_50_59  / total_pop,
+    share_age_60_69  = age_60_69  / total_pop,
+    share_age_70_79  = age_70_79  / total_pop,
+    share_age_80_plus = age_80_plus / total_pop
   )
 
-# Display final merged data with computed values
-final_municipality_data
 ```
 
 ## 7. Data visualization
@@ -637,11 +646,6 @@ We first want to fin out which categories have the widest distribution:
 #| label: category-price-spread
 #| warning: false
 #| message: false
-
-library(dplyr)
-library(forcats)
-library(ggplot2)
-library(scales)
 
 # --- 1) Compute spread + transaction count per category ----------------
 spread_stats <- digitec_data_clean |>
@@ -720,7 +724,9 @@ Lets focus on notebooks and smartphones, which are both economically relevant an
 We first connect the cleaned Digitec transactions to the official municipality geometries.
 
 ```{r}
-
+#| label: swiss-boundaries
+#| warning: false
+#| message: false
 
 muni <- st_read("swissBOUNDARIES/swissBOUNDARIES3D_1_5_TLM_HOHEITSGEBIET.shp")
 
@@ -810,30 +816,50 @@ canton_notebook_sf <- canton_sf |>
 #| fig-width: 10
 #| fig-height: 10
 
-p_nb_trans_canton <- ggplot(canton_notebook_sf) +
+# Drop NA canton (Liechtenstein)
+canton_notebook_sf_plot <- canton_notebook_sf |>
+  filter(!is.na(canton))
+
+# Centroids for labels
+canton_notebook_centroids <- canton_notebook_sf_plot |>
+  st_centroid()
+
+p_nb_trans_canton <- ggplot() +
   geom_sf(
+    data   = canton_notebook_sf_plot,
     aes(fill = n_notebook),
-    colour = "grey30",
+    colour   = "grey30",
     linewidth = 0.2
   ) +
-  geom_sf_text(
+  geom_sf_label(
+    data  = canton_notebook_centroids,
     aes(label = label_nb_trans),
-    colour = "darkgray",
-    size   = 3
+    size          = 6,
+    label.size    = 0.1,
+    label.padding = unit(0.1, "lines"),
+    fill          = "white",
+    alpha         = 0.7,
+    colour        = "black"
   ) +
   scale_fill_viridis_c(
     option   = "C",
     na.value = "white",
     labels   = scales::comma,
-    name     = "Notebook-\nTransactions"
+    name     = "Notebook\nTransactions"
   ) +
   labs(
-    title    = "Notebook Transaction Numbers",
+    title = "Notebook Transaction Numbers",
     x = NULL, y = NULL
   ) +
   theme_minimal()
 
 p_nb_trans_canton
+
+
+
+
+
+
 
 
 
@@ -850,25 +876,44 @@ The map shows that notebook demand is highly concentrated in the big, urban cant
 #| fig-width: 10
 #| fig-height: 10
 
-p_nb_price_canton <- ggplot(canton_notebook_sf) +
+library(sf)
+library(dplyr)
+library(ggplot2)
+library(scales)
+
+# Drop NA canton (Liechtenstein) 
+canton_notebook_sf_plot <- canton_notebook_sf |>
+  filter(!is.na(canton))
+
+# Centroids for notebook labels
+canton_notebook_centroids <- canton_notebook_sf_plot |>
+  st_centroid()
+
+p_nb_price_canton <- ggplot() +
   geom_sf(
+    data   = canton_notebook_sf_plot,
     aes(fill = median_price_nb),
-    colour = "grey30",
+    colour   = "grey30",
     linewidth = 0.2
   ) +
-  geom_sf_text(
+  geom_sf_label(
+    data  = canton_notebook_centroids,
     aes(label = label_nb_price),
-    colour = "darkgray",
-    size   = 3
+    size          = 6,
+    label.size    = 0.1,
+    label.padding = unit(0.1, "lines"),
+    fill          = "white",
+    alpha         = 0.7,
+    colour        = "black"
   ) +
   scale_fill_viridis_c(
     option   = "C",
     na.value = "white",
     labels   = scales::label_comma(suffix = " CHF"),
-    name     = "Median-\nNotebookpreis"
+    name     = "Median\nNotebook Price"
   ) +
   labs(
-    title    = "Median Notebook Price",
+    title = "Median Notebook Price per Canton",
     x = NULL, y = NULL
   ) +
   theme_minimal()
@@ -879,9 +924,47 @@ p_nb_price_canton
 
 ```
 
-With the Price map we can see that the high transaction number doesn't mean high median prices, but what is the reason that the cantons with less transactions buy more expensive notebooks?
+With the Price map we can see that the high transaction number doesn't mean high median prices, but how can we use demographics to find the reason behind these price distributions?
 
 Lets see if that has anything to do with age distribution
+
+```{r}
+#| label: using-municipality-ages-for-cantons
+#| code-fold: true 
+# Create a simple lookup bfsnr -> canton (no geometry)
+municipality_canton_lookup <- muni_canton |>
+  st_drop_geometry() |>
+  select(bfsnr = BFS_NUMMER, canton)
+
+# Aggregate municipality age counts to canton level
+canton_age_from_muni <- final_municipality_data |>
+  left_join(municipality_canton_lookup, by = "bfsnr") |>
+  group_by(canton) |>
+  summarise(
+    total_pop = sum(total_pop, na.rm = TRUE),
+
+    age_10_19 = sum(age_10_19, na.rm = TRUE),
+    age_20_29 = sum(age_20_29, na.rm = TRUE),
+    age_30_39 = sum(age_30_39, na.rm = TRUE),
+    age_40_49 = sum(age_40_49, na.rm = TRUE),
+    age_50_59 = sum(age_50_59, na.rm = TRUE),
+    age_60_69 = sum(age_60_69, na.rm = TRUE),
+    age_70_79 = sum(age_70_79, na.rm = TRUE),
+    age_80_plus = sum(age_80_plus, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(
+    share_age_10_19  = age_10_19  / total_pop,
+    share_age_20_29  = age_20_29  / total_pop,
+    share_age_30_39  = age_30_39  / total_pop,
+    share_age_40_49  = age_40_49  / total_pop,
+    share_age_50_59  = age_50_59  / total_pop,
+    share_age_60_69  = age_60_69  / total_pop,
+    share_age_70_79  = age_70_79  / total_pop,
+    share_age_80_plus = age_80_plus / total_pop
+  )
+
+```
 
 ```{r}
 #| label: nb-age-price-groups
@@ -890,12 +973,17 @@ Lets see if that has anything to do with age distribution
 #| fig-height: 6
 
 
-# Start from the joined table
+# Start from notebook stats and join canton ages derived from municipalities
 nb_demo <- notebook_canton |>
-  left_join(final_canton_data, by = "canton")
+  left_join(canton_age_from_muni, by = "canton") |>
+  # add foreigner share from final_canton_data
+  left_join(
+    final_canton_data |> dplyr::select(canton, share_foreign),
+    by = "canton"
+  )
 
-# Keep only cantons with at least 20 notebook transactions
-
+# (Optional) keep only cantons with at least 20 notebook transactions
+# nb_demo <- nb_demo |> filter(n_notebook >= 20)
 
 # Define a price threshold (median of canton median prices)
 price_threshold <- median(nb_demo$median_price_nb, na.rm = TRUE)
@@ -910,24 +998,26 @@ nb_demo_groups <- nb_demo |>
     )
   )
 
-# Compute average age shares by price group
+# Compute average age shares by price group using the finer bands
 age_compare_avg <- nb_demo_groups |>
   summarise(
-    share_age_0_19  = mean(share_age_0_19,  na.rm = TRUE),
-    share_age_20_64 = mean(share_age_20_64, na.rm = TRUE),
-    share_age_65_plus = mean(share_age_65_plus, na.rm = TRUE),
+    share_age_10_19  = mean(share_age_10_19,  na.rm = TRUE),
+    share_age_20_29  = mean(share_age_20_29,  na.rm = TRUE),
+    share_age_30_39  = mean(share_age_30_39,  na.rm = TRUE),
+    share_age_40_49  = mean(share_age_40_49,  na.rm = TRUE),
+    share_age_50_59  = mean(share_age_50_59,  na.rm = TRUE),
     .by = price_group
   ) |>
   pivot_longer(
-    cols = starts_with("share_age"),
+    cols = starts_with("share_age_"),
     names_to = "age_group",
     values_to = "share"
   ) |>
   mutate(
     age_group = factor(
       age_group,
-      levels = c("share_age_0_19", "share_age_20_64", "share_age_65_plus"),
-      labels  = c("0–19", "20–64", "65+")
+      levels = c("share_age_10_19", "share_age_20_29", "share_age_30_39","share_age_40_49", "share_age_50_59" ),
+      labels  = c("10–19", "20–29", "30–39", "40–49", "50–59")
     )
   )
 
@@ -942,16 +1032,16 @@ ggplot(age_compare_avg,
     name   = NULL
   ) +
   labs(
-    title = "Average age structure by notebook price group",
-
+    title = "Average age structure (municipality-based) by notebook price group",
     x     = "Age group",
     y     = "Average share of population"
   ) +
   theme_minimal()
 
+
 ```
 
-We see that the age groups are more or less the same so that could not be the reason.
+The age groups show that those cantons who like more expensive notebooks have a higher share of ages between 30 and 50.
 
 Lets also have a look at the foreigner ratio:
 
@@ -991,8 +1081,67 @@ ggplot(foreign_compare_avg,
 
 ```
 
-Here we can actually see that the foreign ratio had an impact on the median price, which i higher when the foreign ratio is higher. This does not prove causality, but it does suggest a meaningful association: regions with a larger foreign population tend to purchase more expensive notebooks on average.
+Here we can actually see that the foreign ratio had an impact on the median price, which is higher when the foreign ratio is higher. This does not prove causality, but it does suggest a meaningful association: regions with a larger foreign population tend to purchase more expensive notebooks on average.
 
+
+If we now distinguish between the foreigner and Swiss people for age groups we see that foreigner share is generally younger then the Swiss share.
+```{r}
+# age + foreign share per canton
+age_foreign_demo <- canton_age_from_muni |>
+  left_join(
+    final_canton_data |> select(canton, share_foreign),
+    by = "canton"
+  )
+
+# split cantons into high vs low foreign share
+foreign_threshold <- median(age_foreign_demo$share_foreign, na.rm = TRUE)
+
+age_foreign_groups <- age_foreign_demo |>
+  mutate(
+    foreign_group = if_else(
+      share_foreign >= foreign_threshold,
+      "Higher foreign share",
+      "Lower foreign share"
+    )
+  )
+
+# compare age structure between those two groups
+age_foreign_compare <- age_foreign_groups |>
+  summarise(
+    share_age_10_19 = mean(share_age_10_19, na.rm = TRUE),
+    share_age_20_29 = mean(share_age_20_29, na.rm = TRUE),
+    share_age_30_39 = mean(share_age_30_39, na.rm = TRUE),
+    share_age_40_49  = mean(share_age_40_49,  na.rm = TRUE),
+    share_age_50_59  = mean(share_age_50_59,  na.rm = TRUE),
+    .by = foreign_group
+  ) |>
+  tidyr::pivot_longer(
+    cols = starts_with("share_age_"),
+    names_to = "age_group",
+    values_to = "share"
+  ) |>
+  mutate(
+    age_group = factor(
+      age_group,
+      levels = c("share_age_10_19", "share_age_20_29", "share_age_30_39","share_age_40_49", "share_age_50_59" ),
+      labels  = c("10–19", "20–29", "30–39", "40–49", "50–59")
+    )
+  )
+
+ggplot(age_foreign_compare,
+       aes(x = age_group, y = share, fill = foreign_group)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_fill_viridis_d(option = "C", begin = 0.2, end = 0.8, name = NULL) +
+  labs(
+    title = "Age structure in cantons with high vs low foreign share",
+    x = "Age group",
+    y = "Average share of population"
+  ) +
+  theme_minimal()
+
+```
+That explains why cantons with higher share of foreigners generally buy more expensive notebooks. One reason could be because younger professionals and students are more willing to spend on performance laptops. They also care about brand, specs, GPU, portability, RPM/SSD, refresh rate and are more aware of premium tech trends
 ```{r}
 #| label: canton-smartphone-agg
 #| warning: false
@@ -1056,7 +1205,7 @@ sp_demo_groups <- sp_demo |>
 
 ### 7.3 Smartphone
 
-We also did the same thing for smartphones and although the highest prices are now originating from other cantons such as Schaffhausen and Appenzell Ausserrhoden, the foreigner share ratio is suggesting the same pattern.
+We also did the same thing for smartphones and although the highest prices are now originating from other cantons, the foreigner share ratio is suggesting the same pattern.
 
 ```{r}
 #| label: map-smartphone-price-canton
@@ -1066,21 +1215,35 @@ We also did the same thing for smartphones and although the highest prices are n
 #| fig-width: 10
 #| fig-height: 10
 
-p_sp_price_canton <- ggplot(canton_smartphone_sf) +
+# drop NA canton (Liechtenstein)
+canton_smartphone_sf_plot <- canton_smartphone_sf |>
+  filter(!is.na(canton))
+
+# centroids for label positions
+canton_smartphone_centroids <- canton_smartphone_sf_plot |>
+  st_centroid()
+
+p_sp_price_canton <- ggplot() +
   geom_sf(
+    data   = canton_smartphone_sf_plot,
     aes(fill = median_price_sp),
-    colour = "grey30",
+    colour   = "grey30",
     linewidth = 0.2
   ) +
-  geom_sf_text(
+  geom_sf_label(
+    data  = canton_smartphone_centroids,
     aes(label = label_sp_price),
-    colour = "gray40",
-    size   = 3
+    size        = 6,
+    label.size  = 0.1,
+    label.padding = unit(0.1, "lines"),
+    fill        = "white",
+    alpha       = 0.7,
+    colour      = "black"
   ) +
   scale_fill_viridis_c(
     option   = "C",
     na.value = "white",
-    labels   = label_comma(suffix = " CHF"),
+    labels   = scales::label_comma(suffix = " CHF"),
     name     = "Median-\nSmartphone Price"
   ) +
   labs(
@@ -1121,15 +1284,236 @@ ggplot(foreign_compare_sp,
 
 ```
 
-#### recommendations
+### 7.4 Recommendations
 
-Our regional and demographic analysis of Digitec’s notebook and smartphone sales reveals a consistent pattern:
+We classify each canton based on notebook median price, share of foreigner and age structure to be able to give canton based recommendations:
 
--   High transaction volumes are concentrated in large, urban cantons (Zurich, Bern, Vaud, Geneva), reflecting population and economic density.
+```{r}
+# segmentation base dataset
+seg_data <- nb_demo |> 
+  select(
+    canton,
+    median_price_nb,
+    share_foreign,
+    share_age_20_29,   
+    share_age_30_39
+  )
 
--   However, median prices are often higher in smaller, high-income cantons such as Schaffhausen, Glarus, or Zug, where the foreigner share is above average it's recommended to focus high-end product promotions.
 
--   In populous cantons like Zurich or Bern, emphasize value and variety rather than luxury and promote mid-range devices, seasonal discounts, or trade-in programs that appeal to broader audiences and students.
+foreign_thr <- median(seg_data$share_foreign, na.rm = TRUE)
+price_thr   <- median(seg_data$median_price_nb, na.rm = TRUE)
+age_thr     <- median(seg_data$share_age_20_29 + seg_data$share_age_30_39, na.rm = TRUE)
+
+
+
+segmented_cantons <- seg_data |>
+  mutate(
+    is_high_foreign = share_foreign >= foreign_thr,
+    is_high_price   = median_price_nb >= price_thr,
+    is_younger      = (share_age_20_29 + share_age_30_39) >= age_thr,
+    
+    canton_segment = case_when(
+      # PREMIUM segment
+      is_high_foreign & is_high_price & is_younger ~ "Premium Tech Segment",
+      
+      # VALUE segment
+      !is_high_foreign & !is_high_price & !is_younger ~ "Value Segment",
+      
+      # Everyone else
+      TRUE ~ "Mid-Range Segment"
+    )
+  )
+
+
+segmented_cantons |> 
+  arrange(canton_segment, desc(median_price_nb))
+
+```
+We do the same for smartphones as well:
+```{r}
+# --- 1) Build smartphone demo table (prices + ages + foreign share) ----
+
+sp_demo <- smartphone_canton |>
+  left_join(canton_age_from_muni, by = "canton") |>
+  left_join(
+    final_canton_data |> dplyr::select(canton, share_foreign),
+    by = "canton"
+  )
+
+# --- 2) Segmentation base dataset for smartphones ----------------------
+
+seg_data_sp <- sp_demo |>
+  select(
+    canton,
+    median_price_sp,
+    share_foreign,
+    share_age_20_29,
+    share_age_30_39
+  )
+
+# thresholds (what counts as "high")
+foreign_thr_sp <- median(seg_data_sp$share_foreign,     na.rm = TRUE)
+price_thr_sp   <- median(seg_data_sp$median_price_sp,   na.rm = TRUE)
+age_thr_sp     <- median(seg_data_sp$share_age_20_29 + 
+                           seg_data_sp$share_age_30_39, na.rm = TRUE)
+
+# --- 3) Segment cantons for smartphones -------------------------------
+
+segmented_cantons_sp <- seg_data_sp |>
+  mutate(
+    is_high_foreign = share_foreign >= foreign_thr_sp,
+    is_high_price   = median_price_sp >= price_thr_sp,
+    is_younger      = (share_age_20_29 + share_age_30_39) >= age_thr_sp,
+    
+    canton_segment_sp = case_when(
+      is_high_foreign & is_high_price & is_younger ~ "Premium Tech Segment",
+      !is_high_foreign & !is_high_price & !is_younger ~ "Value Segment",
+      TRUE ~ "Mid-Range Segment"
+    )
+  )
+
+# inspect result
+segmented_cantons_sp |>
+  arrange(canton_segment_sp, desc(median_price_sp))
+
+```
+
+
+
+```{r}
+#| label: plot-seg-map
+#| warning: false
+#| message: false
+#| fig-height: 8
+#| fig-width: 9
+
+# join notebook segments onto canton geometry
+canton_sf_segmented <- canton_sf |>
+  dplyr::left_join(
+    segmented_cantons |> dplyr::select(canton, canton_segment),
+    by = "canton"
+  )
+
+# centroids for labels
+canton_sf_centroids <- canton_sf_segmented |>
+  sf::st_centroid()
+canton_sf_seg_plot <- canton_sf_segmented |>
+  dplyr::filter(!is.na(canton))
+
+canton_sf_centroids_plot <- canton_sf_centroids |>
+  dplyr::filter(!is.na(canton))
+
+ggplot() +
+  geom_sf(
+    data   = canton_sf_seg_plot,
+    aes(fill = canton_segment),
+    colour   = "grey30",
+    linewidth = 0.2
+  ) +
+  geom_sf_label(
+    data  = canton_sf_centroids_plot,
+    aes(label = canton),
+    size        = 6,
+    label.size  = 0.1,
+    label.padding = unit(0.1, "lines"),
+    fill        = "white",
+    alpha       = 0.7,
+    colour      = "black"
+  ) +
+  scale_fill_viridis_d(
+    option       = "C",
+    begin        = 0.1,
+    end          = 0.9,
+    name         = "Segment",
+    na.translate = FALSE   # don't show NA in legend
+  ) +
+  labs(
+    title = "Canton Segments for notebook Digitec Marketing Strategy",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal()
+
+```
+
+```{r}
+#| label: map-smartphone-segments
+#| warning: false
+#| message: false
+#| fig-height: 8
+#| fig-width: 9
+
+
+# 1) Join smartphone segments to canton geometry
+canton_sf_segmented_sp <- canton_sf |>
+  left_join(
+    segmented_cantons_sp |>
+      select(canton, canton_segment_sp),
+    by = "canton"
+  )
+
+# 2) Drop NA canton (Liechtenstein)
+canton_sf_seg_sp_plot <- canton_sf_segmented_sp |>
+  filter(!is.na(canton))
+
+# 3) Centroids for labels
+canton_sf_centroids_sp_plot <- canton_sf_seg_sp_plot |>
+  st_centroid()
+
+# 4) Plot smartphone segments
+ggplot() +
+  geom_sf(
+    data   = canton_sf_seg_sp_plot,
+    aes(fill = canton_segment_sp),
+    colour   = "grey30",
+    linewidth = 0.2
+  ) +
+  geom_sf_label(
+    data  = canton_sf_centroids_sp_plot,
+    aes(label = canton),
+    size          = 6,
+    label.size    = 0.1,
+    label.padding = unit(0.1, "lines"),
+    fill          = "white",
+    alpha         = 0.7,
+    colour        = "black"
+  ) +
+  scale_fill_viridis_d(
+    option       = "C",
+    begin        = 0.1,
+    end          = 0.9,
+    name         = "Smartphone segment",
+    na.translate = FALSE
+  ) +
+  labs(
+    title = "Canton Segments for Smartphone Marketing Strategy",
+    x = NULL, y = NULL
+  ) +
+  theme_minimal()
+
+```
+
+
+
+
+
+**Now our recommendations: **
+
+| Segment          | Description                                   | Recommended Focus                           |
+|------------------|-----------------------------------------------|----------------------------------------------|
+| **Premium Tech** (pink) | Young, international, higher spending regions. | Premium notebooks & smartphones; gaming/creator devices; multilingual, performance-focused ads. |
+| **Mid-Range** (purple)  | Mixed demographics with average spending. | Mid-range laptops and phones; “value for money” messaging; accessory bundles. |
+| **Value** (yellow)      | Older, more price-sensitive regions.     | Affordable, easy-to-use devices; home-office sets; reliability & service messaging. |
+
+
+
+### 7.5 Gaming sales across Switzerland
+
+**Why We Chose to Work With Console-Related Products?**
+
+After visualizing Notebook category, which is the most popular and highest-traffic category on Digitec, we wanted to explore something different. Console-related products represent a less dominant category, which makes them interesting from an analytical perspective. Even though they are not as popular overall, there are specific customer groups who are highly interested in gaming products (such as us) and the gaming industry itself is very large and continues to grow.
+
+By examining a category that doesn’t perform as strongly, we aimed to identify patterns, gaps, and potential areas for improvement.
+
 
 ```{r}
 #| label: canton-kpi-prep
@@ -1270,13 +1654,10 @@ canton_map_data <- canton_map_data %>%
 
 ```
 
-### 7.4 Gaming sales across Switzerland
 
-**Why We Chose to Work With Console-Related Products?**
 
-After visualizing Notebook category, which is the most popular and highest-traffic category on Digitec, we wanted to explore something different. Console-related products represent a less dominant category, which makes them interesting from an analytical perspective. Even though they are not as popular overall, there are specific customer groups who are highly interested in gaming products (such as us) and the gaming industry itself is very large and continues to grow.
 
-By examining a category that doesn’t perform as strongly, we aimed to identify patterns, gaps, and potential areas for improvement.
+
 
 **Where are consoles the most popular?**
 
@@ -1486,7 +1867,7 @@ Vaud’s adult population buys premium Nintendo consoles and major franchises li
 
 This means Nintendo advertising in Vaud should not focus only on kids but it must mostly target adult gamers who choose Switch for themselves.
 
-#### Gaming commercial recommendations
+### 7.6 Recommendations Gaming
 
 Zurich, Bern, Aargau, St. Gallen, and Geneva all show a clear preference for PlayStation. These cantons are also the largest contributors to gaming sales overall. So, Digitec should push **PS5 bundles, controllers, PS Plus subscriptions, and headline releases** heavily in these markets.
 
@@ -1500,40 +1881,38 @@ We demonstrated that sales volume and sales value follow different geographic pa
 
 ### Key Insights
 
-1.  **The Volume-Value Paradox:**
-    While sales volume (number of transactions) strongly correlates with population density (Zurich, Bern), these urban centers do not necessarily yield the highest average basket sizes. Our analysis highlights a strong correlation between the share of foreign residents and higher median prices for notebooks and smartphones. This points to high-purchasing-power clusters (e.g., in Zug or Geneva) that are significantly more likely to purchase premium products than the average consumer.
+1.  **The Volume-Value Paradox:** While sales volume (number of transactions) strongly correlates with population density (Zurich, Bern), these urban centers do not necessarily yield the highest average basket sizes. Our analysis highlights a strong correlation between the share of foreign residents and higher median prices for notebooks and smartphones. This points to high-purchasing-power clusters (e.g., in Zug or Geneva) that are significantly more likely to purchase premium products than the average consumer.
 
-2.  **The "Gaming Divide" & The Vaud Anomaly:**
-    While German-speaking Switzerland (Zurich, St. Gallen, Aargau) is clearly dominated by PlayStation, the Canton of Vaud exhibits a unique preference for Nintendo. Crucially, our deep-dive analysis refutes the "kids' console" stereotype: It is the 20–64 age demographic in Vaud that drives spending on premium Nintendo products (OLED models, Zelda franchise), rather than parents buying for children.
+2.  **The "Gaming Divide" & The Vaud Anomaly:** While German-speaking Switzerland (Zurich, St. Gallen, Aargau) is clearly dominated by PlayStation, the Canton of Vaud exhibits a unique preference for Nintendo. Crucially, our deep-dive analysis refutes the "kids' console" stereotype: It is the 20–64 age demographic in Vaud that drives spending on premium Nintendo products (OLED models, Zelda franchise), rather than parents buying for children.
 
 ### Strategic Recommendations
 
 Based on these findings, we recommend the following strategic actions for Digitec:
 
-*   **Purchasing Power Segmentation (High-End Targeting):**
-    Shift advertising budgets for premium hardware (MacBook Pro, iPhone Pro, Samsung Ultra) towards cantons with high expat densities and purchasing power (ZG, GE, BS). In traditional population hubs (ZH, BE), marketing should focus on value-for-money and product variety to maintain transaction volume.
+-   **Purchasing Power Segmentation (High-End Targeting):** Shift advertising budgets for premium hardware (MacBook Pro, iPhone Pro, Samsung Ultra) towards cantons with high expat densities and purchasing power (ZG, GE, BS). In traditional population hubs (ZH, BE), marketing should focus on value-for-money and product variety to maintain transaction volume.
 
-*   **Regionally Differentiated Gaming Marketing:**
-    *   **German-speaking Switzerland:** Focus on PlayStation performance, competitive gaming, and hardware bundles.
-    *   **Romandy (Vaud):** Launch a dedicated Nintendo campaign specifically targeting **adult gamers**. The messaging should emphasize premium hardware and sophisticated gameplay (e.g., Zelda), moving away from child-centric imagery.
+-   **Regionally Differentiated Gaming Marketing:**
+
+    -   **German-speaking Switzerland:** Focus on PlayStation performance, competitive gaming, and hardware bundles.
+    -   **Romandy (Vaud):** Launch a dedicated Nintendo campaign specifically targeting **adult gamers**. The messaging should emphasize premium hardware and sophisticated gameplay (e.g., Zelda), moving away from child-centric imagery.
 
 ## 8.1 Campaign Concept: "Switzerland in Data"
 
 To translate these strategic findings into customer-facing communication and demonstrate product variety, we designed four visuals following the established Galaxus campaign style ("Our range explained with data"). These are directly based on the four "catchy findings" from our analysis:
 
 1.  **The Vaud Paradox (Gaming):** Based on our age structure analysis, highlighting that Nintendo in Vaud is primarily purchased by adults (20–64).
-    *   *Headline:* "Why do almost only adults buy this game in Vaud?"
+    -   *Headline:* "Why do almost only adults buy this game in Vaud?"
 2.  **The Zug Premium (Notebooks):** Illustrates the massive gap in median basket size between Zug and Bern, driven by the purchasing power in Zug.
-    *   *Headline:* "Why does Zug buy more expensive laptops than Bern?"
+    -   *Headline:* "Why does Zug buy more expensive laptops than Bern?"
 3.  **The Console Divide (Platforms):** Visualizes the cultural split in gaming behavior: PlayStation dominates Zurich, while Vaud prefers Nintendo.
-    *   *Headline:* "Why does Zurich play PlayStation and Vaud Nintendo?"
+    -   *Headline:* "Why does Zurich play PlayStation and Vaud Nintendo?"
 4.  **The Geneva Connection (Smartphones):** Leverages our correlation analysis regarding foreign resident shares. Geneva (high expat share) shows a significantly higher willingness to pay for smartphones than the average.
-    *   *Headline:* "Why does Geneva swipe more expensively?"
+    -   *Headline:* "Why does Geneva swipe more expensively?"
 
 ## 9. Individual contributions
 
 | Name | Contribution |
-|-----------------|--------------------------------------------------------------------------------------------|
+|---------------|--------------------------------------------------------|
 | Anna | Business plan analysis, data cleaning, pre-visualization processing, gaming sales vizualizations |
 | Fereshteh | Business plan analysis, data cleaning, pre-visualization processing, Notebooks and smartphone vizualizations |
 | Sen |  |
