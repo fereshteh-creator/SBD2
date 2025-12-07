@@ -29,7 +29,7 @@ Digitec handles thousands of sales every day across many product categories, reg
 | Source | Description | Key Variables |
 |:-----------------------|:-----------------------|:-----------------------|
 | **Digitec Transactions (`DigitecLive_Final.csv`)** | \~163k web-scraped online transactions from Digitec’s live purchase feed | `brandName`, `infos.Category`, `salesPrice.amountIncl`, `dateTime`, `mun_canton` |
-| **BFS Population Data (`population_2023.xlsx`)** | Canton-level demographics (2023) | `Total`, `Swiss`, `Foreigner`, `Urban`, `Intermediate`, `Rural`, `Age_0_19`, `Age_20_64`, `Age_65plus`, `Single`, `Married`, `Widowed`, `Divorced` |
+| **BFS Population Data (`population_2023.xlsx`)** | Canton-level demographics (2023) | `Total`, `Foreigner`, `Age_0_19`, `Age_20_64`, `Age_65plus`, `Single`, `Married`, `Male` |
 | **BFS Population by Age (`mns-population-by-age-2023.xlsx`)** | Detailed population structure by age and region | `Region`, `Total`, `Age_0_4`, `Age_5_9`, …, `Age_80plus` |
 | **BFS Population by Gender (`mns-population-by-gender-2023.xlsx`)** | Gender composition by canton and municipality (2023) | `Region`, `Total_All`, `Mann_All`, `Frau_All`, `Swiss`, `Foreigner` |
 | **Swiss Municipal Boundaries (`swissBOUNDARIES3D_1_5_TLM_HOHEITSGEBIET.shp`)** | Official Swiss municipality polygons used to map Digitec transactions geographically and join by BFS municipality number | `BFS_NUMMER` (municipality ID), `NAME` (municipality name), `KANTONSNUM` (canton ID), `geometry` (MULTIPOLYGON) |
@@ -40,7 +40,8 @@ These additional datasets allow the inclusion of **more granular demographic inf
 
 The analysis is now conducted at the **municipality level** ($n \approx 2,200$), using the official **BFS municipality number (`mun_bfsnr`)** as the join key between datasets.
 
-Each municipality represents one observation containing: - $sales\_per\_capita = \frac{total\_sales}{population}$\
+Each municipality represents one observation containing: \
+- $sales\_per\_capita = \frac{total\_sales}{population}$\
 - Average order value (CHF)\
 - Age-group shares (e.g., % under 20, % over 65)\
 - Gender composition (% male, % female)\
@@ -533,7 +534,11 @@ digitec_grouped <- digitec_data_clean %>%
 
 ## 5. Canton Dataset
 
+To prepare for the data visualization and interpretation, we can finally merge the BFS and Digitec datasets. To facilitate the interpretation of the data, certain aggregated attributes are added to the merged dataset.
+
 ### 5.1. Canton Level Dataset Merge
+
+In the following code block we merge the two datasets based on the previously cleaned canton column.
 
 ```{r}
 
@@ -587,6 +592,8 @@ final_canton_data
 
 ### 6.1 Municipality Level Dataset Merge
 
+In this section we create another new dataset by merging the digitec and municipality datasets on the bfsnr code.
+
 ```{r}
 
 # Merge age municipality dataset on bfsnr code
@@ -603,11 +610,7 @@ municipality_merged_data
 
 ### 6.2 Municipality Level Post-merge Aggregation
 
-The metrics for the municipalities are the following:
-
-1.  Gender ratios
-2.  Citizenship ratios
-3.  Age structure
+For the municipality we are only aggregating thew age differences data.
 
 ```{r}
 final_municipality_data <- municipality_merged_data %>%
@@ -620,10 +623,6 @@ final_municipality_data <- municipality_merged_data %>%
   ) %>%
   mutate(
     total_pop = coalesce(total_population, total),
-
-    # gender + citizenship
-    share_male    = male_population   / total_pop,
-    share_foreign = foreigner_citizenship / total_pop,
 
     # new 10-year age shares
     share_age_10_19  = age_10_19  / total_pop,
@@ -640,7 +639,7 @@ final_municipality_data <- municipality_merged_data %>%
 
 ## 7. Data visualization
 
-We first want to fin out which categories have the widest distribution:
+We first want to find out which categories have the widest distribution:
 
 ```{r}
 #| label: category-price-spread
@@ -1081,8 +1080,8 @@ ggplot(foreign_compare_avg,
 
 Here we can actually see that the foreign ratio had an impact on the median price, which is higher when the foreign ratio is higher. This does not prove causality, but it does suggest a meaningful association: regions with a larger foreign population tend to purchase more expensive notebooks on average.
 
-
 If we now distinguish between higher share of foreigners and lower for age groups we see that those with higher foreigner share are generally younger.
+
 ```{r}
 # age + foreign share per canton (Swiss cantons only)
 age_foreign_demo <- canton_age_from_muni |>
@@ -1141,7 +1140,9 @@ ggplot(age_foreign_compare,
   theme_minimal()
 
 ```
+
 That explains why cantons with higher share of foreigners generally buy more expensive notebooks. Younger professionals and students are more willing to spend on performance laptops. They also care about brand, specs, GPU, portability, RPM/SSD, refresh rate and are more aware of premium tech trends
+
 ```{r}
 #| label: canton-smartphone-agg
 #| warning: false
@@ -1357,8 +1358,6 @@ ggplot(age_compare_sp,
 
 ```
 
-
-
 ### 7.4 Recommendations
 
 We classify each canton based on notebook median price, share of foreigner and age structure to be able to give canton based recommendations:
@@ -1404,7 +1403,9 @@ segmented_cantons |>
   arrange(canton_segment, desc(median_price_nb))
 
 ```
+
 We do the same for smartphones as well:
+
 ```{r}
 # --- 1) Build smartphone demo table (prices + ages + foreign share) ----
 
@@ -1452,8 +1453,6 @@ segmented_cantons_sp |>
   arrange(canton_segment_sp, desc(median_price_sp))
 
 ```
-
-
 
 ```{r}
 #| label: plot-seg-map
@@ -1567,19 +1566,13 @@ ggplot() +
 
 ```
 
+**Now our recommendations:**
 
-
-
-
-**Now our recommendations: **
-
-| Segment          | Description                                   | Recommended Focus                           |
-|------------------|-----------------------------------------------|----------------------------------------------|
+| Segment | Description | Recommended Focus |
+|------------------|---------------------------|---------------------------|
 | **Premium Tech** (pink) | Young, international, higher spending regions. | Premium notebooks & smartphones; gaming/creator devices; multilingual, performance-focused ads. |
-| **Mid-Range** (purple)  | Mixed demographics with average spending. | Mid-range laptops and phones; “value for money” messaging; accessory bundles. |
-| **Value** (yellow)      | Older, more price-sensitive regions.     | Affordable, easy-to-use devices; home-office sets; reliability & service messaging. |
-
-
+| **Mid-Range** (purple) | Mixed demographics with average spending. | Mid-range laptops and phones; “value for money” messaging; accessory bundles. |
+| **Value** (yellow) | Older, more price-sensitive regions. | Affordable, easy-to-use devices; home-office sets; reliability & service messaging. |
 
 ### 7.5 Gaming sales across Switzerland
 
@@ -1588,7 +1581,6 @@ ggplot() +
 After visualizing Notebook category, which is the most popular and highest-traffic category on Digitec, we wanted to explore something different. Console-related products represent a less dominant category, which makes them interesting from an analytical perspective. Even though they are not as popular overall, there are specific customer groups who are highly interested in gaming products (such as us) and the gaming industry itself is very large and continues to grow.
 
 By examining a category that doesn’t perform as strongly, we aimed to identify patterns, gaps, and potential areas for improvement.
-
 
 ```{r}
 #| label: canton-kpi-prep
@@ -1728,11 +1720,6 @@ canton_map_data <- canton_map_data %>%
   )
 
 ```
-
-
-
-
-
 
 **Where are consoles the most popular?**
 
@@ -1967,7 +1954,6 @@ Based on our segmentation analysis, we recommend the following strategic actions
 -   **Apply Segment-Specific Targeting:**
     -   **Premium Tech Segment (ZG, GE, BS):** Leverage these "Pink Segments" for high-margin hardware campaigns (MacBook Pro, iPhone Pro, Samsung Ultra). Use English or international messaging targeting the tech-savvy expat community and young professionals.
     -   **Value Segment (Rural Cantons):** In the "Yellow Segments" (e.g., parts of Central/Eastern Switzerland), focus marketing on reliability, price-performance ratios, and bundles to capture the more price-sensitive demographic.
-
 -   **Regionally Differentiated Gaming Marketing:**
     -   **German-speaking Switzerland:** Focus on PlayStation performance, competitive gaming, and hardware bundles.
     -   **Romandy (Vaud):** Launch a dedicated Nintendo campaign specifically targeting **adult gamers**. The messaging should emphasize premium hardware and sophisticated gameplay (e.g., Zelda), moving away from child-centric imagery.
@@ -1985,11 +1971,11 @@ To translate these strategic findings into customer-facing communication and dem
 4.  **The Geneva Connection (Smartphones):** Leverages our correlation analysis regarding foreign resident shares. Geneva (high expat share) shows a significantly higher willingness to pay for smartphones than the average.
     -   *Headline:* "Why does Geneva swipe more expensively?"
 
-## 9. Individual contributions
+# 9. Individual contributions
 
 | Name | Contribution |
-|---------------|--------------------------------------------------------|
-| Anna | Business plan analysis, data cleaning, pre-visualization processing, gaming sales vizualizations |
-| Fereshteh | Business plan analysis, data cleaning, pre-visualization processing, Notebooks and smartphone vizualizations |
-| Sen |  |
+|------------------|------------------------------------------------------|
+| Anna | Business plan analysis, data cleaning, pre-visualization processing, gaming sales visualizations |
+| Fereshteh | Business plan analysis, data cleaning, pre-visualization processing, Notebooks and smartphone visualizations |
+| Sen | Data cleaning, pre-processing, dataset merging, aggregated value creation |
 | Colin | Digitec Data Cleaning and Preprocessing, Basic Data Visualization, Conclusion and Commercial Recommandation |
