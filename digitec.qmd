@@ -1086,12 +1086,14 @@ Here we can actually see that the foreign ratio had an impact on the median pric
 
 If we now distinguish between the foreigner and Swiss people for age groups we see that foreigner share is generally younger then the Swiss share.
 ```{r}
-# age + foreign share per canton
+# age + foreign share per canton (Swiss cantons only)
 age_foreign_demo <- canton_age_from_muni |>
   left_join(
     final_canton_data |> select(canton, share_foreign),
     by = "canton"
-  )
+  ) |>
+  filter(!is.na(canton), !is.na(share_foreign))   # <- remove FL / NAs
+
 
 # split cantons into high vs low foreign share
 foreign_threshold <- median(age_foreign_demo$share_foreign, na.rm = TRUE)
@@ -1205,7 +1207,7 @@ sp_demo_groups <- sp_demo |>
 
 ### 7.3 Smartphone
 
-We also did the same thing for smartphones and although the highest prices are now originating from other cantons, the foreigner share ratio is suggesting the same pattern.
+We also did the same thing for smartphones and although the highest prices are now originating from other cantons and the foreigner share ratio patterns are not as strong they are still similar to notebook results.
 
 ```{r}
 #| label: map-smartphone-price-canton
@@ -1214,6 +1216,7 @@ We also did the same thing for smartphones and although the highest prices are n
 #| echo: false
 #| fig-width: 10
 #| fig-height: 10
+
 
 # drop NA canton (Liechtenstein)
 canton_smartphone_sf_plot <- canton_smartphone_sf |>
@@ -1264,6 +1267,7 @@ p_sp_price_canton
 #| echo: false
 
 
+
 foreign_compare_sp <- sp_demo_groups |>
   summarise(
     avg_share_foreign = mean(share_foreign, na.rm = TRUE),
@@ -1283,6 +1287,79 @@ ggplot(foreign_compare_sp,
   theme_minimal()
 
 ```
+
+```{r}
+#| label: smartphone-age
+#| echo: false
+# --- 1) Build smartphone demo table: prices + ages + foreign share ----
+
+sp_demo <- smartphone_canton |>
+  # add age structure (10–19, 20–29, …) aggregated from municipalities
+  left_join(canton_age_from_muni, by = "canton") |>
+  # add foreigner share from canton-level data
+  left_join(
+    final_canton_data |> dplyr::select(canton, share_foreign),
+    by = "canton"
+  )
+
+# --- 2) Define price threshold for smartphones ------------------------
+
+price_threshold_sp <- median(sp_demo$median_price_sp, na.rm = TRUE)
+
+# --- 3) Create smartphone price groups (this is sp_demo_groups) -------
+
+sp_demo_groups <- sp_demo |>
+  mutate(
+    price_group = if_else(
+      median_price_sp >= price_threshold_sp,
+      "Higher median smartphone price",
+      "Lower median smartphone price"
+    )
+  )
+
+
+
+
+# sp_demo_groups has: canton, median_price_sp, share_foreign, age shares, price_group
+
+age_compare_sp <- sp_demo_groups |>
+  summarise(
+    share_age_10_19 = mean(share_age_10_19, na.rm = TRUE),
+    share_age_20_29 = mean(share_age_20_29, na.rm = TRUE),
+    share_age_30_39 = mean(share_age_30_39, na.rm = TRUE),
+    share_age_40_49 = mean(share_age_40_49, na.rm = TRUE),
+    share_age_50_59 = mean(share_age_50_59, na.rm = TRUE),
+    .by = price_group
+  ) |>
+  tidyr::pivot_longer(
+    cols = starts_with("share_age_"),
+    names_to = "age_group",
+    values_to = "share"
+  ) |>
+  mutate(
+    age_group = factor(
+      age_group,
+      levels = c("share_age_10_19","share_age_20_29","share_age_30_39",
+                 "share_age_40_49","share_age_50_59"),
+      labels  = c("10–19","20–29","30–39","40–49","50–59")
+    )
+  )
+
+ggplot(age_compare_sp,
+       aes(x = age_group, y = share, fill = price_group)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = scales::percent_format(accuracy = 1)) +
+  scale_fill_viridis_d(option = "C", begin = 0.2, end = 0.8, name = NULL) +
+  labs(
+    title = "Age structure by smartphone price group",
+    x     = "Age group",
+    y     = "Average share of population"
+  ) +
+  theme_minimal()
+
+```
+
+
 
 ### 7.4 Recommendations
 
