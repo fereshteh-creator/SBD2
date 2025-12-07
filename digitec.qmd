@@ -926,7 +926,7 @@ p_nb_price_canton
 
 With the Price map we can see that the high transaction number doesn't mean high median prices, but how can we use demographics to find the reason behind these price distributions?
 
-Lets see if that has anything to do with age distribution
+Lets see if that has anything to do with age distribution:
 
 ```{r}
 #| label: using-municipality-ages-for-cantons
@@ -982,8 +982,6 @@ nb_demo <- notebook_canton |>
     by = "canton"
   )
 
-# (Optional) keep only cantons with at least 20 notebook transactions
-# nb_demo <- nb_demo |> filter(n_notebook >= 20)
 
 # Define a price threshold (median of canton median prices)
 price_threshold <- median(nb_demo$median_price_nb, na.rm = TRUE)
@@ -1084,7 +1082,7 @@ ggplot(foreign_compare_avg,
 Here we can actually see that the foreign ratio had an impact on the median price, which is higher when the foreign ratio is higher. This does not prove causality, but it does suggest a meaningful association: regions with a larger foreign population tend to purchase more expensive notebooks on average.
 
 
-If we now distinguish between the foreigner and Swiss people for age groups we see that foreigner share is generally younger then the Swiss share.
+If we now distinguish between higher share of foreigners and lower for age groups we see that those with higher foreigner share are generally younger.
 ```{r}
 # age + foreign share per canton (Swiss cantons only)
 age_foreign_demo <- canton_age_from_muni |>
@@ -1143,7 +1141,7 @@ ggplot(age_foreign_compare,
   theme_minimal()
 
 ```
-That explains why cantons with higher share of foreigners generally buy more expensive notebooks. One reason could be because younger professionals and students are more willing to spend on performance laptops. They also care about brand, specs, GPU, portability, RPM/SSD, refresh rate and are more aware of premium tech trends
+That explains why cantons with higher share of foreigners generally buy more expensive notebooks. Younger professionals and students are more willing to spend on performance laptops. They also care about brand, specs, GPU, portability, RPM/SSD, refresh rate and are more aware of premium tech trends
 ```{r}
 #| label: canton-smartphone-agg
 #| warning: false
