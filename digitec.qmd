@@ -1958,18 +1958,19 @@ We demonstrated that sales volume and sales value follow different geographic pa
 
 ### Key Insights
 
-1.  **The Volume-Value Paradox:** While sales volume (number of transactions) strongly correlates with population density (Zurich, Bern), these urban centers do not necessarily yield the highest average basket sizes. Our analysis highlights a strong correlation between the share of foreign residents and higher median prices for notebooks and smartphones. This points to high-purchasing-power clusters (e.g., in Zug or Geneva) that are significantly more likely to purchase premium products than the average consumer.
+1.  **The Volume-Value Paradox & Premium Segments:** While sales volume (number of transactions) strongly correlates with population density (Zurich, Bern), these urban centers do not necessarily yield the highest average basket sizes. Our segmentation analysis identified a **"Premium Tech Segment"** (e.g., Zug, Geneva, Basel-Stadt) characterized by a high share of foreign residents and **younger professionals (20–39)**. These groups drive the demand for high-performance devices and are significantly more likely to purchase premium products than the average consumer.
 
-2.  **The "Gaming Divide" & The Vaud Anomaly:** While German-speaking Switzerland (Zurich, St. Gallen, Aargau) is clearly dominated by PlayStation, the Canton of Vaud exhibits a unique preference for Nintendo. Crucially, our deep-dive analysis refutes the "kids' console" stereotype: It is the 20–64 age demographic in Vaud that drives spending on premium Nintendo products (OLED models, Zelda franchise), rather than parents buying for children.
+2.  **The "Gaming Divide" & The Vaud Anomaly:** While German-speaking Switzerland (Zurich, St. Gallen, Aargau) is clearly dominated by PlayStation, the Canton of Vaud exhibits a unique preference for Nintendo. Crucially, our deep-dive analysis refutes the "kids' console" stereotype: It is the **20–64 age demographic** in Vaud that drives spending on premium Nintendo products (OLED models, Zelda franchise), rather than parents buying for children.
 
 ### Strategic Recommendations
 
-Based on these findings, we recommend the following strategic actions for Digitec:
+Based on our segmentation analysis, we recommend the following strategic actions for Digitec:
 
--   **Purchasing Power Segmentation (High-End Targeting):** Shift advertising budgets for premium hardware (MacBook Pro, iPhone Pro, Samsung Ultra) towards cantons with high expat densities and purchasing power (ZG, GE, BS). In traditional population hubs (ZH, BE), marketing should focus on value-for-money and product variety to maintain transaction volume.
+-   **Apply Segment-Specific Targeting:**
+    -   **Premium Tech Segment (ZG, GE, BS):** Leverage these "Pink Segments" for high-margin hardware campaigns (MacBook Pro, iPhone Pro, Samsung Ultra). Use English or international messaging targeting the tech-savvy expat community and young professionals.
+    -   **Value Segment (Rural Cantons):** In the "Yellow Segments" (e.g., parts of Central/Eastern Switzerland), focus marketing on reliability, price-performance ratios, and bundles to capture the more price-sensitive demographic.
 
 -   **Regionally Differentiated Gaming Marketing:**
-
     -   **German-speaking Switzerland:** Focus on PlayStation performance, competitive gaming, and hardware bundles.
     -   **Romandy (Vaud):** Launch a dedicated Nintendo campaign specifically targeting **adult gamers**. The messaging should emphasize premium hardware and sophisticated gameplay (e.g., Zelda), moving away from child-centric imagery.
 
