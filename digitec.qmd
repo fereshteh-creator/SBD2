@@ -22,31 +22,31 @@ The findings will guide a data-driven marketing strategy to personalize digital 
 
 > **How can Digitec leverage demographic and regional differences to optimise marketing strategies for high-impact categories, while also tailoring campaigns for strategic niche categories?**
 
-Digitec handles thousands of sales every day across many product categories, regions and customer types. But most of the marketing is still done on a national level – one broad message for the whole country. That raises a simple question: Are all customers in Switzerland really the same, or do different regions buy differently? If purchasing behaviour varies by canton or by demographics, then Digitec might be spending budget on campaigns that are not equally effective everywhere. That's why we decided to dive into this problem and explore high- and low-impact categories of Digitec products.
+Digitec handles thousands of sales every day across many product categories, regions and customer types. But most of the marketing is still done on a national level – one broad message for the whole country. That raises a simple question: Are all customers in Switzerland really the same, or do different regions buy differently? If purchasing behaviour varies by canton or by demographics, then Digitec might be spending their budget on campaigns that are not equally effective everywhere. That's why we decided to dive into this problem and explore high- and low-impact categories of Digitec products.
 
 ### 1.2. Data Overview
 
 | Source | Description | Key Variables |
 |:-----------------------|:-----------------------|:-----------------------|
 | **Digitec Transactions (`DigitecLive_Final.csv`)** | \~163k web-scraped online transactions from Digitec’s live purchase feed | `brandName`, `infos.Category`, `salesPrice.amountIncl`, `dateTime`, `mun_canton` |
-| **BFS Population Data (`population_2023.xlsx`)** | Canton-level demographics (2023) | `Total`, `Swiss`, `Foreigner`, `Urban`, `Intermediate`, `Rural`, `Age_0_19`, `Age_20_64`, `Age_65plus`, `Single`, `Married`, `Widowed`, `Divorced` |
-| **BFS Population by Age (`mns-population-by-age-2023.xlsx`)** | Detailed population structure by age and region | `Region`, `Total`, `Age_0_4`, `Age_5_9`, …, `Age_80plus` |
-| **BFS Population by Gender (`mns-population-by-gender-2023.xlsx`)** | Gender composition by canton and municipality (2023) | `Region`, `Total_All`, `Mann_All`, `Frau_All`, `Swiss`, `Foreigner` |
+| **BFS Population Data (`population_2023.xlsx`)** | Canton-level demographics (2023) | `Total`, `Foreigner`, `Age_0_19`, `Age_20_64`, `Age_65plus`, `Single`, `Married`, `Gender` |
 | **Swiss Municipal Boundaries (`swissBOUNDARIES3D_1_5_TLM_HOHEITSGEBIET.shp`)** | Official Swiss municipality polygons used to map Digitec transactions geographically and join by BFS municipality number | `BFS_NUMMER` (municipality ID), `NAME` (municipality name), `KANTONSNUM` (canton ID), `geometry` (MULTIPOLYGON) |
 
 These additional datasets allow the inclusion of **more granular demographic information** - enabling a refined analysis of age and gender-related purchasing behavior across regions.
 
 ### 1.3. Unit of Analysis
 
-The analysis is now conducted at the **municipality level** ($n \approx 2,200$), using the official **BFS municipality number (`mun_bfsnr`)** as the join key between datasets.
+The analysis is conducted at the **canton level**.
 
-Each municipality represents one observation containing: - $sales\_per\_capita = \frac{total\_sales}{population}$\
-- Average order value (CHF)\
+Each canton represents one observation containing:
+
+\- $sales\_per\_capita = \frac{total\_sales}{population}$
+
+\- $transactions\_per\_capita = \frac{num\_transactions}{population}$\
 - Age-group shares (e.g., % under 20, % over 65)\
 - Gender composition (% male, % female)\
-- Citizenship composition (% Swiss, % foreign)
-
-This finer-grained approach allows for **more localized insights**, capturing demographic and purchasing differences that are hidden when aggregating by canton.
+- Citizenship composition (% Swiss, % foreign)\
+- Marital status (% married, % single)
 
 ------------------------------------------------------------------------
 
@@ -60,20 +60,20 @@ This first code chunk sets up the R environment by loading all necessary librari
 #| include: false
 
 # Load all required libraries for the project
-library(tidyverse) # For data manipulation (dplyr) and visualization (ggplot2)
-library(readxl)    # To read Excel files
-library(lubridate) # To work with date-time values
-library(stringr)   # To work with regex
-library(dlookr)
-library(ggrepel)
-library(ggcorrplot)
-library(ggplot2)
-library(viridis)
-library(viridisLite)
-library(dplyr)
-library(plotly)
-library(sf)
-library(scales)
+library(tidyverse)  # For data manipulation (dplyr) and visualization (ggplot2)
+library(readxl)     # To read Excel files
+library(lubridate)  # To work with date-time values
+library(stringr)    # To work with regex
+library(dlookr)     # Tools for data diagnosis, EDA, and data quality reports
+library(ggrepel)    # Improved text labels for ggplot that avoid overlapping
+library(ggcorrplot) # To visualize correlation matrices using ggplot2
+library(ggplot2)    # Grammar-of-graphics plotting system
+library(viridis)    # Colorblind-friendly color scales for plots
+library(viridisLite)# Lightweight version of viridis color palettes
+library(dplyr)      # Core data manipulation verbs (select, filter, mutate, etc.)
+library(plotly)     # Interactive plots and graphics
+library(sf)         # To work with spatial/geographic vector data
+library(scales)     # To scale functions for ggplot2 (formatting axes, labels, etc.)
 
 
 
@@ -117,16 +117,14 @@ load("digitec.RData") # Loads the 'data' object
 # Save to descriptive variable
 digitec_data <- get("data")
 
-## Load BFS data sets
+## Load BFS data set
 canton_population <- read_excel("population_2023.xlsx")
-municipal_population_gender <- read_excel("mns-population-by-gender-2023.xlsx")
-municipal_population_age <- read_excel("mns-population-by-age-2023.xlsx")
 
 ```
 
 ## 3. Data Cleaning and Preprocessing
 
-This section details the systematic process of cleaning and preparing the raw data of the required data sets. The goal is to produce a reliable, aggregated dataset at the municipal and cantonal level. The municipal data will be a combination of three datasets: "mns-population-by-age", "mns-population-by-gender", and the digitec dataset. The cantonal dataset will be a merging of the BFS demographic data and the digitec dataset.
+This section details the systematic process of cleaning and preparing the raw data of the required data sets. The goal is to produce a reliable, aggregated dataset at the cantonal level. The cantonal dataset will be a merging of the BFS demographic data and the digitec dataset.
 
 ### 3.1. Digitec Dataset
 
@@ -204,7 +202,7 @@ if (all(c("infos.Price", "salesPrice.amountIncl") %in% names(digitec_data))) {
 }
 ```
 
-60 577 rows had *both* `infos.Price` and `salesPrice.amountIncl` . The value `max_abs_diff = 1021.9` means that in some rows, the difference between the two price fields is CHF 1 021.90 so prices differ a lot. We decided that this column is inconsistent.
+60 577 rows had *both* `infos.Price` and `salesPrice.amountIncl`. The value `max_abs_diff = 1021.9` means that in some rows, the difference between the two price fields is CHF 1 021.90 so prices differ a lot. We decided that this column is inconsistent.
 
 The following steps were implemented in a single, coherent `dplyr` pipeline for efficiency and reproducibility. The result is a cleaned DataFrame named `data_clean`.
 
@@ -313,25 +311,19 @@ summary(digitec_data_clean)
 
 ### 3.2. BFS Datasets
 
-The data within the three BFS is mostly clean. There are no apparent missing values or errors, just some unnecessary rows. More importantly, the datasets need to be compatible for the upcoming merge with the Digitec data.\
+#### Data Cleaning & Engineering
+
+The data within the BFS dataset is mostly clean. There are no apparent missing values or errors, just some unnecessary rows which can be removed. Besides that we want to make sure the BFS dataset is compatible with digitec's dataset.\
 \
-The issues that we identified were as follows:
+To resolve the aforementioned issues we will take these measures:
 
--   **Column names:** The column names of all three datasets need to be non-capitalized and follow the snake_case format in order to align with the digitec dataset.
+-   **Column names:** The column names of the BFS dataset need to be non-capitalized and follow the snake_case format in order to align with the digitec dataset.
 
--   **Unwanted rows:** Remove the unwanted canton and bezirk rows with the municipality datasets and rename the column to muncipality.
+-   **Canton codes:** The canton names within the BFS dataset are not in the standard code format.
 
--   **Canton codes:** The canton names within the municipality BFS dataset are not in the standard code format.
+#### Implementation
 
--   **Municipality number:** The age and gender datasets have an improper municipality notation. Later on, we'll have to merge these datasets with the digitec dataset according to the municipality number, so it's imperative that we make sure they're in the same format.
-
--   **Ages:** Currently ages within the age datasetare not grouped in the same way as BFS' canton dataset.
-
-#### 3.2.1 Data Cleaning & Engineering
-
-**Municipality Level**
-
-Firstly, we will tackle the column names; we do this simply by running each dataset through this snake_case function:
+**Column names:** Firstly, we will tackle the column names. We want to ensure that they all follow the same naming standard; we do this simply by running each dataset through the following snake_case function:
 
 ```{r}
 
@@ -344,62 +336,11 @@ clean_names <- function(x) {
     str_replace_all(" ", "_")             
 }
 
-# Rename each dataset
+
 colnames(canton_population) <- clean_names(colnames(canton_population))
-colnames(municipal_population_age) <- clean_names(colnames(municipal_population_age))
-colnames(municipal_population_gender) <- clean_names(colnames(municipal_population_gender))
 ```
 
-Then within the age and gender datasets we can remove the unnecessary rows, rename the column and extract the bfsnr from the municipalities.
-
-```{r}
-#| label: row-removal
-
-# Rename first column to bfsnr like in the digitec dataset
-colnames(municipal_population_age)[1] <- "bfsnr"
-colnames(municipal_population_gender)[1] <- "bfsnr"
-
-# Clean municipality age data
-municipal_population_age_clean <- municipal_population_age %>%
-  filter(str_detect(bfsnr, "^\\.+")) %>%  # Match rows starting with one or more dots
-  mutate(
-    bfsnr = str_extract(bfsnr, "\\d+"),  # Extract numeric code
-    bfsnr = as.integer(bfsnr)
-  )
-
-# Clean municipality gender data
-municipal_population_gender_clean <- municipal_population_gender %>%
-  filter(str_detect(bfsnr, "^\\.+")) %>%
-  mutate(
-    bfsnr = str_extract(bfsnr, "\\d+"),
-    bfsnr = as.integer(bfsnr)
-  )
-
-municipal_population_age_clean
-municipal_population_gender_clean
-
-```
-
-Now we group the ages from 0-19, 20-64, and 65-100+ and our age and population datasets are ready for merging.
-
-```{r}
-
-# Collapse into age bands
-municipal_population_age_clean <- municipal_population_age_clean %>%
-  rowwise() %>%
-  mutate(
-    `age_from_0-19` = sum(c_across(`0`:`19`), na.rm = TRUE),
-    `age_from_20-64` = sum(c_across(`20`:`64`), na.rm = TRUE),
-    age_from_65_and_over = sum(c_across(`65`:`99`), `100_und_mehr`, na.rm = TRUE)
-  ) %>%
-  ungroup() %>% select(bfsnr, total, `age_from_0-19`, `age_from_20-64`, age_from_65_and_over)
-
-municipal_population_age_clean
-```
-
-**Canton Level**
-
-For the canton level we need to map the canton names found in the canton BFS dataset to their official abbreviations used in the transaction dataset.
+**Canton codes:** Then we need to map the canton names found in the canton BFS dataset to their official abbreviations used in the transaction dataset.
 
 ```{r}
 #| label: canton-code-mapping
@@ -506,24 +447,13 @@ The result of this cleaning and preprocessing workflow is the `canton_data_final
 head(canton_data_final, n = 26)
 ```
 
-### 4.2 BFS Datasets
+## 5. Merging
 
-```{r}
-
-# Calculate number of transactions, average price, and median price for each bfsnr
-digitec_grouped <- digitec_data_clean %>%
-  group_by(bfsnr) %>%
-  summarise(
-    transactions = n(),
-    avg_price = mean(price, na.rm = TRUE),
-    median_price = median(price, na.rm = TRUE),
-    .groups = "drop"
-  )
-```
-
-## 5. Canton Dataset
+To prepare for the data visualization and interpretation, we can finally merge the BFS and Digitec datasets. To facilitate the interpretation of the data, certain aggregated attributes are added to the merged dataset.
 
 ### 5.1. Canton Level Dataset Merge
+
+In the following code block we merge the two datasets based on the previously cleaned canton column.
 
 ```{r}
 
@@ -573,65 +503,9 @@ The metrics are the following:
 final_canton_data
 ```
 
-## 6. Municipality Dataset
+## 6. Data visualization
 
-### 6.1 Municipality Level Dataset Merge
-
-```{r}
-
-# Merge age municipality dataset on bfsnr code
-municipality_merged_data <- digitec_grouped %>%
-  left_join(municipal_population_age_clean, by = "bfsnr")
-
-# Merge gender municipality dataset on bfsnr code
-municipality_merged_data <- municipality_merged_data %>%
-  left_join(municipal_population_gender_clean, by = "bfsnr")
-
-# View merged dataset
-municipality_merged_data
-```
-
-### 6.2 Municipality Level Post-merge Aggregation
-
-The metrics for the municipalities are the following:
-
-1.  Gender ratios
-2.  Citizenship ratios
-3.  Age structure
-
-```{r}
-
-final_municipality_data <- municipality_merged_data %>%
-  rename(
-    male_population   = mann_all,
-    female_population = frau_all,
-    total_population  = total_all,
-    swiss_citizenship    = total_swiss,
-    foreigner_citizenship = total_foreigner
-  ) %>%
-  mutate(
-    # choose one total population column to use everywhere
-    total_pop = coalesce(total_population, total),
-
-    # Gender ratios
-    share_male   = male_population   / total_pop,
-
-    # Citizenship ratios
-    share_foreign = foreigner_citizenship / total_pop,
-  
-    # Age structure
-    share_age_0_19    = `age_from_0-19`      / total_pop,
-    share_age_20_64   = `age_from_20-64`     / total_pop,
-    share_age_65_plus = age_from_65_and_over / total_pop
-  )
-
-# Display final merged data with computed values
-final_municipality_data
-```
-
-## 7. Data visualization
-
-We first want to fin out which categories have the widest distribution:
+We first want to find out which categories have the widest distribution:
 
 ```{r}
 #| label: category-price-spread
@@ -713,9 +587,9 @@ top_spread_table
 
 ```
 
-Lets focus on notebooks and smartphones, which are both economically relevant and exhibits two of the widest price distributions in the Digitec data.
+Lets focus on notebooks and smartphones, which are both economically relevant and exhibit two of the widest price distributions in the Digitec data.
 
-### 7.1 Pre-visualization joins and processing
+### 6.1 Pre-visualization joins and processing
 
 We first connect the cleaned Digitec transactions to the official municipality geometries.
 
@@ -748,9 +622,9 @@ canton_map_data <- canton_sf %>%
 
 ```
 
-### 7.2 Notebooks
+### 6.2 Notebooks
 
-We aggregate all notebook transactions at the cantonal level, computing for each canton the total number of notebook transactions and the median and mean notebook price. These indicators are then joined with the official canton geometries to create choropleth maps that reveal spatial patterns in notebook demand and pricing.
+We aggregate all notebook transactions at the cantonal level, computing for each canton the total number of notebook transactions as well as the median and mean notebook price. These indicators are then joined with the official canton geometries to create choropleth maps that reveal spatial patterns in notebook demand and pricing.
 
 ```{r}
 #| label: canton-notebook-agg
@@ -894,9 +768,6 @@ Lets see if that has anything to do with age distribution
 nb_demo <- notebook_canton |>
   left_join(final_canton_data, by = "canton")
 
-# Keep only cantons with at least 20 notebook transactions
-
-
 # Define a price threshold (median of canton median prices)
 price_threshold <- median(nb_demo$median_price_nb, na.rm = TRUE)
 
@@ -991,7 +862,7 @@ ggplot(foreign_compare_avg,
 
 ```
 
-Here we can actually see that the foreign ratio had an impact on the median price, which i higher when the foreign ratio is higher. This does not prove causality, but it does suggest a meaningful association: regions with a larger foreign population tend to purchase more expensive notebooks on average.
+Here we can actually see that the foreign ratio had an impact on the median price, which is higher when the foreign ratio is higher. This does not prove causality, but it does suggest a meaningful association: regions with a larger foreign population tend to purchase more expensive notebooks on average.
 
 ```{r}
 #| label: canton-smartphone-agg
@@ -1054,7 +925,7 @@ sp_demo_groups <- sp_demo |>
   )
 ```
 
-### 7.3 Smartphone
+### 6.3 Smartphone
 
 We also did the same thing for smartphones and although the highest prices are now originating from other cantons such as Schaffhausen and Appenzell Ausserrhoden, the foreigner share ratio is suggesting the same pattern.
 
@@ -1121,13 +992,13 @@ ggplot(foreign_compare_sp,
 
 ```
 
-#### recommendations
+#### Recommendations
 
 Our regional and demographic analysis of Digitec’s notebook and smartphone sales reveals a consistent pattern:
 
 -   High transaction volumes are concentrated in large, urban cantons (Zurich, Bern, Vaud, Geneva), reflecting population and economic density.
 
--   However, median prices are often higher in smaller, high-income cantons such as Schaffhausen, Glarus, or Zug, where the foreigner share is above average it's recommended to focus high-end product promotions.
+-   However, median prices are often higher in smaller, high-income cantons such as Schaffhausen, Glarus, or Zug, where the foreigner share is above average, it's recommended to focus high-end product promotions.
 
 -   In populous cantons like Zurich or Bern, emphasize value and variety rather than luxury and promote mid-range devices, seasonal discounts, or trade-in programs that appeal to broader audiences and students.
 
@@ -1270,7 +1141,7 @@ canton_map_data <- canton_map_data %>%
 
 ```
 
-### 7.4 Gaming sales across Switzerland
+### 6.4 Gaming sales across Switzerland
 
 **Why We Chose to Work With Console-Related Products?**
 
@@ -1490,13 +1361,13 @@ This means Nintendo advertising in Vaud should not focus only on kids but it mus
 
 Zurich, Bern, Aargau, St. Gallen, and Geneva all show a clear preference for PlayStation. These cantons are also the largest contributors to gaming sales overall. So, Digitec should push **PS5 bundles, controllers, PS Plus subscriptions, and headline releases** heavily in these markets.
 
-Vaud is the only major canton where Nintendo dominates PlayStation. Adults (20–64) drive most of these sales, especially premium Switch models and Zelda titles. Campaigns here should focus on **adult Nintendo players**, premium Switch upgrades and promotions on favourite fanchises like Zelda.
+Vaud is the only major canton where Nintendo dominates PlayStation. Adults (20–64) drive most of these sales, especially premium Switch models and Zelda titles. Campaigns here should focus on **adult Nintendo players**, premium Switch upgrades and promotions on favourite franchises like Zelda.
 
 ## 8. Individual contributions
 
 | Name | Contribution |
-|-----------------|--------------------------------------------------------------------------------------------|
-| Anna | Business plan analysis, data cleaning, pre-visualization processing, gaming sales vizualizations |
-| Fereshteh | Business plan analysis, data cleaning, pre-visualization processing, Notebooks and smartphone vizualizations |
-| Sen |  |
+|------------------|------------------------------------------------------|
+| Anna | Business plan analysis, data cleaning, pre-visualization processing, gaming sales visualizations |
+| Fereshteh | Business plan analysis, data cleaning, pre-visualization processing, Notebooks and smartphone visualizations |
+| Sen | Data cleaning, pre-processing, dataset merging, aggregated value creation |
 | Colin |  |
