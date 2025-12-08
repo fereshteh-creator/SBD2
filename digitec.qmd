@@ -27,7 +27,7 @@ Digitec handles thousands of sales every day across many product categories, reg
 ### 1.2. Data Overview
 
 | Source | Description | Key Variables |
-|:---|:---|:---|
+|:-----------------------|:-----------------------|:-----------------------|
 | **Digitec Transactions (`DigitecLive_Final.csv`)** | \~163k web-scraped online transactions from Digitec’s live purchase feed | `brandName`, `infos.Category`, `salesPrice.amountIncl`, `dateTime`, `mun_canton` |
 | **BFS Population Data (`population_2023.xlsx`)** | Canton-level demographics (2023) | `Total`, `Foreigner`, `Age_0_19`, `Age_20_64`, `Age_65plus`, `Single`, `Married`, `Male` |
 | **BFS Population by Age (`mns-population-by-age-2023.xlsx`)** | Detailed population structure by age and region | `Region`, `Total`, `Age_0_4`, `Age_5_9`, …, `Age_80plus` |
@@ -1140,7 +1140,7 @@ ggplot(age_foreign_compare,
 
 ```
 
-That explains why cantons with higher share of foreigners generally buy more expensive notebooks. Younger professionals and students are more willing to spend on performance laptops. They also care about brand, specs, GPU, portability, RPM/SSD, refresh rate and are more aware of premium tech trends
+That can also explain why cantons with higher share of foreigners generally buy more expensive notebooks. Those cantons with a higher foreigner share are generally younger and younger professionals and students are more willing to spend on performance laptops. They also care about brand, specs, GPU, portability, RPM/SSD, refresh rate and are more aware of premium tech trends.
 
 ```{r}
 #| label: canton-smartphone-agg
@@ -1568,7 +1568,7 @@ ggplot() +
 **Now our recommendations:**
 
 | Segment | Description | Recommended Focus |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | **Premium Tech** (pink) | Young, international, higher spending regions. | Premium notebooks & smartphones; gaming/creator devices; multilingual, performance-focused ads. |
 | **Mid-Range** (purple) | Mixed demographics with average spending. | Mid-range laptops and phones; “value for money” messaging; accessory bundles. |
 | **Value** (yellow) | Older, more price-sensitive regions. | Affordable, easy-to-use devices; home-office sets; reliability & service messaging. |
@@ -1973,7 +1973,7 @@ To translate these strategic findings into customer-facing communication and dem
 # 9. Individual contributions
 
 | Name | Contribution |
-|----|----|
+|------------------------------------|------------------------------------|
 | Anna | Business plan analysis, data cleaning, pre-visualization processing, gaming sales visualizations |
 | Fereshteh | Business plan analysis, data cleaning, pre-visualization processing, Notebooks and smartphone visualizations |
 | Sen | Data cleaning, pre-processing, dataset merging, aggregated value creation |
