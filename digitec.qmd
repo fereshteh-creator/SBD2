@@ -134,10 +134,10 @@ This section details the systematic process of cleaning and preparing the raw da
 
 ### 3.1. Digitec Dataset
 
-An initial inspection of the raw Digitec data revealed several necessary cleaning steps:
+An initial inspection of the raw Digitec data showed us several necessary cleaning steps:
 
 -   **Correcting Data Types:** The `dateTime` column was stored as a character string and needed to be converted into a proper date-time format for time-based analysis.
--   **Removing Irrelevant Columns:** Many columns were redundant (e.g., price with and without VAT), contained technical metadata, or were not relevant to the analysis (e.g., image URLs).
+-   **Removing Irrelevant Columns:** Many columns were redundant (e.g., price with and without VAT), contained technical metadata or were not relevant to the analysis (e.g., image URLs).
 -   **Ensuring Data Quality:** Transactions without a price or a clear, unique geographic match (`mun_nhits != 1`) were removed to ensure the reliability of the analysis.
 -   **Feature Engineering:** More useful features were extracted from the raw data, such as the day of the week from the `dateTime` column or the clean product category name from a URL string.
 
@@ -324,7 +324,7 @@ The issues that we identified were as follows:
 
 -   **Municipality number:** The age and gender datasets have an improper municipality notation. Later on, we'll have to merge these datasets with the digitec dataset according to the municipality number, so it's imperative that we make sure they're in the same format.
 
--   **Ages:** Currently ages within the age datasetare not grouped in the same way as BFS' canton dataset.
+-   **Ages:** Currently ages within the age dataset are not grouped in the same way as BFS' canton dataset.
 
 #### 3.2.1 Data Cleaning & Engineering
 
@@ -463,7 +463,7 @@ cleaned_canton_population
 
 ### 4.1 Digitec Dataset
 
-An initial aggregation of the cleaned data surprisingly resulted in 29 groups instead of the 26 expected Swiss cantons. An investigation of the `canton` column revealed that the dataset also contained transactions from neighboring countries, which needed to be excluded for this analysis.
+An initial aggregation of the cleaned data surprisingly resulted in 29 groups instead of the 26 expected Swiss cantons. Quick investigation of the `canton` column showed that the dataset also contained transactions from neighboring countries, which needed to be excluded for this analysis.
 
 ```{r}
 #| label: validation-step
@@ -533,7 +533,7 @@ digitec_grouped <- digitec_data_clean %>%
 
 ## 5. Canton Dataset
 
-To prepare for the data visualization and interpretation, we can finally merge the BFS and Digitec datasets. To facilitate the interpretation of the data, certain aggregated attributes are added to the merged dataset.
+To get ready for the data visualization and analysis, we can now merge the BFS and Digitec datasets. To make the results easier to interpret, we also add a few aggregated attributes to the combined dataset.
 
 ### 5.1. Canton Level Dataset Merge
 
@@ -550,7 +550,7 @@ canton_merged_data
 
 ### 5.2. Canton Level Post-merge Aggregation
 
-To enable meaningful comparisons across cantons we add derived indicators. These indicators normalize raw counts into ratios and per-capita metrics, making them suitable for correlation analysis, segmentation, and strategic targeting.
+To make meaningful comparisons between cantons we add derived indicators. These indicators normalize raw counts into ratios and per-capita metrics, making them suitable for correlation analysis, segmentation, and strategic targeting.
 
 The metrics are the following:
 
@@ -609,7 +609,7 @@ municipality_merged_data
 
 ### 6.2 Municipality Level Post-merge Aggregation
 
-For the municipality we are only aggregating thew age differences data.
+For the municipality we are only aggregating the age differences data.
 
 ```{r}
 final_municipality_data <- municipality_merged_data %>%
@@ -1803,7 +1803,7 @@ In **five out of six** of these top cantons (AG, BE, GE, SG, ZH), PlayStation ge
 
 In short, Digitec should push PlayStation heavily in Zürich and the German-speaking top cantons where it dominates, while tailoring Vaud with more Switch-focused offers.
 
-We found it very interesting that Vaud (VD) is the only top canton where Nintendo beats PlayStation in sales. A Nintendo-specific regional campaign will perform better here than a broad PlayStation related campaigns. This makes it Digitec’s strongest opportunity for a targeted Switch-focused campaign. By breaking down Nintendo sales inside Vaud’s municipalities, we can identify exactly where the most engaged family and casual gamers live.
+We found it very interesting that Vaud (VD) is the only top canton where Nintendo beats PlayStation in sales. A Nintendo-specific regional campaign will perform better here than a broad PlayStation related campaigns. This makes it Digitec’s strongest opportunity for a targeted Switch-focused campaign.
 
 So the *right question* now is:
 
@@ -1905,7 +1905,7 @@ nintendo_product_summary$fullProductName <- str_wrap(nintendo_product_summary$fu
 ggplot(nintendo_product_summary,
        aes(x = reorder(fullProductName, sales_20_64),
            y = sales_20_64)) +
-  geom_col(fill = "#E60012") +  # Nintendo red
+  geom_col(fill = "#E60012") + 
   coord_flip() +
   scale_y_continuous(labels = comma) +
   labs(
@@ -1922,29 +1922,83 @@ ggplot(nintendo_product_summary,
 
 ```
 
-The top items in the chart are almost all **premium editions of switch consoles or games**. This shows that adults in Vaud are making **big Nintendo purchases**, not just small add-ons.
+The top items in the chart are almost all **premium editions of switch consoles or games**. This shows that adults in Vaud are making **big Nintendo purchases**.
 
-Vaud’s adult population buys premium Nintendo consoles and major franchises like Zelda. Zelda is a franchise primarily popular among adults, so we can say that a large portion of Nintendo customers in Vaud are adult gamers, not only parents shopping for kids as some people might think.
+Vaud’s adult population buys premium Nintendo consoles and major gaming franchises like Zelda. Zelda is a franchise primarily popular among adults, so we can say that a large portion of Nintendo customers in Vaud are adult gamers, not only parents shopping for kids as some people might think.
 
 This means Nintendo advertising in Vaud should not focus only on kids but it must mostly target adult gamers who choose Switch for themselves.
 
 ### 7.6 Recommendations Gaming
 
-Zurich, Bern, Aargau, St. Gallen, and Geneva all show a clear preference for PlayStation. These cantons are also the largest contributors to gaming sales overall. So, Digitec should push **PS5 bundles, controllers, PS Plus subscriptions, and headline releases** heavily in these markets.
+```{r}
+platform_pref <- gaming_data %>%
+  group_by(canton, platform) %>%
+  summarise(
+    sales = sum(price, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  group_by(canton) %>%
+  slice_max(sales, n = 1, with_ties = FALSE) %>%
+  ungroup()
 
-Vaud is the only major canton where Nintendo dominates PlayStation. Adults (20–64) drive most of these sales, especially premium Switch models and Zelda titles. Campaigns here should focus on **adult Nintendo players**, premium Switch upgrades and promotions on favourite fanchises like Zelda.
+# 2. Merge with canton map
+canton_platform_map <- canton_map_data %>%
+  left_join(platform_pref, by = "canton")
+
+ggplot(canton_platform_map) +
+  geom_sf(aes(fill = platform), color = "grey20", linewidth = 0.3) +
+  scale_fill_manual(
+    values = c(
+      "Nintendo"     = "#E60012",
+      "PlayStation"  = "#003791",   
+      "Xbox"         = "#107C10"    
+    )
+  ) +
+  labs(
+    title = "Dominant Gaming Platform by Canton",
+    fill = "Top Platform"
+  ) +
+  theme_minimal(base_size = 14)
+
+```
+
+**PlayStation dominates in the German-speaking regions**
+
+Zurich, Bern, Aargau, St. Gallen, and Geneva all show a clear preference for PlayStation. These are also high-population areas, so they represent the largest share of Digitec’s gaming revenue. So, Digitec should push PS5 bundles, controllers and PS Plus subscriptions releases heavily in these markets.
+
+**Recommended campaigns:**
+
+1.  PS5 console + game bundles
+
+2.  DualSense controller promos
+
+3.  Exclusive game releases (GTA VI, Spider-Man, Horizon, etc.)
+
+**Nintendo dominates the western and southern Swiss regions**
+
+Cantons such as Vaud (VD), Valais (VS), Fribourg (FR), Neuchâtel (NE) and parts of Ticino (TI) show a strong preference for Nintendo products. This aligns with your earlier findings: Vaud has a biggest preference for Nintendo products, with adults (20–64) driving sales of premium Switch models and Zelda editions.
+
+Given the exceptionally high sales of Zelda editions and related Nintendo products among adults in Vaud, we recommend using Zelda-themed visual advertising, character-driven promotions or targeted bundles.
+
+**Recommended campaigns:**
+
+1.  Switch OLED bundles (with Zelda, Mario, Pokémon)
+
+2.  Ads targeted more at adults
+
+3.  Promote with Zelda characters
 
 # 8. Conclusions & Strategic Recommendations
 
-Our analysis of Digitec transaction records combined with FSO demographic data confirms that a generic, nationwide marketing strategy is inefficient. The data reveals significant regional and demographic disparities that necessitate a shift towards "Smart Targeting."
+Our review of Digitec transaction data, combined with demographic insights from the FSO, shows that a uniform, nationwide marketing approach is ineffective. The findings highlight substantial regional and demographic differences, showing the need to adopt a "Smart Targeting" strategy.
 
-We demonstrated that sales volume and sales value follow different geographic patterns and that cultural differences (the "Röstigraben") influence purchasing behavior more strongly than expected.
+We demonstrated that both sales volume and value follow different geographic patterns and that cultural differences (the "Röstigraben") influence purchasing behavior more strongly than expected.
 
 ### Key Insights
 
-1.  **The Volume-Value Paradox & Premium Segments:** While sales volume (number of transactions) strongly correlates with population density (Zurich, Bern), these urban centers do not necessarily yield the highest average basket sizes. Our segmentation analysis identified a **"Premium Tech Segment"** (e.g., Zug, Geneva, Basel-Stadt) characterized by a high share of foreign residents and **younger professionals (20–39)**. These groups drive the demand for high-performance devices and are significantly more likely to purchase premium products than the average consumer.
+1.  **The Volume-Value Paradox & Premium Segments:** Even though sales volume (the number of transactions) lines up closely with population density in big cities like Zurich and Bern, these areas don’t actually generate the highest average basket sizes. When we looked closer, we found a **“Premium Tech Segment”** in places like Zug, Geneva, and Basel-Stadt. These regions tend to have more foreign residents and a large share of **young professionals aged 20–39.** This group is much more interested in high-performance devices and is far more likely to buy premium products than the average shopper.
 
-2.  **The "Gaming Divide" & The Vaud Anomaly:** While German-speaking Switzerland (Zurich, St. Gallen, Aargau) is clearly dominated by PlayStation, the Canton of Vaud exhibits a unique preference for Nintendo. Crucially, our deep-dive analysis refutes the "kids' console" stereotype: It is the **20–64 age demographic** in Vaud that drives spending on premium Nintendo products (OLED models, Zelda franchise), rather than parents buying for children.
+2.  **The "Gaming Divide" & The Vaud Anomaly:** Across most of German-speaking Switzerland (like Zurich, St. Gallen, and Aargau), PlayStation clearly dominates. But the Canton of Vaud stands out with a strong preference for Nintendo. What’s especially interesting is that our deeper analysis shows the usual idea that Nintendo mainly appeals to kids. In Vaud, it’s actually **adults aged 20–64** who drive spending on higher-end Nintendo products, including OLED models and games from franchises like Zelda and not parents buying consoles for their children.
 
 ### Strategic Recommendations
 
@@ -1955,7 +2009,7 @@ Based on our segmentation analysis, we recommend the following strategic actions
     -   **Value Segment (Rural Cantons):** In the "Yellow Segments" (e.g., parts of Central/Eastern Switzerland), focus marketing on reliability, price-performance ratios, and bundles to capture the more price-sensitive demographic.
 -   **Regionally Differentiated Gaming Marketing:**
     -   **German-speaking Switzerland:** Focus on PlayStation performance, competitive gaming, and hardware bundles.
-    -   **Romandy (Vaud):** Launch a dedicated Nintendo campaign specifically targeting **adult gamers**. The messaging should emphasize premium hardware and sophisticated gameplay (e.g., Zelda), moving away from child-centric imagery.
+    -   **Romandy (Vaud):** We suggest launching a Nintendo-focused campaign aimed directly at adult gamers. The messaging should highlight premium hardware and more complex, story-driven gameplay (like Zelda), rather than relying on child-oriented visuals. Using Zelda-themed ads would work particularly well here.
 
 ## 8.1 Campaign Concept: "Switzerland in Data"
 
@@ -1965,9 +2019,9 @@ To translate these strategic findings into customer-facing communication and dem
     -   *Headline:* "Why do almost only adults buy this game in Vaud?"
 2.  **The Zug Premium (Notebooks):** Illustrates the massive gap in median basket size between Zug and Bern, driven by the purchasing power in Zug.
     -   *Headline:* "Why does Zug buy more expensive laptops than Bern?"
-3.  **The Console Divide (Platforms):** Visualizes the cultural split in gaming behavior: PlayStation dominates Zurich, while Vaud prefers Nintendo.
-    -   *Headline:* "Why does Zurich play PlayStation and Vaud Nintendo?"
-4.  **The Geneva Connection (Smartphones):** Leverages our correlation analysis regarding foreign resident shares. Geneva (high expat share) shows a significantly higher willingness to pay for smartphones than the average.
+3.  **The Console Divide (Platforms):** Visualizes the split in gaming behavior: PlayStation dominates Zurich, while Vaud prefers Nintendo.
+    -   *Headline:* "Why does Zurich players prefer PlayStation and Vaud Nintendo?"
+4.  **The Geneva Connection (Smartphones):** Leverages our analysis regarding foreign resident shares. Geneva (high expat share) shows a significantly higher willingness to pay for smartphones than the average.
     -   *Headline:* "Why does Geneva swipe more expensively?"
 
 # 9. Individual contributions
@@ -1977,4 +2031,4 @@ To translate these strategic findings into customer-facing communication and dem
 | Anna | Business plan analysis, data cleaning, pre-visualization processing, gaming sales visualizations |
 | Fereshteh | Business plan analysis, data cleaning, pre-visualization processing, Notebooks and smartphone visualizations |
 | Sen | Data cleaning, pre-processing, dataset merging, aggregated value creation |
-| Colin | Digitec Data Cleaning and Preprocessing, Basic Data Visualization, Conclusion and Commercial Recommandation |
+| Colin | Digitec Data Cleaning, pre-processing, Basic Data Visualization, Conclusion and Commercial Recommandation |
