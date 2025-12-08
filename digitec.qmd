@@ -27,7 +27,7 @@ Digitec handles thousands of sales every day across many product categories, reg
 ### 1.2. Data Overview
 
 | Source | Description | Key Variables |
-|:-----------------------|:-----------------------|:-----------------------|
+|:---|:---|:---|
 | **Digitec Transactions (`DigitecLive_Final.csv`)** | \~163k web-scraped online transactions from Digitec’s live purchase feed | `brandName`, `infos.Category`, `salesPrice.amountIncl`, `dateTime`, `mun_canton` |
 | **BFS Population Data (`population_2023.xlsx`)** | Canton-level demographics (2023) | `Total`, `Foreigner`, `Age_0_19`, `Age_20_64`, `Age_65plus`, `Single`, `Married`, `Male` |
 | **BFS Population by Age (`mns-population-by-age-2023.xlsx`)** | Detailed population structure by age and region | `Region`, `Total`, `Age_0_4`, `Age_5_9`, …, `Age_80plus` |
@@ -38,16 +38,15 @@ These additional datasets allow the inclusion of **more granular demographic inf
 
 ### 1.3. Unit of Analysis
 
-The analysis is now conducted at the **municipality level** ($n \approx 2,200$), using the official **BFS municipality number (`mun_bfsnr`)** as the join key between datasets.
+Our analysis is conducted at the **canton level** (26 cantons).\
+For each canton, we aggregate Digitec transactions and demographic indicators to create a unified analytical dataset containing:
 
-Each municipality represents one observation containing: \
-- $sales\_per\_capita = \frac{total\_sales}{population}$\
-- Average order value (CHF)\
-- Age-group shares (e.g., % under 20, % over 65)\
-- Gender composition (% male, % female)\
-- Citizenship composition (% Swiss, % foreign)
+-   Sales metrics (transaction counts, median prices)
+-   Age structure
+-   Citizenship composition
+-   Other key demographic ratios
 
-This finer-grained approach allows for **more localized insights**, capturing demographic and purchasing differences that are hidden when aggregating by canton.
+Working at the canton level allows us to compare regions consistently and identify demographic patterns that help explain differences in purchasing behaviour across Switzerland.
 
 ------------------------------------------------------------------------
 
@@ -1569,7 +1568,7 @@ ggplot() +
 **Now our recommendations:**
 
 | Segment | Description | Recommended Focus |
-|------------------|---------------------------|---------------------------|
+|----|----|----|
 | **Premium Tech** (pink) | Young, international, higher spending regions. | Premium notebooks & smartphones; gaming/creator devices; multilingual, performance-focused ads. |
 | **Mid-Range** (purple) | Mixed demographics with average spending. | Mid-range laptops and phones; “value for money” messaging; accessory bundles. |
 | **Value** (yellow) | Older, more price-sensitive regions. | Affordable, easy-to-use devices; home-office sets; reliability & service messaging. |
@@ -1974,7 +1973,7 @@ To translate these strategic findings into customer-facing communication and dem
 # 9. Individual contributions
 
 | Name | Contribution |
-|------------------|------------------------------------------------------|
+|----|----|
 | Anna | Business plan analysis, data cleaning, pre-visualization processing, gaming sales visualizations |
 | Fereshteh | Business plan analysis, data cleaning, pre-visualization processing, Notebooks and smartphone visualizations |
 | Sen | Data cleaning, pre-processing, dataset merging, aggregated value creation |
